@@ -4,7 +4,7 @@ import AbstractStoreItem from "./AbstractStoreItem";
 export default abstract class AbstractCollectionSpeedStoreItem extends AbstractStoreItem {
     public purchaseItem(): void {
         GameManager.getInstance().removeMoney(this.cost);
-        this.collectibleData.collectSpeed += 5;
+        this.collectibleData.collectSpeed += 5 + (this.collectibleData.collectSpeed * 0.05);
         this.collectibleData.collectSpeed = Math.round((this.collectibleData.collectSpeed + Number.EPSILON) * 100) / 100;
     }
 
