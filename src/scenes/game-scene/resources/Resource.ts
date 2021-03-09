@@ -10,10 +10,6 @@ export default abstract class Resource implements IBurnableResource {
 
     public abstract createResourceCollector();
 
-    public update(delta: number) {
-        this.resourceCollector.update(delta);
-    }
-
     get name() {
         return this._name;
     }
