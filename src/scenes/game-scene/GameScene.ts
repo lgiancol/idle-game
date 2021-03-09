@@ -1,12 +1,7 @@
-import BitData from './collectibles-data/BitData';
-import ByteData from './collectibles-data/ByteData';
-import { CollectibleType } from './collectibles-data/ICollectibleData';
-import KiloByteData from './collectibles-data/KiloByteData';
-import { BitComponent } from './game-objects/collectibles/BitComponent';
-import { ByteComponent } from './game-objects/collectibles/ByteComponent';
-import { KiloByteComponent } from './game-objects/collectibles/KiloByteComponent';
-import Store from './game-objects/store/Store';
-import GameManager from './GameManager';
+import GameManager from "./GameManager";
+import LogCollector from "./resources/log/LogCollector";
+import Resource from "./resources/Resource";
+import ResourceCollector from "./resources/ResourceCollector";
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   active: false,
@@ -15,34 +10,37 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
 };
 
 export class GameScene extends Phaser.Scene {
-  private gameManager: GameManager = GameManager.getInstance();
-  private collectibles: Phaser.GameObjects.Group;
 
-  private store: Store;
+  private resourceCollectors: ResourceCollector<Resource>[];
 
   constructor() {
     super(sceneConfig);
   }
 
   public create(): void {
-    this.createCollectibleComponents();
-    this.createStoreComponent();
+    GameManager.getInstance().currentScene = this;
+
+    this.resourceCollectors = [];
+
+    this.addResourceCollector(0, new LogCollector());
+    this.addResourceCollector(1, new LogCollector());
+    this.addResourceCollector(2, new LogCollector());
   }
 
-  private createCollectibleComponents(): void {
-    this.collectibles = this.add.group({});
-    this.collectibles.runChildUpdate = true;
-    this.collectibles.add(new BitComponent(this, 100, 100, this.gameManager.getCollectibleData<BitData>(CollectibleType.BIT)));
-    this.collectibles.add(new ByteComponent(this, 100, 220, this.gameManager.getCollectibleData<ByteData>(CollectibleType.BYTE)));
-    this.collectibles.add(new KiloByteComponent(this, 100, 340, this.gameManager.getCollectibleData<KiloByteData>(CollectibleType.KILOBYTE)));
-  }
+  private addResourceCollector(index: number, toAdd: ResourceCollector<Resource>) {
+    toAdd.x = 100 + (index * 100) + (index * 10);
+    toAdd.y = 100;
+    toAdd.width = 100;
+    toAdd.height = 100;
+    toAdd.initializeComponent();
 
-  private createStoreComponent(): void {
-    this.store = new Store(this);
+    this.resourceCollectors.push(toAdd);
   }
 
   public update(time: number, delta: number): void {
-    this.gameManager.update(delta);
-    this.store.update();
+    this.resourceCollectors.forEach(
+      (resourceCollector: ResourceCollector<Resource>) => resourceCollector.update(delta)
+    );
+    
   }
 }
