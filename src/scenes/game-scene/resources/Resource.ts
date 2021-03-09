@@ -4,7 +4,7 @@ import ResourceCollector from "./ResourceCollector";
 export default abstract class Resource implements IBurnableResource {
     public resourceCollector: ResourceCollector;
 
-    public constructor(private _name: string, private _sellPrice: number, private _burnDuration: number) {
+    public constructor(private _name: string, private _sellPrice: number, private _fuelAmount: number) {
         this.createResourceCollector();
     }
 
@@ -22,7 +22,7 @@ export default abstract class Resource implements IBurnableResource {
         return this._sellPrice;
     }
 
-    get burnDuration() {
-        return this._burnDuration;
+    get fuelAmount() {
+        return this._fuelAmount;
     }
 }

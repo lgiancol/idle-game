@@ -1,10 +1,11 @@
 import { getGameHeight } from "../../helpers";
 import GameManager from "./GameManager";
-import Camp from "./home/Camp";
+import Camp from "./home/camp/Camp";
 import Home from "./home/Home";
+import Hut from "./home/hut/Hut";
+import Tent from "./home/tent/Tent";
 import Log from "./resources/log/Log";
 import Resource from "./resources/Resource";
-import ResourceCollector from "./resources/ResourceCollector";
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   active: false,
@@ -15,7 +16,7 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
 export class GameScene extends Phaser.Scene {
 
   private resources: Resource[];
-  private home: Home;
+  private homes: Home[];
 
   constructor() {
     super(sceneConfig);
@@ -23,20 +24,41 @@ export class GameScene extends Phaser.Scene {
 
   public create(): void {
     GameManager.getInstance().currentScene = this;
-    this.createInitialHome();
+    this.createInitialHomes();
 
     this.createResources();
 
     // Since the component of the Home relies on the resources being created and setup, we need to call this at the end
-    this.home.initializeComponent();
+    this.homes.forEach((home) => home.initializeComponent());
   }
 
-  private createInitialHome() {
-    this.home = new Camp();
-    this.home.x = 100;
-    this.home.y = getGameHeight(this) - 10 - 200;
-    this.home.width = 200;
-    this.home.height = 200;
+  private createInitialHomes() {
+    this.homes = [] as Home[];
+
+
+    let home = new Camp();
+    home.x = 100;
+    home.y = getGameHeight(this) - 10 - 200;
+    home.width = 200;
+    home.height = 200;
+
+    this.homes.push(home);
+
+    home = new Tent();
+    home.x = 100 + 10 + 200;
+    home.y = getGameHeight(this) - 10 - 200;
+    home.width = 200;
+    home.height = 200;
+
+    this.homes.push(home);
+
+    home = new Hut();
+    home.x = 100 + 10 + 200 + 10 + 200;
+    home.y = getGameHeight(this) - 10 - 200;
+    home.width = 200;
+    home.height = 200;
+
+    this.homes.push(home);
   }
 
   private createResources() {
@@ -46,9 +68,11 @@ export class GameScene extends Phaser.Scene {
   }
 
   private addResource(index: number, toAdd: Resource) {
-    if(this.home.usesResourceAsFuel(toAdd)) {
-      this.home.addAcceptableResource(toAdd);
-    }
+    this.homes.forEach((home) => {
+      if(home.usesResourceAsFuel(toAdd)) {
+        home.setFuelResource(toAdd);
+      }
+    });
 
     // Set up the positioning of the collector
     toAdd.resourceCollector.x = 100 + (index * 100) + (index * 10);
@@ -64,6 +88,8 @@ export class GameScene extends Phaser.Scene {
     this.resources.forEach(
       (resource: Resource) => resource.update(delta)
     );
-    this.home.update(delta);
+    this.homes.forEach((home) => {
+      home.update(delta);
+    });
   }
 }

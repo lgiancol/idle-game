@@ -46,7 +46,7 @@ export default abstract class ResourceCollector extends GameComponent implements
 
     private createResourceCollectorButton() {
         let resourceCollectorButton = this.scene.add.rectangle(this.x, this.y, this.width, this.height);
-        resourceCollectorButton.setInteractive({useHandCusor: true})
+        resourceCollectorButton.setInteractive({useHandCursor: true})
         .on('pointerover', this.onHover.bind(this))
         .on('pointerout', this.onRest.bind(this))
         .on('pointerdown', this.onActive.bind(this))

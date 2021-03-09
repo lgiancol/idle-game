@@ -12,5 +12,5 @@ export interface IBuyableResource extends IResource {
 }
 
 export interface IBurnableResource extends IResource {
-    burnDuration: number; // The number of seconds this resource will burn for
+    fuelAmount: number; // The strength of the fuel
 }

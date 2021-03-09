@@ -17,7 +17,7 @@ export default class TakeResourceButton extends GameComponent {
         this.button.isStroked = true;
         this.button.strokeColor = 0xffffff;
 
-        this.button.setInteractive({useHandCusor: true})
+        this.button.setInteractive({useHandCursor: true})
         .on('pointerover', this.onHover.bind(this))
         .on('pointerout', this.onRest.bind(this))
         .on('pointerdown', this.onActive.bind(this))
@@ -26,7 +26,7 @@ export default class TakeResourceButton extends GameComponent {
         this.button.on('pointerup', this._onClick.bind(this));
 
         let buttonBounds = this.button.getBounds();
-        this.label = this.scene.add.existing( new Text(this.scene, buttonBounds.x + 10, buttonBounds.y + 10, `${this.resourceToTake.resourceCollector.resourceQuantity.quantity}`) );
+        this.label = this.scene.add.existing( new Text(this.scene, buttonBounds.x + 10, buttonBounds.y + 6, `${this.resourceToTake.resourceCollector.resourceQuantity.quantity}`) );
 
         this.onRest();
     }
