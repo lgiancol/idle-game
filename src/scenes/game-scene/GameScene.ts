@@ -1,4 +1,7 @@
+import { getGameHeight } from "../../helpers";
 import GameManager from "./GameManager";
+import Camp from "./home/Camp";
+import Home from "./home/Home";
 import LogCollector from "./resources/log/LogCollector";
 import Resource from "./resources/Resource";
 import ResourceCollector from "./resources/ResourceCollector";
@@ -12,6 +15,7 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
 export class GameScene extends Phaser.Scene {
 
   private resourceCollectors: ResourceCollector<Resource>[];
+  private home: Home;
 
   constructor() {
     super(sceneConfig);
@@ -23,8 +27,13 @@ export class GameScene extends Phaser.Scene {
     this.resourceCollectors = [];
 
     this.addResourceCollector(0, new LogCollector());
-    this.addResourceCollector(1, new LogCollector());
-    this.addResourceCollector(2, new LogCollector());
+
+    this.home = new Camp();
+    this.home.x = 100;
+    this.home.y = getGameHeight(this) - 10 - 200;
+    this.home.width = 200;
+    this.home.height = 200;
+    this.home.initializeComponent();
   }
 
   private addResourceCollector(index: number, toAdd: ResourceCollector<Resource>) {
