@@ -1,18 +1,28 @@
 import { GameObjects } from "phaser";
 import GameComponent from "../../../ui/GameComponent";
 import Text from "../../../ui/Text";
+import Resource from "../resources/Resource";
 import IHome from "./IHome";
+import TakeResourceButton from "./TakeResourceButton";
 
 export default abstract class Home extends GameComponent implements IHome {
     private _currentResourceCount = 0;
+    public acceptableResources = [] as Resource[];
 
     // Render components
     private homeWrapper: GameObjects.Rectangle;
     private resourceUsage: Text;
-    private takeResourceButton: GameObjects.Rectangle;
+    // TODO: These next 2 go together and should be a class or something
+    private takeResourceButton: TakeResourceButton;
 
     public constructor(tag: string, private _maxResourceCount: number, private _requiredEnergy: number) {
         super(tag);
+    }
+
+    public abstract usesResourceAsFuel(resource: Resource): boolean;
+
+    public addAcceptableResource(resource: Resource) {
+        this.acceptableResources.push(resource);
     }
 
     public initializeComponent() {
@@ -29,42 +39,27 @@ export default abstract class Home extends GameComponent implements IHome {
         this.resourceUsage = this.scene.add.existing(new Text(this.scene, this.x + 10, yOffset, `${this._currentResourceCount}/${this._maxResourceCount} resources`));
 
         this.takeResourceButton = this.initializeTakeResourceButton();
-        this.onRest();
     }
 
     private initializeTakeResourceButton() {
         let yOffset = this.y + this.height - 10 - 30;
 
-        let button = this.scene.add.rectangle(this.x + 10, yOffset, this.width - 20, 30);
-        button.setOrigin(0, 0);
-        button.isStroked = true;
-        button.strokeColor = 0xffffff;
+        let button = new TakeResourceButton(this.acceptableResources[0], this.takeResource.bind(this));
+        button.x = this.x + 10;
+        button.y = yOffset;
+        button.width = this.width - 20;
+        button.height = 30;
 
-        button.setInteractive({useHandCusor: true})
-        .on('pointerover', this.onHover.bind(this))
-        .on('pointerout', this.onRest.bind(this))
-        .on('pointerdown', this.onActive.bind(this))
-        .on('pointerup', this.onHover.bind(this));
-
-        button.on('pointerup', this.onClick.bind(this));
+        button.initializeComponent();
 
         return button;
     }
 
-    private onClick() {
-        console.log('Take resource!!!!!');
-    }
+    private takeResource(takeFrom: Resource) {
+        let amountToTake = Math.min(this.maxResourceCount - this.currentResourceCount, takeFrom.resourceCollector.resourceQuantity.quantity);
 
-    private onHover() {
-        this.takeResourceButton.setFillStyle(0x888888);
-    }
-
-    private onRest() {
-        this.takeResourceButton.setFillStyle(0x888888);
-    }
-
-    private onActive() {
-        this.takeResourceButton.setFillStyle(0x444444);
+        takeFrom.resourceCollector.resourceQuantity.removeFromQuantity(amountToTake);
+        this._currentResourceCount += amountToTake;
     }
 
     get currentResourceCount() {
@@ -85,5 +80,6 @@ export default abstract class Home extends GameComponent implements IHome {
 
     private updateLabels() {
         this.resourceUsage.setText(`${this._currentResourceCount}/${this._maxResourceCount} resources`);
+        this.takeResourceButton.updateResourceLabel();
     }
 }

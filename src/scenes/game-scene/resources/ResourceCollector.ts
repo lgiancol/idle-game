@@ -3,22 +3,24 @@ import GameComponent from "../../../ui/GameComponent";
 import Text from "../../../ui/Text";
 import IResourceCollector from "./IResourceCollector";
 import Resource from "./Resource";
+import ResourceQuantity from "./ResourceQuantity";
 
-export default abstract class ResourceCollector<T extends Resource> extends GameComponent implements IResourceCollector{
-    private _quantity = 0; // Whole number
-    private _trueQuantity = 0; // Decimal
+export default abstract class ResourceCollector extends GameComponent implements IResourceCollector{
+    private _resourceQuantity: ResourceQuantity;
 
     // Render components
     private resourceCollectorButton: GameObjects.Rectangle;
     private resourceLabel: Text;
     private quantityLabel: Text;
 
-    public constructor(protected resource: T, private _collectSpeed: number, private _clickAmount: number) {
-        super(resource.name + 'Collector');
+    public constructor(private resourceName: string, private _collectSpeed: number, private _clickAmount: number) {
+        super(resourceName + 'Collector');
+
+        this._resourceQuantity = new ResourceQuantity();
     }
 
-    get quantity() {
-        return this._quantity;
+    get resourceQuantity() {
+        return this._resourceQuantity;
     }
 
     get collectSpeed() {
@@ -34,10 +36,10 @@ export default abstract class ResourceCollector<T extends Resource> extends Game
         this.resourceCollectorButton = this.createResourceCollectorButton();
 
         let yOffset = this.y + 10;
-        this.resourceLabel = this.scene.add.existing(new Text(this.scene, this.x + 10, yOffset, `${this.resource.name}s`));
+        this.resourceLabel = this.scene.add.existing(new Text(this.scene, this.x + 10, yOffset, `${this.resourceName}s`));
 
         yOffset += this.resourceLabel.getBounds().height + 10;
-        this.quantityLabel = this.scene.add.existing(new Text(this.scene, this.x + 10, yOffset, `${this._quantity}`));
+        this.quantityLabel = this.scene.add.existing(new Text(this.scene, this.x + 10, yOffset, `${this.resourceQuantity.quantity}`));
 
         this.onRest();
     }
@@ -87,7 +89,7 @@ export default abstract class ResourceCollector<T extends Resource> extends Game
     }
 
     private updateLabels() {
-        this.quantityLabel.setText(`${this._quantity}`);
+        this.quantityLabel.setText(`${this._resourceQuantity.quantity}`);
     }
 
     protected collect(deltaSecond: number) {
@@ -95,7 +97,6 @@ export default abstract class ResourceCollector<T extends Resource> extends Game
     }
 
     private collectAmount(toCollect: number) {
-        this._trueQuantity += toCollect;
-        this._quantity = Math.floor(this._trueQuantity);
+        this._resourceQuantity.addToQuantity(toCollect);
     }
 }

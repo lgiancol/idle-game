@@ -1,8 +1,7 @@
 import ResourceCollector from "../ResourceCollector";
-import Log from "./Log";
 
-export default class LogCollector extends ResourceCollector<Log> {
+export default class LogCollector extends ResourceCollector {
     public constructor() {
-        super(new Log(), 0, 1);
+        super('Log', 0, 1);
     }
 }
