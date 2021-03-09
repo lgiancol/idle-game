@@ -4,7 +4,7 @@ import Home from "../Home";
 
 export default class Hut extends Home{
     public constructor() {
-        super('Hut', 8, 0.8);
+        super('Hut', 8, 0.9);
     }
 
     public usesResourceAsFuel(resource: Resource): boolean {
