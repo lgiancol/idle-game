@@ -44,7 +44,7 @@ export default abstract class Home extends GameComponent implements IHome {
         this.fuelAmountLabel = this.scene.add.existing(new Text(this.scene, this.x + 20 + homeLabel.getBounds().width, yOffset, `%${this.fuelUsage.totalRemainingPercentage}`))
 
         yOffset += homeLabel.getBounds().height + 10;
-        this.resourceUsage = this.scene.add.existing(new Text(this.scene, this.x + 10, yOffset, `${this.currentResourceCount}/${this._maxResourceCount} resources`));
+        this.resourceUsage = this.scene.add.existing(new Text(this.scene, this.x + 10, yOffset, `${this.currentResourceCount} Remaining ${this.fuelResource.name}s`));
 
         this.takeResourceButton = this.initializeTakeResourceButton();
     }
@@ -65,7 +65,7 @@ export default abstract class Home extends GameComponent implements IHome {
 
     private takeResource(takeFrom: Resource) {
         // let amountToTake = Math.min(this.maxResourceCount - this.currentResourceCount, takeFrom.resourceCollector.resourceQuantity.quantity);
-        let amountToTake = Math.min(1, this.maxResourceCount - this.currentResourceCount);
+        let amountToTake = Math.min(Math.min(1, this.maxResourceCount - this.currentResourceCount), takeFrom.resourceCollector.resourceQuantity.quantity);
 
         takeFrom.resourceCollector.resourceQuantity.removeFromQuantity(amountToTake);
 
@@ -92,7 +92,7 @@ export default abstract class Home extends GameComponent implements IHome {
 
     private updateLabels() {
         this.fuelAmountLabel.setText(`%${this.fuelUsage.totalRemainingPercentage}`);
-        this.resourceUsage.setText(`${this.currentResourceCount}/${this._maxResourceCount} resources`);
+        this.resourceUsage.setText(`${this.currentResourceCount} Remaining ${this.fuelResource.name}s`);
         this.takeResourceButton.updateResourceLabel();
     }
 }
