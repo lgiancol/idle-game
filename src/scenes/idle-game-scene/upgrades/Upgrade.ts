@@ -1,8 +1,8 @@
-const Type = {
-	COLLECT_SPEED: 'collect_speed'
+enum Type {
+	COLLECT_SPEED = 'collect_speed'
 }
 export default abstract class Upgrade<T> {
-	public constructor(public level: number, public name: string) {}
+	public constructor(public level: number, public name: string, public type: string) {}
 
 	static get Type() {
 		return Type;

@@ -12,11 +12,24 @@ export default abstract class ResourceUpgradeManager<T extends Resource> extends
 		this.upgrades = {
 			[Upgrade.Type.COLLECT_SPEED]: []
 		};
+		this.currentUpgradeIndex = {
+			[Upgrade.Type.COLLECT_SPEED]: 0
+		};
+	}
+
+	public getCurrentUpgrade<T extends Resource>(upgradeName: string) {
+		return this.upgrades[upgradeName][this.currentUpgradeIndex[upgradeName]] as Upgrade<T>;
 	}
 
 	public applyCollectSpeedUpgrade(level: number) {
 		let upgradeToApply = this.upgrades[Upgrade.Type.COLLECT_SPEED][level - 1] as CollectSpeedUpgrade<T>; // Levels != index
 		
-		this.resourceManager.autoCollectSpeed *= upgradeToApply.collectSpeedMultiplier;
+		if(this.resourceManager.autoCollectSpeed == 0) {
+			this.resourceManager.autoCollectSpeed = upgradeToApply.collectSpeedMultiplier;
+		} else {
+			this.resourceManager.autoCollectSpeed *= upgradeToApply.collectSpeedMultiplier;
+		}
+
+		this.currentUpgradeIndex[Upgrade.Type.COLLECT_SPEED]++;
 	}
 } 

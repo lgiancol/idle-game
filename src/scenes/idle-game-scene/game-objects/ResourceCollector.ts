@@ -14,7 +14,7 @@ export default class ResourceCollector<T extends Resource> extends Phaser.GameOb
 		this.setFillStyle(0xffbb22);
 		
 		let yOffset = this.y + 10;
-		this.nameLabel = this.scene.add.text(this.x + 10, yOffset, `${this.resourceManager.resourceType}`)
+		this.nameLabel = this.scene.add.text(this.x + 10, yOffset, `${this.resourceManager.resourceType} x${this.resourceManager.autoCollectSpeed}`)
 		.setOrigin(0)
 		.setColor('black')
 		.setFontFamily('my-font')
@@ -32,6 +32,7 @@ export default class ResourceCollector<T extends Resource> extends Phaser.GameOb
 
 	// This is where we actually update this object
 	public preUpdate() {
+		this.nameLabel.setText(`${this.resourceManager.resourceType} x${this.resourceManager.autoCollectSpeed}`);
 		this.quantityLabel.setText(`${this.resourceManager.resourceQuantity.quantity}`);
 	}
 
