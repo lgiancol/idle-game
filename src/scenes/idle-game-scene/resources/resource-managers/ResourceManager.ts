@@ -13,4 +13,8 @@ export default class ResourceManager<T extends Resource> {
 		let deltaSecond = delta / 1000;
 		this.resourceQuantity.increaseQuantity(this.autoCollectSpeed * deltaSecond);
 	}
+
+	public hasMinimumOf(min: number) {
+		return this.resourceQuantity.quantity >= min;
+	}
 }

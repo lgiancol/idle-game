@@ -14,14 +14,14 @@ export default class LogUpgradeManager extends ResourceUpgradeManager<Log> {
 	public initializeUpgrades() {
 		let baseSpeed = 1;
 		for(let i = 0; i < 10; i++) {
-			this.upgrades[Upgrade.Type.COLLECT_SPEED].push(new LogCollectSpeedUpgrade(i + 1, 'LOG_COLLECT_SPEED_INCREASE_' + i, ((baseSpeed * i) + baseSpeed)));
+			this.upgrades[Upgrade.Type.COLLECT_SPEED].push(new LogCollectSpeedUpgrade(i + 1, 'LOG_COLLECT_SPEED_INCREASE_' + i, ((baseSpeed * i) + baseSpeed), i * 10 + 10));
 		}
 	}
 
-	public applyUpgrade(upgradeGroup: string, level: number) {
+	public buyUpgrade(upgradeGroup: string, level: number) {
 		switch(upgradeGroup) {
 			case Upgrade.Type.COLLECT_SPEED: {
-				this.applyCollectSpeedUpgrade(level);
+				this.buyCollectSpeedUpgrade(level);
 			}
 		}
 	}

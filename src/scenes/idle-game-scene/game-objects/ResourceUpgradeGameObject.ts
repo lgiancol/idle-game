@@ -18,7 +18,7 @@ export class ResourceUpgradeGameObject<U extends Resource, T extends ResourceUpg
 	public init() {
 		super.init();
 		
-		// TODO: Have it setup so that we can loop through each of the Upgrade.Type values
+		// Will go through all the different types of upgrades and create them
 		Object.keys(Upgrade.Type).forEach((upgradeType: string) => {
 			this.initUpgrade(upgradeType);
 		});
@@ -35,12 +35,32 @@ export class ResourceUpgradeGameObject<U extends Resource, T extends ResourceUpg
 		.setInteractive({useHandCursor: true})
 		.on('pointerdown', onClick.bind(this));
 
-		this.buyCollectSpeedUpgradeLabel = this.scene.add.text(this.x + 10, this.y + 10, [`${currentUpgrade.name} [${currentUpgrade.level}]`, `${currentUpgrade.collectSpeedMultiplier}`])
+		this.buyCollectSpeedUpgradeLabel = this.scene.add.text(this.x + 10, this.y + 10, [`${currentUpgrade.name} [$${currentUpgrade.cost}]`, `${currentUpgrade.collectSpeedMultiplier}`])
 		.setOrigin(0)
 		.setColor('black')
 		.setFontFamily('my-font')
 		.setFontSize(20)
 		.setDepth(1);
+	}
+
+	public preUpdate(delta: number) {}
+
+	public buyUpgrade(toBuy: Upgrade<U>) {
+		this.resourceUpgradeManager.buyUpgrade(toBuy.type, toBuy.level);
+
+		// TODO: Same here except so we can just pass in the type and have it work itself out
+		let currentUpgrade = this.resourceUpgradeManager.getCurrentUpgrade<U>(Upgrade.Type.COLLECT_SPEED) as CollectSpeedUpgrade<U>;
+		if(this.buyCollectSpeedUpgradeBtn.getData('upgrade') != currentUpgrade) {
+			this.buyCollectSpeedUpgradeBtn.setData('upgrade', currentUpgrade);
+
+			if(currentUpgrade != null) {
+				this.buyCollectSpeedUpgradeLabel.setText([`${currentUpgrade.name} [$${currentUpgrade.cost}]`, `${currentUpgrade.collectSpeedMultiplier}`]);
+			} else {
+				this.buyCollectSpeedUpgradeBtn.setInteractive(false);
+				this.buyCollectSpeedUpgradeBtn.off('pointerdown');
+				this.buyCollectSpeedUpgradeLabel.setText('No more upgrades');
+			}
+		}
 	}
 
 	private getUpgradeOnClickFn(upgradeType: string) {
@@ -51,28 +71,14 @@ export class ResourceUpgradeGameObject<U extends Resource, T extends ResourceUpg
 		return null;
 	}
 
-	public preUpdate(delta: number) {}
-
-	public buyUpgrade(toBuy: Upgrade<U>) {
-		this.resourceUpgradeManager.applyUpgrade(toBuy.type, toBuy.level);
-
-		// TODO: Same here except so we can just pass in the type and have it work itself out
-		let currentUpgrade = this.resourceUpgradeManager.getCurrentUpgrade<U>(Upgrade.Type.COLLECT_SPEED) as CollectSpeedUpgrade<U>;
-		if(this.buyCollectSpeedUpgradeBtn.getData('upgrade') != currentUpgrade) {
-			this.buyCollectSpeedUpgradeBtn.setData('upgrade', currentUpgrade);
-
-			if(currentUpgrade != null) {
-				this.buyCollectSpeedUpgradeLabel.setText([`${currentUpgrade.name} [${currentUpgrade.level}]`, `${currentUpgrade.collectSpeedMultiplier}`]);
-			} else {
-				this.buyCollectSpeedUpgradeBtn.setInteractive(false);
-				this.buyCollectSpeedUpgradeBtn.off('pointerdown');
-				this.buyCollectSpeedUpgradeLabel.setText('No more upgrades');
-			}
+	public onCollectSpeedUpgradeClick() {
+		const upgrade = this.buyCollectSpeedUpgradeBtn.getData('upgrade') as CollectSpeedUpgrade<U>;
+		if(this.resourceUpgradeManager.resourceManager.hasMinimumOf(upgrade.cost)) {
+			this.buyUpgrade(upgrade);
+		} else {
+			console.log('Cannot buy; Not enough funds');
+			
 		}
-	}
-
-	public onCollectSpeedUpgradeClick() {		
-		this.buyUpgrade(this.buyCollectSpeedUpgradeBtn.getData('upgrade'));
 	}
 }
 
