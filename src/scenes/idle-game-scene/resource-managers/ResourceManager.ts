@@ -6,9 +6,7 @@ export default class ResourceManager {
 	public manualCollectSpeed: number = 1;
 	public autoCollectSpeed: number = 0;
 
-	public constructor(
-		public resourceType: string
-	) {}
+	public constructor(public resourceType: string) {}
 
 	public update(delta: number) {
 		let deltaSecond = delta / 1000;
