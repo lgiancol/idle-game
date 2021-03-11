@@ -17,6 +17,10 @@ export default abstract class ResourceUpgradeManager<T extends Resource> extends
 		};
 	}
 
+	public canAffordUpgrade(upgrade: Upgrade<T>) {
+		return this.resourceManager.hasMinimumOf(upgrade.cost);
+	}
+
 	public getCurrentUpgrade<T extends Resource>(upgradeName: string) {
 		return this.upgrades[upgradeName][this.currentUpgradeIndex[upgradeName]] as Upgrade<T>;
 	}

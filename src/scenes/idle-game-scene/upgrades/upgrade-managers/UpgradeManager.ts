@@ -5,5 +5,6 @@ export default abstract class UpgradeManager<T> {
 	public currentUpgradeIndex: {[upgradeGroup: string]: number};
 
 	public abstract initializeUpgrades();
+	public abstract canAffordUpgrade(upgrade: Upgrade<T>);
 	public abstract buyUpgrade(upgradeGroup: string, level: number);
 }

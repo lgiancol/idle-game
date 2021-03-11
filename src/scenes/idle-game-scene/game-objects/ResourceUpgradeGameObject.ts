@@ -73,7 +73,7 @@ export class ResourceUpgradeGameObject<U extends Resource, T extends ResourceUpg
 
 	public onCollectSpeedUpgradeClick() {
 		const upgrade = this.buyCollectSpeedUpgradeBtn.getData('upgrade') as CollectSpeedUpgrade<U>;
-		if(this.resourceUpgradeManager.resourceManager.hasMinimumOf(upgrade.cost)) {
+		if(this.resourceUpgradeManager.canAffordUpgrade(upgrade)) {
 			this.buyUpgrade(upgrade);
 		} else {
 			console.log('Cannot buy; Not enough funds');
