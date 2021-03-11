@@ -3,5 +3,6 @@ export default class Text extends Phaser.GameObjects.Text {
         super(scene, x, y, text, null);
 
         this.setFontFamily('my-font');
+		this.setFontSize(24);
     }
 }

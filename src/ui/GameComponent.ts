@@ -8,7 +8,7 @@ export default abstract class GameComponent extends GameObjects.GameObject {
     public height: number;
 
     public constructor(tag: string) {
-        super(GameManager.getInstance().currentScene, tag);
+        super(null, tag);
     }
 
     public abstract initializeComponent();

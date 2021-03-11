@@ -1,7 +1,11 @@
+import Log from "./resources/log/Log";
+
 export default class GameManager {
 
   private static instance: GameManager;
-  public currentScene: Phaser.Scene;
+
+  // Resources
+  public log: Log;
 
   public constructor() {}
 
@@ -11,5 +15,13 @@ export default class GameManager {
     }
 
     return GameManager.instance;
+  }
+
+  public createResources(scene: Phaser.Scene) {
+	  this.log = this.createResource(scene);
+  }
+
+  private createResource(scene: Phaser.Scene) {
+	  return null;
   }
 }

@@ -11,7 +11,7 @@ export default abstract class Home extends GameComponent implements IHome {
     public fuelResource: Resource;
 
     // This is how we keep track of energy usage
-    private fuelUsage: FuelUsage; // TODO: Update this class so it is specific to Resource types
+    private fuelUsage: FuelUsage;
 
     // Render components
     private homeWrapper: GameObjects.Rectangle;

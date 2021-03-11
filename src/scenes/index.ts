@@ -1,5 +1,5 @@
 import { BootScene } from './boot-scene/BootScene';
-import { GameScene } from './game-scene/GameScene';
+import { IdleGameScene } from './idle-game-scene/IdleGameScene';
 import { MainMenuScene } from './main-menu-scene/MainMenuScene';
 
-export default [BootScene, MainMenuScene, GameScene];
+export default [BootScene, MainMenuScene, IdleGameScene];

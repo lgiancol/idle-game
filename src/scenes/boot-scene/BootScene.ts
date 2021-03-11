@@ -60,7 +60,7 @@ export class BootScene extends Phaser.Scene {
       progressBarContainer.destroy();
 
       // this.scene.start('MainMenu');
-      this.scene.start('Game');
+      this.scene.start('IdleGame');
     });
 
     this.loadAssets();

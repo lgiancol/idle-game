@@ -1,8 +1,4 @@
-import { GameObjects } from "phaser";
-import GameComponent from "../../../ui/GameComponent";
-import Text from "../../../ui/Text";
 import IResourceCollector from "./IResourceCollector";
-import Resource from "./Resource";
 import ResourceQuantity from "./ResourceQuantity";
 
 export default abstract class ResourceCollector implements IResourceCollector{
