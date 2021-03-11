@@ -5,7 +5,7 @@ export default class ResourceManager<T extends Resource> {
 	public resourceQuantity: ResourceQuantity = new ResourceQuantity();
 	
 	public manualCollectSpeed: number = 1;
-	public autoCollectSpeed: number = 0;
+	public autoCollectSpeed: number = 1;
 
 	public constructor(public resourceType: string, public resource: T) {}
 
