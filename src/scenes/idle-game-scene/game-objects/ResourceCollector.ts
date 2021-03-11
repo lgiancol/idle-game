@@ -1,10 +1,11 @@
-import ResourceManager from "../resource-managers/ResourceManager";
+import Resource from "../resources/Resource";
+import ResourceManager from "../resources/resource-managers/ResourceManager";
 
-export default class ResourceCollector extends Phaser.GameObjects.Rectangle {
+export default class ResourceCollector<T extends Resource> extends Phaser.GameObjects.Rectangle {
 	private nameLabel: Phaser.GameObjects.Text;
 	private quantityLabel: Phaser.GameObjects.Text;
 
-	public constructor(scene: Phaser.Scene, public resourceManager: ResourceManager, public x: number, public y: number, public width = 100, public height = 84) {
+	public constructor(scene: Phaser.Scene, public resourceManager: ResourceManager<T>, public x: number, public y: number, public width = 100, public height = 84) {
 		super(scene, x, y);
 		this.init();
 	}
@@ -43,7 +44,7 @@ export default class ResourceCollector extends Phaser.GameObjects.Rectangle {
 
 Phaser.GameObjects.GameObjectFactory.register(
 	'resourceCollector',
-	function (this: Phaser.GameObjects.GameObjectFactory, resourceManager: ResourceManager, x: number, y: number, width: number = 100, height: number = 84) {
+	function<T extends Resource> (this: Phaser.GameObjects.GameObjectFactory, resourceManager: ResourceManager<T>, x: number, y: number, width: number = 100, height: number = 84) {
 		const resourceCollector = new ResourceCollector(this.scene, resourceManager, x, y, width, height);
 		resourceCollector.setOrigin(0);
 		
@@ -66,7 +67,7 @@ declare global
 	{
 		interface GameObjectFactory
 		{
-			resourceCollector(resourceManager: ResourceManager, x: number, y: number, width?: number, height?: number): ResourceCollector
+			resourceCollector<T extends Resource>(resourceManager: ResourceManager<T>, x: number, y: number, width?: number, height?: number): ResourceCollector<T>
 		}
 	}
 }

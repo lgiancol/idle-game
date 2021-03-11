@@ -21,7 +21,7 @@ export default class Home extends Phaser.GameObjects.Rectangle {
 		.setDepth(1);
 
 		yOffset += this.nameLabel.getBounds().height + 10;
-		this.quantityLabel = this.scene.add.text(this.x + 10, yOffset + 10, `${this.homeManager.totalRemaingFuel} / ${(this.homeManager.fuelResourceManager.energyUnits * this.homeManager.fuelLimit)}`)
+		this.quantityLabel = this.scene.add.text(this.x + 10, yOffset + 10, `${this.homeManager.totalRemaingFuel} / ${(this.homeManager.resourceManager.resource.energyUnits * this.homeManager.fuelLimit)}`)
 		.setOrigin(0)
 		.setColor('white')
 		.setFontFamily('my-font')

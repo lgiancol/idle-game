@@ -5,8 +5,8 @@
   "main": "src/main.ts",
   "scripts": {
     "build": "yarn build:dev",
-    "build:dev": "NODE_ENV=development webpack",
-    "build:prod": "NODE_ENV=production webpack",
+    "build:dev": "SET NODE_ENV=development; webpack",
+    "build:prod": "SET NODE_ENV=production; webpack",
     "start": "SET NODE_ENV=development; webpack-dev-server",
     "prod": "NODE_ENV=production webpack-dev-server",
     "lint": "eslint src"

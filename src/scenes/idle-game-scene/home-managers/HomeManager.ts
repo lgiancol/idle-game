@@ -1,24 +1,24 @@
-import ResourceManager from "../resource-managers/ResourceManager";
+import ResourceManager from "../resources/resource-managers/ResourceManager";
 
 export default abstract class HomeManager {
 	public fuel: {startingAmount: number, remainingAmount: number}[]; // TODO: Turn this into a class Fuel or something
 	private currentFuelIndex = -1;
 	public totalRemaingFuel = 0;
 
-	public constructor(public homeType: string, public fuelResourceManager: ResourceManager, public fuelLimit: number, public fuelUseSpeed: number) {
+	public constructor(public homeType: string, public resourceManager: ResourceManager<any>, public fuelLimit: number, public fuelUseSpeed: number) {
 		this.fuel = [];
 	}
 
 	public addFuel() {
 		// There's not enough of the fuel resource collected to actually use
 		//  || The fuel for the home is already at capacity
-		if(this.fuelResourceManager.resourceQuantity.quantity < 1 || this.fuel.length == this.fuelLimit) return;
+		if(this.resourceManager.resourceQuantity.quantity < 1 || this.fuel.length == this.fuelLimit) return;
 
 		let fuel = {
-			startingAmount: this.fuelResourceManager.energyUnits,
-			remainingAmount: this.fuelResourceManager.energyUnits
+			startingAmount: this.resourceManager.resource.energyUnits,
+			remainingAmount: this.resourceManager.resource.energyUnits
 		} as {startingAmount: number, remainingAmount: number};
-		this.fuelResourceManager.resourceQuantity.decreaseQuantity(1);
+		this.resourceManager.resourceQuantity.decreaseQuantity(1);
 
 		this.totalRemaingFuel += fuel.startingAmount;
 		this.fuel.push(fuel);
