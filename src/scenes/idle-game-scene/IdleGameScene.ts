@@ -1,7 +1,7 @@
 // These are imported this way so we can get the type descriptors loaded for each game-object
 import './game-objects/Home';
 import './game-objects/ResourceCollector';
-import './game-objects/ResourceUpgradeGameObject';
+import './game-objects/resource-upgrades/ResourceUpgradeGameObject';
 import CampManager from './home-managers/CampManager';
 import HomeManager from './home-managers/HomeManager';
 import Coal from './resources/Coal';
@@ -16,10 +16,11 @@ export class IdleGameScene extends Phaser.Scene {
 	public logManager = new LogManager();
 	public coalManager = new CoalManager();
 
-	// All the homes available to the user
-	public homeManager: HomeManager;
-
+	// All the upgrades available to the user
 	public logUpgradeManager: LogUpgradeManager;
+
+	// The home available to the user
+	public homeManager: HomeManager;
 
 	public constructor() {
 		super({key: 'IdleGame'});
