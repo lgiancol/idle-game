@@ -1,16 +1,31 @@
+import ResourceManager from "../resource-managers/ResourceManager";
+
 export default abstract class HomeManager {
-	public fuel: {startingAmount: number, useSpeed: number, remainingAmount: number}[]; // TODO: Turn this into a class Fuel or something
+	public fuel: {startingAmount: number, remainingAmount: number}[]; // TODO: Turn this into a class Fuel or something
 	private currentFuelIndex = -1;
 	public totalRemaingFuel = 0;
 
-	public constructor(public maxFuel: number) {
+	public constructor(public homeType: string, public fuelResourceManager: ResourceManager, public fuelLimit: number, public fuelUseSpeed: number) {
 		this.fuel = [];
 	}
 
-	public addFuel(fuel: {startingAmount: number, useSpeed: number, remainingAmount: number}) {
+	public addFuel() {
+		// There's not enough of the fuel resource collected to actually use
+		//  || The fuel for the home is already at capacity
+		if(this.fuelResourceManager.resourceQuantity.quantity < 1 || this.fuel.length == this.fuelLimit) return;
+
+		let fuel = {
+			startingAmount: this.fuelResourceManager.energyUnits,
+			remainingAmount: this.fuelResourceManager.energyUnits
+		} as {startingAmount: number, remainingAmount: number};
+		this.fuelResourceManager.resourceQuantity.decreaseQuantity(1);
+
 		this.totalRemaingFuel += fuel.startingAmount;
 		this.fuel.push(fuel);
-		this.currentFuelIndex++; // Always use the last fuel resource added
+
+		if(this.currentFuelIndex == -1) {
+            this.currentFuelIndex = this.fuel.length - 1;
+        }
 	}
 
 	public update(delta: number) {
@@ -22,7 +37,7 @@ export default abstract class HomeManager {
 
 		const deltaSecond = delta / 1000;
 		let fuel = this.fuel[this.currentFuelIndex];
-        let deltaFuelUsed = fuel.useSpeed * deltaSecond;
+        let deltaFuelUsed = this.fuelUseSpeed * deltaSecond;
 		this.totalRemaingFuel -= deltaFuelUsed;
 
         let newFuelAmount = fuel.remainingAmount - deltaFuelUsed;

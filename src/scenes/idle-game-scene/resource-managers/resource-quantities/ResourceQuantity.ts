@@ -6,4 +6,9 @@ export default class ResourceQuantity {
 		this.trueQuantity += increaseBy;
 		this.quantity = Math.floor(this.trueQuantity);
 	}
+
+	public decreaseQuantity(decreaseBy: number) {
+		this.trueQuantity -= decreaseBy;
+		this.quantity = Math.floor(this.trueQuantity);
+	}
 }
