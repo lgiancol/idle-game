@@ -5,6 +5,8 @@ import ResourceUpgradeManager from "../upgrades/upgrade-managers/ResourceUpgrade
 import UpgradeGameObject from "./UpgradeGameObject";
 
 export class ResourceUpgradeGameObject<U extends Resource, T extends ResourceUpgradeManager<U>> extends UpgradeGameObject {
+	// TODO: Create a custom GameObject which combines these 2
+	//         BuyUpgradeBtn
 	private buyCollectSpeedUpgradeBtn: Phaser.GameObjects.Rectangle;
 	private buyCollectSpeedUpgradeLabel: Phaser.GameObjects.Text;
 
@@ -17,12 +19,21 @@ export class ResourceUpgradeGameObject<U extends Resource, T extends ResourceUpg
 		super.init();
 		
 		// TODO: Have it setup so that we can loop through each of the Upgrade.Type values
-		let currentUpgrade = this.resourceUpgradeManager.getCurrentUpgrade<U>(Upgrade.Type.COLLECT_SPEED) as CollectSpeedUpgrade<U>;
+		Object.keys(Upgrade.Type).forEach((upgradeType: string) => {
+			this.initUpgrade(upgradeType);
+		});
+		
+	}
+
+	private initUpgrade(upgradeType: string) {
+		let currentUpgrade = this.resourceUpgradeManager.getCurrentUpgrade<U>(Upgrade.Type[upgradeType]) as CollectSpeedUpgrade<U>;
+		let onClick = this.getUpgradeOnClickFn(upgradeType);
+
 		this.buyCollectSpeedUpgradeBtn = this.scene.add.rectangle(this.x, this.y, this.width, this.height)
 		.setOrigin(0)
 		.setData('upgrade', currentUpgrade)
 		.setInteractive({useHandCursor: true})
-		.on('pointerdown', this.onCollectSpeedUpgradeClick.bind(this));
+		.on('pointerdown', onClick.bind(this));
 
 		this.buyCollectSpeedUpgradeLabel = this.scene.add.text(this.x + 10, this.y + 10, [`${currentUpgrade.name} [${currentUpgrade.level}]`, `${currentUpgrade.collectSpeedMultiplier}`])
 		.setOrigin(0)
@@ -30,6 +41,14 @@ export class ResourceUpgradeGameObject<U extends Resource, T extends ResourceUpg
 		.setFontFamily('my-font')
 		.setFontSize(20)
 		.setDepth(1);
+	}
+
+	private getUpgradeOnClickFn(upgradeType: string) {
+		switch(Upgrade.Type[upgradeType]) {
+			case Upgrade.Type.COLLECT_SPEED:
+				return this.onCollectSpeedUpgradeClick;
+		}
+		return null;
 	}
 
 	public preUpdate(delta: number) {}
@@ -46,6 +65,7 @@ export class ResourceUpgradeGameObject<U extends Resource, T extends ResourceUpg
 				this.buyCollectSpeedUpgradeLabel.setText([`${currentUpgrade.name} [${currentUpgrade.level}]`, `${currentUpgrade.collectSpeedMultiplier}`]);
 			} else {
 				this.buyCollectSpeedUpgradeBtn.setInteractive(false);
+				this.buyCollectSpeedUpgradeBtn.off('pointerdown');
 				this.buyCollectSpeedUpgradeLabel.setText('No more upgrades');
 			}
 		}
