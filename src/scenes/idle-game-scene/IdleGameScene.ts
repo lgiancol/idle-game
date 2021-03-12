@@ -1,14 +1,15 @@
 // These are imported this way so we can get the type descriptors loaded for each game-object
+import { getGameWidth } from '../../helpers';
+import '../../ui/LuuButton';
 import './game-objects/Home';
-import './game-objects/ResourceCollector';
 import './game-objects/resource-upgrades/ResourceUpgradeGameObject';
+import './game-objects/ResourceCollector';
 import CampManager from './home-managers/CampManager';
 import HomeManager from './home-managers/HomeManager';
 import Coal from './resources/Coal';
 import Log from './resources/Log';
 import CoalManager from './resources/resource-managers/CoalManager';
 import LogManager from "./resources/resource-managers/LogManager";
-import Upgrade from './upgrades/Upgrade';
 import LogUpgradeManager from './upgrades/upgrade-managers/LogUpgradeManager';
 
 export class IdleGameScene extends Phaser.Scene {
@@ -40,7 +41,11 @@ export class IdleGameScene extends Phaser.Scene {
 		this.add.resourceCollector<Log>(this.logManager, 10, 10);
 		this.add.resourceCollector<Coal>(this.coalManager, 200, 10);
 
-		this.add.resourceUpgrade<Log, LogUpgradeManager>(this.logUpgradeManager, 400, 10, 400);
+		// Resource Upgrade Area
+		const gameWidth = getGameWidth(this);
+		const upgradeAreaPadding = 10;
+		const upgradeAreaWidth = (gameWidth / 2) - (upgradeAreaPadding * 2);
+		this.add.resourceUpgrade<Log, LogUpgradeManager>(this.logUpgradeManager, gameWidth / 2 + upgradeAreaPadding, 10, upgradeAreaWidth, 400);
 	}
 	
 	public update(time: number, delta: number) {

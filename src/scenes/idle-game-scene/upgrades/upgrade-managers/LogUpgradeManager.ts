@@ -11,7 +11,7 @@ export default class LogUpgradeManager extends ResourceUpgradeManager<Log> {
 		this.initializeUpgrades();
 	}
 
-	public initializeUpgrades() {
+	protected initializeUpgrades() {
 		let baseSpeed = 1;
 		for(let i = 0; i < 10; i++) {
 			this.upgrades[Upgrade.Type.COLLECT_SPEED].push(new LogCollectSpeedUpgrade(i + 1, 'LOG_COLLECT_SPEED_INCREASE_' + i, ((baseSpeed * i) + baseSpeed), i * 10 + 10));
