@@ -1,27 +1,27 @@
 // These are imported this way so we can get the type descriptors loaded for each game-object
-import { getGameWidth } from '../../helpers';
+import { getGameHeight, getGameWidth } from '../../helpers';
 import '../../ui/LuuButton';
 import './game-objects/Home';
+import './game-objects/market/MarketGameObject';
+import './game-objects/resource-collectors/LogResourceCollector';
 import './game-objects/resource-upgrades/ResourceUpgradeGameObject';
-import './game-objects/ResourceCollector';
 import CampManager from './home-managers/CampManager';
 import HomeManager from './home-managers/HomeManager';
-import Coal from './resources/Coal';
-import Log from './resources/Log';
-import CoalManager from './resources/resource-managers/CoalManager';
+import MarketManager from './market-manager/MarketManager';
+import Resource, { ResourceType } from './resources/Resource';
 import LogManager from "./resources/resource-managers/LogManager";
 import LogUpgradeManager from './upgrades/upgrade-managers/LogUpgradeManager';
 
 export class IdleGameScene extends Phaser.Scene {
-	// All the resources available to the user
-	public logManager = new LogManager();
-	public coalManager = new CoalManager();
-
-	// All the upgrades available to the user
-	public logUpgradeManager: LogUpgradeManager;
-
 	// The home available to the user
 	public homeManager: HomeManager;
+	
+	// All the resources available to the user
+	public logManager = new LogManager();
+	// public coalManager = new CoalManager();
+	
+	public marketManager: MarketManager;
+
 
 	public constructor() {
 		super({key: 'IdleGame'});
@@ -32,20 +32,24 @@ export class IdleGameScene extends Phaser.Scene {
 	}
 
 	public create() {
-		this.logUpgradeManager = new LogUpgradeManager(this.logManager);
+		// TODO: Create a custom GameObject to display this
+		// TODO: All this should also be inside the MarketManager class and will be create on new MarketManager();
+		// Market Area
+		this.marketManager = new MarketManager();
+		this.marketManager.setUpgradeManager(ResourceType.LOG, new LogUpgradeManager(this.logManager));
+		this.marketManager.setActiveResource(ResourceType.LOG); // TODO: Remove
+		const gameWidth = getGameWidth(this);
+		const gameHeight = getGameHeight(this);
+		
+		this.add.market(this.marketManager, (gameWidth / 2) + 10, 10, ((gameWidth / 2) - 20), gameHeight - 20);
+		
+		// HOME
 		this.homeManager = new CampManager(this.logManager);
-
-		// Create all the game objects here
 		this.add.home(this.homeManager, 200, 200);
 
-		this.add.resourceCollector<Log>(this.logManager, 10, 10);
-		this.add.resourceCollector<Coal>(this.coalManager, 200, 10);
-
-		// Resource Upgrade Area
-		const gameWidth = getGameWidth(this);
-		const upgradeAreaPadding = 10;
-		const upgradeAreaWidth = (gameWidth / 2) - (upgradeAreaPadding * 2);
-		this.add.resourceUpgrade<Log, LogUpgradeManager>(this.logUpgradeManager, gameWidth / 2 + upgradeAreaPadding, 10, upgradeAreaWidth, 400);
+		// TODO: ResourcesManager class? Similar to the MarketManager where it holds all the resourceManager objects? Maybe too much?
+		this.add.logResourceCollector(this.logManager, 10, 10);
+		// this.add.resourceCollector<Coal>(this.coalManager, 200, 10);
 	}
 	
 	public update(time: number, delta: number) {

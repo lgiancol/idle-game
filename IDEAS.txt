@@ -14,3 +14,10 @@
 ## Homes
 - Has a counter for how long it can last without heat
 - Has a counter for how fast it heats up once fuel is added
+
+## Market
+- Contains all the different types of UpgradeManagers
+- There will be a button on the resources that will open the specific ResourceManager view of the market so you can sell the resource and buy upgrades for it
+- The market will contain the money
+- The market will be used only to buy (take money away) and sell (add money to) specific resources; No other processes will be handeled directly by the Market
+- All ResourceManager requests will have to be made through the market

@@ -6,21 +6,23 @@ import ResourceUpgradeManager from "../../upgrades/upgrade-managers/ResourceUpgr
 import CollectSpeedUpgrade from "../../upgrades/upgrade-types/CollectSpeedUpgrade";
 import UpgradeGameObject from "../UpgradeGameObject";
 
-export class ResourceUpgradeGameObject<U extends Resource, T extends ResourceUpgradeManager<U>> extends UpgradeGameObject {
+export class ResourceUpgradeGameObject extends UpgradeGameObject {
 	private resourceLabel: Phaser.GameObjects.Text;
 	private collectSpeedUpgrade: LuuButton;
 
-	public constructor(scene: Phaser.Scene, public resourceUpgradeManager: T, x: number, y: number, width: number = 100, height: number = 75) {
+	public constructor(scene: Phaser.Scene, public resourceUpgradeManager: ResourceUpgradeManager<any>, x: number, y: number, width: number = 100, height: number = 75) {
 		super(scene, x, y, width, height);
 		this.init();
 	}
 
 	public init() {
 		this.setStrokeStyle(1, 0xffffff);
-
+		
 		this.resourceLabel = this.scene.add.text(this.x + 10, this.y + 10, `${this.resourceUpgradeManager.resourceManager.resource.name}`)
 		.setOrigin(0)
-		.setColor('0xffffff');
+		.setColor('white')
+		.setFontFamily('my-font')
+		.setFontSize(30);
 		
 		// Will go through all the different types of upgrades and create them
 		Object.keys(Upgrade.Type).forEach((upgradeType: string) => {
@@ -35,10 +37,14 @@ export class ResourceUpgradeGameObject<U extends Resource, T extends ResourceUpg
 		const padding = 10;
 		const buttonWidth = this.width - (padding * 2);
 		const buttonHeight = 70;
-		this.collectSpeedUpgrade = this.scene.add.luuButton(this.x + 10, this.y + 10, buttonWidth, buttonHeight, currentUpgrade.name + ` $${currentUpgrade.cost}`)
+		this.collectSpeedUpgrade = this.scene.add.luuButton(this.x + 10, this.y + 55, buttonWidth, buttonHeight, currentUpgrade.name + ` $${currentUpgrade.cost}`)
 		.setData('upgrade', currentUpgrade)
 		.addListener('pointerup', this.onCollectSpeedUpgradeClick.bind(this))
 		.setEnabled(this.resourceUpgradeManager.canAffordUpgrade(currentUpgrade));
+	}
+
+	public setActiveUpgradeManager(resourceUpgradeManager: ResourceUpgradeManager<any>) {
+		this.resourceUpgradeManager = resourceUpgradeManager;
 	}
 
 	public preUpdate(delta: number) {
@@ -51,10 +57,6 @@ export class ResourceUpgradeGameObject<U extends Resource, T extends ResourceUpg
 			// Need to keep track of if it's enabled
 			this.collectSpeedUpgrade.setEnabled(this.resourceUpgradeManager.canAffordUpgrade(upgrade))
 		}
-	}
-
-	private onUpgradeClick() {
-
 	}
 
 	public onCollectSpeedUpgradeClick() {
@@ -83,7 +85,7 @@ export class ResourceUpgradeGameObject<U extends Resource, T extends ResourceUpg
 
 Phaser.GameObjects.GameObjectFactory.register(
 	'resourceUpgrade',
-	function <U extends Resource, T extends ResourceUpgradeManager<U>>(this: Phaser.GameObjects.GameObjectFactory, resourceUpgradeManager: T, x: number, y: number, width: number = 100, height: number = 84) {
+	function(this: Phaser.GameObjects.GameObjectFactory, resourceUpgradeManager: ResourceUpgradeManager<any>, x: number, y: number, width: number = 100, height: number = 84) {
 		const resourceUpgrade = new ResourceUpgradeGameObject(this.scene, resourceUpgradeManager, x, y, width, height);
 		resourceUpgrade.setOrigin(0);
 		
@@ -100,7 +102,7 @@ declare global
 	{
 		interface GameObjectFactory
 		{
-			resourceUpgrade<U extends Resource, T extends ResourceUpgradeManager<U>>(resourceUpgradeManager: T, x: number, y: number, width?: number, height?: number): ResourceUpgradeGameObject<U, T>
+			resourceUpgrade(resourceUpgradeManager: ResourceUpgradeManager<any>, x: number, y: number, width?: number, height?: number): ResourceUpgradeGameObject
 		}
 	}
 }
