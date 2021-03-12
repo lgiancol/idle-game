@@ -21,7 +21,6 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
   },
 
   parent: 'game',
-  backgroundColor: '#000000',
 };
 
 export const game = new Phaser.Game(gameConfig);
