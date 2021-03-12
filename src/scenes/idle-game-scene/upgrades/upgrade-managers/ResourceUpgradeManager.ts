@@ -31,10 +31,9 @@ export default abstract class ResourceUpgradeManager<T extends Resource> extends
 		
 		this.resourceManager.resourceQuantity.decreaseQuantity(upgrade.cost);
 		if(this.resourceManager.autoCollectSpeed == 0) {
-			this.resourceManager.autoCollectSpeed = upgrade.collectSpeedMultiplier;
-		} else {
-			this.resourceManager.autoCollectSpeed *= upgrade.collectSpeedMultiplier;
+			this.resourceManager.autoCollectSpeed = 1;
 		}
+		this.resourceManager.autoCollectSpeed *= upgrade.collectSpeedMultiplier;
 
 		this.currentUpgradeIndex[Upgrade.Type.COLLECT_SPEED]++;
 	}

@@ -10,3 +10,7 @@
 - Increase the value of the resource in the market. I'm not sure what kind of excuse we could use for the reason why the value increases
 - Have an auto buyer
 - Increase the auto buyer speed
+
+## Homes
+- Has a counter for how long it can last without heat
+- Has a counter for how fast it heats up once fuel is added

@@ -35,7 +35,7 @@ export class ResourceUpgradeGameObject<U extends Resource, T extends ResourceUpg
 		const padding = 10;
 		const buttonWidth = this.width - (padding * 2);
 		const buttonHeight = 70;
-		this.collectSpeedUpgrade = this.scene.add.luuButton(this.x + 10, this.y + 10, buttonWidth, buttonHeight, currentUpgrade.name)
+		this.collectSpeedUpgrade = this.scene.add.luuButton(this.x + 10, this.y + 10, buttonWidth, buttonHeight, currentUpgrade.name + ` $${currentUpgrade.cost}`)
 		.setData('upgrade', currentUpgrade)
 		.addListener('pointerup', this.onCollectSpeedUpgradeClick.bind(this))
 		.setEnabled(this.resourceUpgradeManager.canAffordUpgrade(currentUpgrade));
@@ -65,7 +65,7 @@ export class ResourceUpgradeGameObject<U extends Resource, T extends ResourceUpg
 			let newUpgrade = this.resourceUpgradeManager.getCurrentUpgrade(Upgrade.Type.COLLECT_SPEED) as CollectSpeedUpgrade;
 			this.collectSpeedUpgrade.setData('upgrade', newUpgrade);
 			if(newUpgrade) {
-				this.collectSpeedUpgrade.setText(newUpgrade.name);
+				this.collectSpeedUpgrade.setText(newUpgrade.name + ` $${newUpgrade.cost}`);
 			} else {
 				this.collectSpeedUpgrade.setText('No more upgrades available');
 				this.collectSpeedUpgrade.setEnabled(false);

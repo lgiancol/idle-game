@@ -13,8 +13,11 @@ export default class LogUpgradeManager extends ResourceUpgradeManager<Log> {
 
 	protected initializeUpgrades() {
 		let baseSpeed = 1;
+		const baseCost = 10;
 		for(let i = 0; i < 10; i++) {
-			this.upgrades[Upgrade.Type.COLLECT_SPEED].push(new LogCollectSpeedUpgrade(i + 1, 'LOG_COLLECT_SPEED_INCREASE_' + i, ((baseSpeed * i) + baseSpeed), i * 10 + 10));
+			let upgradeCost = Math.round(baseCost * Math.pow(2.65, i));
+			let upgradeSpeed = Math.round(baseSpeed * 1.8);
+			this.upgrades[Upgrade.Type.COLLECT_SPEED].push(new LogCollectSpeedUpgrade(i + 1, 'LOG_COLLECT_SPEED_INCREASE_' + i, upgradeSpeed, upgradeCost));
 		}
 	}
 
