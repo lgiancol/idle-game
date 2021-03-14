@@ -1,6 +1,5 @@
 import '../../../../ui/LuuButton';
 import LuuButton from '../../../../ui/LuuButton';
-import Resource from "../../resources/Resource";
 import Upgrade from "../../upgrades/Upgrade";
 import ResourceUpgradeManager from "../../upgrades/upgrade-managers/ResourceUpgradeManager";
 import CollectSpeedUpgrade from "../../upgrades/upgrade-types/CollectSpeedUpgrade";
@@ -16,18 +15,21 @@ export class ResourceUpgradeGameObject extends UpgradeGameObject {
 	}
 
 	public init() {
-		this.setStrokeStyle(1, 0xffffff);
-		
-		this.resourceLabel = this.scene.add.text(this.x + 10, this.y + 10, `${this.resourceUpgradeManager.resourceManager.resource.name}`)
-		.setOrigin(0)
-		.setColor('white')
-		.setFontFamily('my-font')
-		.setFontSize(30);
-		
-		// Will go through all the different types of upgrades and create them
-		Object.keys(Upgrade.Type).forEach((upgradeType: string) => {
-			this.initUpgradeButton(upgradeType);
-		});
+		if(this.resourceUpgradeManager) {
+			this.setStrokeStyle(1, 0xffffff);
+			
+			this.resourceLabel = this.scene.add.text(this.x + 10, this.y + 10, `${this.resourceUpgradeManager?.resourceManager.resource.name}`)
+			.setOrigin(0)
+			.setColor('white')
+			.setFontFamily('my-font')
+			.setFontSize(30);
+			
+			// Will go through all the different types of upgrades and create them
+			Object.keys(Upgrade.Type).forEach((upgradeType: string) => {
+				this.initUpgradeButton(upgradeType);
+			});
+
+		}
 		
 	}
 
@@ -45,6 +47,11 @@ export class ResourceUpgradeGameObject extends UpgradeGameObject {
 
 	public setActiveUpgradeManager(resourceUpgradeManager: ResourceUpgradeManager<any>) {
 		this.resourceUpgradeManager = resourceUpgradeManager;
+
+		this.resourceLabel?.destroy();
+		this.collectSpeedUpgrade?.destroy();
+
+		this.init();
 	}
 
 	public preUpdate(delta: number) {
@@ -52,10 +59,12 @@ export class ResourceUpgradeGameObject extends UpgradeGameObject {
 	}
 
 	private updateUpgradeButtons() {
-		const upgrade = this.collectSpeedUpgrade.getData('upgrade');
-		if(upgrade) {
-			// Need to keep track of if it's enabled
-			this.collectSpeedUpgrade.setEnabled(this.resourceUpgradeManager.canAffordUpgrade(upgrade))
+		if(this.collectSpeedUpgrade) {
+			const upgrade = this.collectSpeedUpgrade.getData('upgrade');
+			if(upgrade) {
+				// Need to keep track of if it's enabled
+				this.collectSpeedUpgrade.setEnabled(this.resourceUpgradeManager.canAffordUpgrade(upgrade))
+			}
 		}
 	}
 

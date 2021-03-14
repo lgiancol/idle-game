@@ -3,10 +3,11 @@ import ResourceUpgradeManager from "../upgrades/upgrade-managers/ResourceUpgrade
 
 export default class MarketManager {
 	public money: number;
+	public emitter = new Phaser.Events.EventEmitter();
 
 	// All the upgrades by resource
 	// All the upgrades available to the user
-	public resourceUpgradeManagers: {[resourceName: string]: ResourceUpgradeManager<any>}
+	public resourceUpgradeManagers: {[resourceName: string]: ResourceUpgradeManager<any>};
 	private activeResource: ResourceType = null;
 
 	public constructor() {
@@ -15,6 +16,7 @@ export default class MarketManager {
 
 	public setActiveResource(activeResource: ResourceType) {
 		this.activeResource = activeResource;
+		this.emitter.emit('activeresourcechange', this.getActiveResourceManager());
 	}
 
 	public getActiveResourceManager() {

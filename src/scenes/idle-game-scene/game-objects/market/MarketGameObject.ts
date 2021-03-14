@@ -3,7 +3,7 @@ import ResourceUpgradeManager from "../../upgrades/upgrade-managers/ResourceUpgr
 import { ResourceUpgradeGameObject } from "../resource-upgrades/ResourceUpgradeGameObject";
 
 export default class MarketGameObject extends Phaser.GameObjects.Rectangle {
-	private activeUpgradeResourceManagerGo: ResourceUpgradeGameObject;
+	private resourceManager: ResourceUpgradeGameObject;
 
 	public constructor(scene: Phaser.Scene, public marketManager: MarketManager, x: number, y: number, width: number, height: number) {
 		super(scene, x, y, width, height);
@@ -12,14 +12,13 @@ export default class MarketGameObject extends Phaser.GameObjects.Rectangle {
 
 	private init() {
 		const activeUpgradeManager = this.marketManager.getActiveResourceManager();
-		if(activeUpgradeManager) {
-			this.activeUpgradeResourceManagerGo = this.scene.add.resourceUpgrade(activeUpgradeManager, this.x, this.y, this.width, this.height);
-		}
+		this.resourceManager = this.scene.add.resourceUpgrade(activeUpgradeManager, this.x, this.y, this.width, this.height);
+		
+		this.marketManager.emitter.on('activeresourcechange', this.setActiveUpgradeResourceManagerGo.bind(this));
 	}
 
 	public setActiveUpgradeResourceManagerGo(resourceManager: ResourceUpgradeManager<any>) {
-		// this.activeUpgradeResourceManagerGo = resourceManager
-		this.activeUpgradeResourceManagerGo.setActiveUpgradeManager(resourceManager);
+		this.resourceManager.setActiveUpgradeManager(resourceManager);
 	}
 
 	public preUpdate() {}

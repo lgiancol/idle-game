@@ -1,3 +1,4 @@
+import MarketManager from "../../market-manager/MarketManager";
 import Log from "../../resources/Log";
 import { ResourceType } from "../../resources/Resource";
 import LogManager from "../../resources/resource-managers/LogManager";
@@ -23,9 +24,11 @@ Phaser.GameObjects.GameObjectFactory.register(
 
 		function onClick() {
 			resourceCollector.resourceManager.resourceQuantity.increaseQuantity(resourceCollector.resourceManager.manualCollectSpeed);
-			// TODO: Figure out a way to emit ResourceType.LOG
+			(resourceCollector.scene.data.get('marketManager') as MarketManager).setActiveResource(ResourceType.LOG);
+			
 		}
-		resourceCollector.on('pointerdown', onClick);
+
+		resourceCollector.on('pointerdown', onClick.bind(this));
 		return resourceCollector;
 	}
 );
