@@ -14,6 +14,10 @@ export default class MarketManager {
 		this.resourceUpgradeManagers = {};
 	}
 
+	public getActiveResource() {
+		return this.activeResource;
+	}
+
 	public setActiveResource(activeResource: ResourceType) {
 		this.activeResource = activeResource;
 		this.emitter.emit('activeresourcechange', this.getActiveResourceManager());

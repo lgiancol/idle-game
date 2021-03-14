@@ -24,7 +24,13 @@ Phaser.GameObjects.GameObjectFactory.register(
 
 		function onClick() {
 			resourceCollector.resourceManager.resourceQuantity.increaseQuantity(resourceCollector.resourceManager.manualCollectSpeed);
-			(resourceCollector.scene.data.get('marketManager') as MarketManager).setActiveResource(ResourceType.LOG);
+
+			const marketManager = (resourceCollector.scene.data.get('marketManager') as MarketManager);
+			const currentActiveResource = marketManager.getActiveResource();
+
+			if(currentActiveResource == null || currentActiveResource != ResourceType.LOG) {
+				marketManager.setActiveResource(ResourceType.LOG);
+			}
 			
 		}
 

@@ -40,9 +40,10 @@ export class IdleGameScene extends Phaser.Scene {
 		// Market Area
 		this.marketManager = new MarketManager();
 		this.data.set('marketManager', this.marketManager as MarketManager);
-		
-		this.marketManager.setUpgradeManager(ResourceType.LOG, new LogUpgradeManager(this.logManager));
 		this.add.market(this.marketManager, (gameWidth / 2) + 10, 10, ((gameWidth / 2) - 20), gameHeight - 20);
+
+		// Set all the upgrade managers this market can handle
+		this.marketManager.setUpgradeManager(ResourceType.LOG, new LogUpgradeManager(this.logManager));
 
 		// HOME
 		this.homeManager = new CampManager(this.logManager);
