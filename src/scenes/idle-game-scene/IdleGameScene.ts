@@ -1,11 +1,7 @@
 // These are imported this way so we can get the type descriptors loaded for each game-object
 import { getGameHeight, getGameWidth } from '../../helpers';
 import '../../ui/LuuButton';
-import './game-objects/Home';
-import './game-objects/market/MarketGameObject';
-import './game-objects/resource-collectors/LogResourceCollector';
-import './game-objects/resource-collectors/CoalResourceCollector';
-import './game-objects/resource-upgrades/ResourceUpgradeGameObject';
+import './game-objects';
 import CampManager from './home-managers/CampManager';
 import HomeManager from './home-managers/HomeManager';
 import MarketManager from './market-manager/MarketManager';
