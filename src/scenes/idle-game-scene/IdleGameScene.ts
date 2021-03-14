@@ -11,8 +11,8 @@ import MarketManager from './market-manager/MarketManager';
 import { ResourceType } from './resources/Resource';
 import CoalManager from './resources/resource-managers/CoalManager';
 import LogManager from "./resources/resource-managers/LogManager";
-import CoalUpgradeManager from './upgrades/upgrade-managers/CoalUpgradeManager';
-import LogUpgradeManager from './upgrades/upgrade-managers/LogUpgradeManager';
+import CoalUpgradeManager from './upgrade-managers/resource-upgrade-managers/CoalUpgradeManager';
+import LogUpgradeManager from './upgrade-managers/resource-upgrade-managers/LogUpgradeManager';
 
 export class IdleGameScene extends Phaser.Scene {
 	// The home available to the user

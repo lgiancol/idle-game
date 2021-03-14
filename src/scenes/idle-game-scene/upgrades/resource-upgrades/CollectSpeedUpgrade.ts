@@ -1,4 +1,4 @@
-import ResourceUpgrade from "../ResourceUpgrade";
+import ResourceUpgrade from "./ResourceUpgrade";
 import Upgrade from "../Upgrade";
 
 export default class CollectSpeedUpgrade extends ResourceUpgrade {

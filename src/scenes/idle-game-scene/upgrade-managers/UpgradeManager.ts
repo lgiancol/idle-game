@@ -1,5 +1,5 @@
-import Queue from "../../../../utils/queue/Queue";
-import Upgrade from "../Upgrade";
+import Queue from "../../../utils/queue/Queue";
+import Upgrade from "../upgrades/Upgrade";
 
 export default abstract class UpgradeManager<T> {
 	public upgrades: {[upgradeGroup: string]: Queue<Upgrade>};

@@ -1,9 +1,8 @@
 import Resource, { ResourceType } from "../resources/Resource";
-import ResourceUpgradeManager from "../upgrades/upgrade-managers/ResourceUpgradeManager";
+import ResourceUpgradeManager from "../upgrade-managers/resource-upgrade-managers/ResourceUpgradeManager";
 
 export default class MarketManager extends Phaser.Events.EventEmitter {
 	public money: number;
-	// public emitter = new Phaser.Events.EventEmitter();
 
 	// All the upgrades by resource
 	// All the upgrades available to the user

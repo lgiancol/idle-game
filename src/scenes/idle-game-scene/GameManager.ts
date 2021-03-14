@@ -1,6 +1,6 @@
 import MarketManager from "./market-manager/MarketManager";
 import { ResourceType } from "./resources/Resource";
-import LogUpgradeManager from "./upgrades/upgrade-managers/LogUpgradeManager";
+import LogUpgradeManager from "./upgrade-managers/resource-upgrade-managers/LogUpgradeManager";
 
 export default class GameManager {
 	private _marketManager: MarketManager;
