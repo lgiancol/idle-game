@@ -1,9 +1,9 @@
 import Resource, { ResourceType } from "../resources/Resource";
 import ResourceUpgradeManager from "../upgrades/upgrade-managers/ResourceUpgradeManager";
 
-export default class MarketManager {
+export default class MarketManager extends Phaser.Events.EventEmitter {
 	public money: number;
-	public emitter = new Phaser.Events.EventEmitter();
+	// public emitter = new Phaser.Events.EventEmitter();
 
 	// All the upgrades by resource
 	// All the upgrades available to the user
@@ -11,6 +11,7 @@ export default class MarketManager {
 	private activeResource: ResourceType = null;
 
 	public constructor() {
+		super();
 		this.resourceUpgradeManagers = {};
 	}
 
@@ -20,7 +21,7 @@ export default class MarketManager {
 
 	public setActiveResource(activeResource: ResourceType) {
 		this.activeResource = activeResource;
-		this.emitter.emit('activeresourcechange', this.getActiveResourceManager());
+		this.emit('activeresourcechange', this.getActiveResourceManager());
 	}
 
 	public getActiveResourceManager() {
