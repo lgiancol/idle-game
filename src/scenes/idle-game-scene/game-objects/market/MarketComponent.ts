@@ -1,9 +1,9 @@
 import MarketManager from "../../market-manager/MarketManager";
 import ResourceUpgradeManager from "../../upgrades/upgrade-managers/ResourceUpgradeManager";
-import { ResourceUpgradeGameObject } from "../resource-upgrades/ResourceUpgradeGameObject";
+import { ResourceUpgradeMarketGroupComponent } from "./resource-upgrade-market-groups/ResourceUpgradeMarketGroupComponent";
 
-export default class MarketGameObject extends Phaser.GameObjects.Rectangle {
-	private resourceManager: ResourceUpgradeGameObject;
+export default class MarketComponent extends Phaser.GameObjects.Rectangle {
+	private resourceUpgradeMarketGroup: ResourceUpgradeMarketGroupComponent;
 
 	public constructor(scene: Phaser.Scene, public marketManager: MarketManager, x: number, y: number, width: number, height: number) {
 		super(scene, x, y, width, height);
@@ -12,13 +12,13 @@ export default class MarketGameObject extends Phaser.GameObjects.Rectangle {
 
 	private init() {
 		const activeUpgradeManager = this.marketManager.getActiveResourceManager();
-		this.resourceManager = this.scene.add.resourceUpgrade(activeUpgradeManager, this.x, this.y, this.width, this.height);
+		this.resourceUpgradeMarketGroup = this.scene.add.resourceUpgrade(activeUpgradeManager, this.x, this.y, this.width, this.height);
 		
 		this.marketManager.emitter.on('activeresourcechange', this.setActiveUpgradeResourceManagerGo.bind(this));
 	}
 
 	public setActiveUpgradeResourceManagerGo(resourceManager: ResourceUpgradeManager<any>) {
-		this.resourceManager.setActiveUpgradeManager(resourceManager);
+		this.resourceUpgradeMarketGroup.setActiveUpgradeManager(resourceManager);
 	}
 
 	public preUpdate() {}
@@ -27,7 +27,7 @@ export default class MarketGameObject extends Phaser.GameObjects.Rectangle {
 Phaser.GameObjects.GameObjectFactory.register(
 	'market',
 	function (this: Phaser.GameObjects.GameObjectFactory, marketManager: MarketManager, x: number, y: number, width: number = 100, height: number = 84) {
-		const marketGameObject = new MarketGameObject(this.scene, marketManager, x, y, width, height);
+		const marketGameObject = new MarketComponent(this.scene, marketManager, x, y, width, height);
 		marketGameObject.setOrigin(0);
 		
 		this.displayList.add(marketGameObject);
@@ -43,7 +43,7 @@ declare global
 	{
 		interface GameObjectFactory
 		{
-			market(marketManager: MarketManager, x: number, y: number, width?: number, height?: number): MarketGameObject
+			market(marketManager: MarketManager, x: number, y: number, width?: number, height?: number): MarketComponent
 		}
 	}
 }

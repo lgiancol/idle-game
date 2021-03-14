@@ -1,11 +1,11 @@
-import '../../../../ui/LuuButton';
-import LuuButton from '../../../../ui/LuuButton';
-import Upgrade from "../../upgrades/Upgrade";
-import ResourceUpgradeManager from "../../upgrades/upgrade-managers/ResourceUpgradeManager";
-import CollectSpeedUpgrade from "../../upgrades/upgrade-types/CollectSpeedUpgrade";
-import UpgradeGameObject from "../UpgradeGameObject";
+import '../../../../../ui/LuuButton';
+import LuuButton from '../../../../../ui/LuuButton';
+import Upgrade from "../../../upgrades/Upgrade";
+import ResourceUpgradeManager from "../../../upgrades/upgrade-managers/ResourceUpgradeManager";
+import CollectSpeedUpgrade from "../../../upgrades/upgrade-types/CollectSpeedUpgrade";
+import UpgradeGameObject from "../../UpgradeGameObject";
 
-export class ResourceUpgradeGameObject extends UpgradeGameObject {
+export class ResourceUpgradeMarketGroupComponent extends UpgradeGameObject {
 	private resourceLabel: Phaser.GameObjects.Text;
 	private collectSpeedUpgrade: LuuButton;
 
@@ -95,7 +95,7 @@ export class ResourceUpgradeGameObject extends UpgradeGameObject {
 Phaser.GameObjects.GameObjectFactory.register(
 	'resourceUpgrade',
 	function(this: Phaser.GameObjects.GameObjectFactory, resourceUpgradeManager: ResourceUpgradeManager<any>, x: number, y: number, width: number = 100, height: number = 84) {
-		const resourceUpgrade = new ResourceUpgradeGameObject(this.scene, resourceUpgradeManager, x, y, width, height);
+		const resourceUpgrade = new ResourceUpgradeMarketGroupComponent(this.scene, resourceUpgradeManager, x, y, width, height);
 		resourceUpgrade.setOrigin(0);
 		
 		this.displayList.add(resourceUpgrade);
@@ -111,7 +111,7 @@ declare global
 	{
 		interface GameObjectFactory
 		{
-			resourceUpgrade(resourceUpgradeManager: ResourceUpgradeManager<any>, x: number, y: number, width?: number, height?: number): ResourceUpgradeGameObject
+			resourceUpgrade(resourceUpgradeManager: ResourceUpgradeManager<any>, x: number, y: number, width?: number, height?: number): ResourceUpgradeMarketGroupComponent
 		}
 	}
 }

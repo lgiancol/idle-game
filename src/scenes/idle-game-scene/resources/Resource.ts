@@ -1,5 +1,6 @@
 export enum ResourceType {
 	LOG,
+	COAL,
 }
 
 export default abstract class Resource {
