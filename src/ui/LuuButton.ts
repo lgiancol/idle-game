@@ -68,6 +68,12 @@ export default class LuuButton extends LuuiItem {
 		return this;
 	}
 
+	public destroy() {
+		super.destroy();
+
+		this.label.destroy();
+	}
+
 }
 
 Phaser.GameObjects.GameObjectFactory.register(

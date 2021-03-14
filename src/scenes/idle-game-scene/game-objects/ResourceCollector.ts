@@ -1,7 +1,7 @@
 import Resource from "../resources/Resource";
 import ResourceManager from "../resources/resource-managers/ResourceManager";
 
-export default class ResourceCollector<T extends Resource> extends Phaser.GameObjects.Rectangle {
+export default abstract class ResourceCollector<T extends Resource> extends Phaser.GameObjects.Rectangle {
 	private nameLabel: Phaser.GameObjects.Text;
 	private quantityLabel: Phaser.GameObjects.Text;
 
@@ -11,6 +11,7 @@ export default class ResourceCollector<T extends Resource> extends Phaser.GameOb
 	}
 
 	private init() {
+		
 		this.setFillStyle(0xffbb22);
 		
 		let yOffset = this.y + 10;
@@ -40,35 +41,5 @@ export default class ResourceCollector<T extends Resource> extends Phaser.GameOb
 		super.destroy();
 
 		this.nameLabel.destroy();
-	}
-}
-
-Phaser.GameObjects.GameObjectFactory.register(
-	'resourceCollector',
-	function<T extends Resource> (this: Phaser.GameObjects.GameObjectFactory, resourceManager: ResourceManager<T>, x: number, y: number, width: number = 100, height: number = 84) {
-		const resourceCollector = new ResourceCollector(this.scene, resourceManager, x, y, width, height);
-		resourceCollector.setOrigin(0);
-		
-		this.displayList.add(resourceCollector);
-		this.updateList.add(resourceCollector);
-
-		resourceCollector.setInteractive({useHandCursor: true});
-
-		function onClick() {
-			resourceCollector.resourceManager.resourceQuantity.increaseQuantity(resourceCollector.resourceManager.manualCollectSpeed);
-		}
-		resourceCollector.on('pointerdown', onClick);
-		return resourceCollector;
-	}
-);
-
-declare global
-{
-	namespace Phaser.GameObjects
-	{
-		interface GameObjectFactory
-		{
-			resourceCollector<T extends Resource>(resourceManager: ResourceManager<T>, x: number, y: number, width?: number, height?: number): ResourceCollector<T>
-		}
 	}
 }
