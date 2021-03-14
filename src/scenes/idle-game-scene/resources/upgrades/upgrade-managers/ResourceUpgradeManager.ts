@@ -27,10 +27,10 @@ export default abstract class ResourceUpgradeManager<T extends Resource> extends
 	public buyCollectSpeedUpgrade() {
 		let upgrade = this.upgrades[Upgrade.Type.COLLECT_SPEED].dequeue() as CollectSpeedUpgrade; // Levels != index
 		
-		this.resourceManager.resourceQuantity.decreaseQuantity(upgrade.cost);
-		if(this.resourceManager.autoCollectSpeed == 0) {
-			this.resourceManager.autoCollectSpeed = 1;
+		this.resourceManager.resourceCollector.decreaseQuantity(upgrade.cost);
+		if(this.resourceManager.resourceCollector.autoCollectSpeed == 0) {
+			this.resourceManager.resourceCollector.autoCollectSpeed = 1;
 		}
-		this.resourceManager.autoCollectSpeed *= upgrade.collectSpeedMultiplier;
+		this.resourceManager.resourceCollector.autoCollectSpeed *= upgrade.collectSpeedMultiplier;
 	}
 } 

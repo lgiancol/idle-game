@@ -3,9 +3,9 @@ import LuuButton from '../../../../../ui/LuuButton';
 import Upgrade from "../../../upgrades/Upgrade";
 import ResourceUpgradeManager from "../../../resources/upgrades/upgrade-managers/ResourceUpgradeManager";
 import CollectSpeedUpgrade from "../../../resources/upgrades/CollectSpeedUpgrade";
-import UpgradeGameObject from "../../UpgradeGameObject";
+import MarketGroupComponent from "../MarketGroupComponent";
 
-export class ResourceUpgradeMarketGroupComponent extends UpgradeGameObject {
+export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 	private resourceLabel: Phaser.GameObjects.Text;
 	private collectSpeedUpgrade: LuuButton;
 

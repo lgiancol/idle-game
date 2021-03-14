@@ -20,8 +20,8 @@ export class IdleGameScene extends Phaser.Scene {
 	public homeManager: HomeManager;
 	
 	// All the resources available to the user
-	// public logManager = new LogManager();
-	// public coalManager = new CoalManager();
+	public logManager = new LogManager();
+	public coalManager = new CoalManager();
 	
 	public marketManager: MarketManager;
 
@@ -34,37 +34,32 @@ export class IdleGameScene extends Phaser.Scene {
 	}
 
 	public create() {
-		// Testing
-		let logManager = new LogManager();
+		const gameWidth = getGameWidth(this);
+		const gameHeight = getGameHeight(this);
+
+		// TODO: Create a custom GameObject to display this
+		// TODO: All this should also be inside the MarketManager class and will be create on new MarketManager();
+		// Market Area
+		this.marketManager = new MarketManager();
+		this.data.set('marketManager', this.marketManager as MarketManager);
+		this.add.market(this.marketManager, (gameWidth / 2) + 10, 10, ((gameWidth / 2) - 20), gameHeight - 20);
+
+		// Set all the upgrade managers this market can handle
+		this.marketManager.setUpgradeManager(ResourceType.LOG, new LogUpgradeManager(this.logManager));
+		this.marketManager.setUpgradeManager(ResourceType.COAL, new CoalUpgradeManager(this.coalManager));
+
+		// HOME
+		this.homeManager = new CampManager(this.logManager);
 		
+		this.add.home(this.homeManager, 200, 200);
 
-		// Done testing
-		// const gameWidth = getGameWidth(this);
-		// const gameHeight = getGameHeight(this);
-
-		// // TODO: Create a custom GameObject to display this
-		// // TODO: All this should also be inside the MarketManager class and will be create on new MarketManager();
-		// // Market Area
-		// this.marketManager = new MarketManager();
-		// this.data.set('marketManager', this.marketManager as MarketManager);
-		// this.add.market(this.marketManager, (gameWidth / 2) + 10, 10, ((gameWidth / 2) - 20), gameHeight - 20);
-
-		// // Set all the upgrade managers this market can handle
-		// this.marketManager.setUpgradeManager(ResourceType.LOG, new LogUpgradeManager(this.logManager));
-		// this.marketManager.setUpgradeManager(ResourceType.COAL, new CoalUpgradeManager(this.coalManager));
-
-		// // HOME
-		// this.homeManager = new CampManager(this.logManager);
-		
-		// this.add.home(this.homeManager, 200, 200);
-
-		// this.add.logResourceCollector(this.logManager, 10, 10);
-		// this.add.coalResourceCollector(this.coalManager, 200, 10);
+		this.add.logResourceCollector(this.logManager, 10, 10);
+		this.add.coalResourceCollector(this.coalManager, 200, 10);
 	}
 	
 	public update(time: number, delta: number) {
-		// this.logManager.update(delta);
-		// this.coalManager.update(delta);
-		// this.homeManager.update(delta);
+		this.logManager.update(delta);
+		this.coalManager.update(delta);
+		this.homeManager.update(delta);
 	}
 }

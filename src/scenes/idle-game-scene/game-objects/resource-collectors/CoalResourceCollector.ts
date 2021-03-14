@@ -3,9 +3,9 @@ import Coal from "../../resources/Coal";
 import { ResourceType } from "../../resources/Resource";
 import CoalManager from "../../resources/resource-managers/CoalManager";
 import ResourceManager from "../../resources/resource-managers/ResourceManager";
-import ResourceCollector from "../ResourceCollector";
+import ResourceCollectorComponent from "../ResourceCollectorComponent";
 
-export default class CoalResourceCollector extends ResourceCollector<Coal> {
+export default class CoalResourceCollector extends ResourceCollectorComponent<Coal> {
 	public constructor(scene: Phaser.Scene, public resourceManager: ResourceManager<Coal>, public x: number, public y: number, public width = 100, public height = 84) {
 		super(scene, resourceManager, x, y);
 	}
@@ -23,7 +23,7 @@ Phaser.GameObjects.GameObjectFactory.register(
 		resourceCollector.setInteractive({useHandCursor: true});
 
 		function onClick() {
-			resourceCollector.resourceManager.resourceQuantity.increaseQuantity(resourceCollector.resourceManager.manualCollectSpeed);
+			resourceCollector.resourceManager.resourceCollector.increaseQuantity(resourceCollector.resourceManager.resourceCollector.manualCollectSpeed);
 
 			const marketManager = (resourceCollector.scene.data.get('marketManager') as MarketManager);
 			const currentActiveResource = marketManager.getActiveResource();

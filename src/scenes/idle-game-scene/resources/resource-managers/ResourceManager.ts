@@ -1,20 +1,16 @@
 import Resource from "../Resource";
-import ResourceQuantity from "./resource-quantities/ResourceQuantity";
+import ResourceCollector from "./resource-collector/ResourceCollector";
 
 export default class ResourceManager<T extends Resource> {
-	public resourceQuantity: ResourceQuantity = new ResourceQuantity();
-	
-	public manualCollectSpeed: number = 1;
-	public autoCollectSpeed: number = 0;
+	public resourceCollector: ResourceCollector = new ResourceCollector();
 
 	public constructor(public resourceType: string, public resource: T) {}
 
 	public update(delta: number) {
-		let deltaSecond = delta / 1000;
-		this.resourceQuantity.increaseQuantity(this.autoCollectSpeed * deltaSecond);
+		this.resourceCollector.update(delta);
 	}
 
 	public hasMinimumOf(min: number) {
-		return this.resourceQuantity.quantity >= min;
+		return this.resourceCollector.quantity >= min;
 	}
 }

@@ -1,7 +1,7 @@
 import Resource from "../resources/Resource";
 import ResourceManager from "../resources/resource-managers/ResourceManager";
 
-export default abstract class ResourceCollector<T extends Resource> extends Phaser.GameObjects.Rectangle {
+export default abstract class ResourceCollectorComponent<T extends Resource> extends Phaser.GameObjects.Rectangle {
 	private nameLabel: Phaser.GameObjects.Text;
 	private quantityLabel: Phaser.GameObjects.Text;
 
@@ -15,7 +15,7 @@ export default abstract class ResourceCollector<T extends Resource> extends Phas
 		this.setFillStyle(0xffbb22);
 		
 		let yOffset = this.y + 10;
-		this.nameLabel = this.scene.add.text(this.x + 10, yOffset, `${this.resourceManager.resourceType} x${this.resourceManager.autoCollectSpeed}`)
+		this.nameLabel = this.scene.add.text(this.x + 10, yOffset, `${this.resourceManager.resourceType} x${this.resourceManager.resourceCollector.autoCollectSpeed}`)
 		.setOrigin(0)
 		.setColor('black')
 		.setFontFamily('my-font')
@@ -23,7 +23,7 @@ export default abstract class ResourceCollector<T extends Resource> extends Phas
 		.setDepth(1);
 
 		yOffset += this.nameLabel.getBounds().height + 10;
-		this.quantityLabel = this.scene.add.text(this.x + 10, yOffset + 10, `${this.resourceManager.resourceQuantity.quantity}`)
+		this.quantityLabel = this.scene.add.text(this.x + 10, yOffset + 10, `${this.resourceManager.resourceCollector.quantity}`)
 		.setOrigin(0)
 		.setColor('black')
 		.setFontFamily('my-font')
@@ -33,8 +33,8 @@ export default abstract class ResourceCollector<T extends Resource> extends Phas
 
 	// This is where we actually update this object
 	public preUpdate() {
-		this.nameLabel.setText(`${this.resourceManager.resourceType} x${this.resourceManager.autoCollectSpeed}`);
-		this.quantityLabel.setText(`${this.resourceManager.resourceQuantity.quantity}`);
+		this.nameLabel.setText(`${this.resourceManager.resourceType} x${this.resourceManager.resourceCollector.autoCollectSpeed}`);
+		this.quantityLabel.setText(`${this.resourceManager.resourceCollector.quantity}`);
 	}
 
 	public destroy() {

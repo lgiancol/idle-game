@@ -12,13 +12,13 @@ export default abstract class HomeManager {
 	public addFuel() {
 		// There's not enough of the fuel resource collected to actually use
 		//  || The fuel for the home is already at capacity
-		if(this.resourceManager.resourceQuantity.quantity < 1 || this.fuel.length == this.fuelLimit) return;
+		if(this.resourceManager.resourceCollector.quantity < 1 || this.fuel.length == this.fuelLimit) return;
 
 		let fuel = {
 			startingAmount: this.resourceManager.resource.energyUnits,
 			remainingAmount: this.resourceManager.resource.energyUnits
 		} as {startingAmount: number, remainingAmount: number};
-		this.resourceManager.resourceQuantity.decreaseQuantity(1);
+		this.resourceManager.resourceCollector.decreaseQuantity(1);
 
 		this.totalRemaingFuel += fuel.startingAmount;
 		this.fuel.push(fuel);
