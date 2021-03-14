@@ -2,30 +2,31 @@ import MarketManager from "../../market-manager/MarketManager";
 import Coal from "../../resources/Coal";
 import { ResourceType } from "../../resources/Resource";
 import CoalManager from "../../resources/resource-managers/CoalManager";
+import ResourceCollector from "../../resources/resource-managers/resource-collector/ResourceCollector";
 import ResourceManager from "../../resources/resource-managers/ResourceManager";
-import ResourceCollectorComponent from "../ResourceCollectorComponent";
+import ResourceCollectorComponent from "./ResourceCollectorComponent";
 
-export default class CoalResourceCollector extends ResourceCollectorComponent<Coal> {
-	public constructor(scene: Phaser.Scene, public resourceManager: ResourceManager<Coal>, public x: number, public y: number, public width = 100, public height = 84) {
-		super(scene, resourceManager, x, y);
+export default class CoalResourceCollector extends ResourceCollectorComponent {
+	public constructor(scene: Phaser.Scene, resourceCollector: ResourceCollector, public x: number, public y: number, public width = 100, public height = 84) {
+		super(scene, 'Coal', resourceCollector, x, y);
 	}
 }
 
 Phaser.GameObjects.GameObjectFactory.register(
 	'coalResourceCollector',
-	function(this: Phaser.GameObjects.GameObjectFactory, coalResourceManager: CoalManager, x: number, y: number, width: number = 100, height: number = 84) {
-		const resourceCollector = new CoalResourceCollector(this.scene, coalResourceManager, x, y, width, height);
-		resourceCollector.setOrigin(0);
+	function(this: Phaser.GameObjects.GameObjectFactory, resourceCollector: ResourceCollector, x: number, y: number, width: number = 100, height: number = 84) {
+		const resourceCollectorComponent = new CoalResourceCollector(this.scene, resourceCollector, x, y, width, height);
+		resourceCollectorComponent.setOrigin(0);
 		
-		this.displayList.add(resourceCollector);
-		this.updateList.add(resourceCollector);
+		this.displayList.add(resourceCollectorComponent);
+		this.updateList.add(resourceCollectorComponent);
 
-		resourceCollector.setInteractive({useHandCursor: true});
+		resourceCollectorComponent.setInteractive({useHandCursor: true});
 
 		function onClick() {
-			resourceCollector.resourceManager.resourceCollector.increaseQuantity(resourceCollector.resourceManager.resourceCollector.manualCollectSpeed);
+			resourceCollectorComponent.resourceCollector.increaseQuantity(resourceCollectorComponent.resourceCollector.manualCollectSpeed);
 
-			const marketManager = (resourceCollector.scene.data.get('marketManager') as MarketManager);
+			const marketManager = (resourceCollectorComponent.scene.data.get('marketManager') as MarketManager);
 			const currentActiveResource = marketManager.getActiveResource();
 
 			if(currentActiveResource == null || currentActiveResource != ResourceType.COAL) {
@@ -34,8 +35,8 @@ Phaser.GameObjects.GameObjectFactory.register(
 			
 		}
 
-		resourceCollector.on('pointerdown', onClick.bind(this));
-		return resourceCollector;
+		resourceCollectorComponent.on('pointerdown', onClick.bind(this));
+		return resourceCollectorComponent;
 	}
 );
 
@@ -45,7 +46,7 @@ declare global
 	{
 		interface GameObjectFactory
 		{
-			coalResourceCollector(resourceManager: CoalManager, x: number, y: number, width?: number, height?: number): CoalResourceCollector
+			coalResourceCollector(resourceCollector: ResourceCollector, x: number, y: number, width?: number, height?: number): CoalResourceCollector
 		}
 	}
 }

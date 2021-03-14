@@ -53,8 +53,8 @@ export class IdleGameScene extends Phaser.Scene {
 		
 		this.add.home(this.homeManager, 200, 200);
 
-		this.add.logResourceCollector(this.logManager, 10, 10);
-		this.add.coalResourceCollector(this.coalManager, 200, 10);
+		this.add.logResourceCollector(this.logManager.resourceCollector, 10, 10);
+		this.add.coalResourceCollector(this.coalManager.resourceCollector, 200, 10);
 	}
 	
 	public update(time: number, delta: number) {

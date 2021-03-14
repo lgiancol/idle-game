@@ -1,31 +1,29 @@
 import MarketManager from "../../market-manager/MarketManager";
-import Log from "../../resources/Log";
 import { ResourceType } from "../../resources/Resource";
-import LogManager from "../../resources/resource-managers/LogManager";
-import ResourceManager from "../../resources/resource-managers/ResourceManager";
-import ResourceCollectorComponent from "../ResourceCollectorComponent";
+import ResourceCollector from "../../resources/resource-managers/resource-collector/ResourceCollector";
+import ResourceCollectorComponent from "./ResourceCollectorComponent";
 
-export default class LogResourceCollector extends ResourceCollectorComponent<Log> {
-	public constructor(scene: Phaser.Scene, public resourceManager: ResourceManager<Log>, public x: number, public y: number, public width = 100, public height = 84) {
-		super(scene, resourceManager, x, y);
+export default class LogResourceCollector extends ResourceCollectorComponent {
+	public constructor(scene: Phaser.Scene, resourceCollector: ResourceCollector, public x: number, public y: number, public width = 100, public height = 84) {
+		super(scene, 'Log', resourceCollector, x, y);
 	}
 }
 
 Phaser.GameObjects.GameObjectFactory.register(
 	'logResourceCollector',
-	function(this: Phaser.GameObjects.GameObjectFactory, logResourceManager: LogManager, x: number, y: number, width: number = 100, height: number = 84) {
-		const resourceCollector = new LogResourceCollector(this.scene, logResourceManager, x, y, width, height);
-		resourceCollector.setOrigin(0);
+	function(this: Phaser.GameObjects.GameObjectFactory, resourceCollector: ResourceCollector, x: number, y: number, width: number = 100, height: number = 84) {
+		const resourceCollectorComponent = new LogResourceCollector(this.scene, resourceCollector, x, y, width, height);
+		resourceCollectorComponent.setOrigin(0);
 		
-		this.displayList.add(resourceCollector);
-		this.updateList.add(resourceCollector);
+		this.displayList.add(resourceCollectorComponent);
+		this.updateList.add(resourceCollectorComponent);
 
-		resourceCollector.setInteractive({useHandCursor: true});
+		resourceCollectorComponent.setInteractive({useHandCursor: true});
 
 		function onClick() {
-			resourceCollector.resourceManager.resourceCollector.increaseQuantity(resourceCollector.resourceManager.resourceCollector.manualCollectSpeed);
+			resourceCollectorComponent.resourceCollector.increaseQuantity(resourceCollectorComponent.resourceCollector.manualCollectSpeed);
 
-			const marketManager = (resourceCollector.scene.data.get('marketManager') as MarketManager);
+			const marketManager = (resourceCollectorComponent.scene.data.get('marketManager') as MarketManager);
 			const currentActiveResource = marketManager.getActiveResource();
 
 			if(currentActiveResource == null || currentActiveResource != ResourceType.LOG) {
@@ -34,7 +32,7 @@ Phaser.GameObjects.GameObjectFactory.register(
 			
 		}
 
-		resourceCollector.on('pointerdown', onClick.bind(this));
+		resourceCollectorComponent.on('pointerdown', onClick.bind(this));
 		return resourceCollector;
 	}
 );
@@ -45,7 +43,7 @@ declare global
 	{
 		interface GameObjectFactory
 		{
-			logResourceCollector(resourceManager: LogManager, x: number, y: number, width?: number, height?: number): LogResourceCollector
+			logResourceCollector(resourceCollector: ResourceCollector, x: number, y: number, width?: number, height?: number): LogResourceCollector
 		}
 	}
 }
