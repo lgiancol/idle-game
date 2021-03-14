@@ -1,8 +1,8 @@
 import '../../../../../ui/LuuButton';
 import LuuButton from '../../../../../ui/LuuButton';
 import Upgrade from "../../../upgrades/Upgrade";
-import ResourceUpgradeManager from "../../../upgrade-managers/resource-upgrade-managers/ResourceUpgradeManager";
-import CollectSpeedUpgrade from "../../../upgrades/resource-upgrades/CollectSpeedUpgrade";
+import ResourceUpgradeManager from "../../../resources/upgrades/upgrade-managers/ResourceUpgradeManager";
+import CollectSpeedUpgrade from "../../../resources/upgrades/CollectSpeedUpgrade";
 import UpgradeGameObject from "../../UpgradeGameObject";
 
 export class ResourceUpgradeMarketGroupComponent extends UpgradeGameObject {

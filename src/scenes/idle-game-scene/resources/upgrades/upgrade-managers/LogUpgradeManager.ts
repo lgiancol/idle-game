@@ -1,7 +1,7 @@
-import Log from "../../resources/Log";
-import ResourceManager from "../../resources/resource-managers/ResourceManager";
-import Upgrade from "../../upgrades/Upgrade";
-import CollectSpeedUpgrade from "../../upgrades/resource-upgrades/CollectSpeedUpgrade";
+import Log from "../../Log";
+import ResourceManager from "../../resource-managers/ResourceManager";
+import Upgrade from "../../../upgrades/Upgrade";
+import CollectSpeedUpgrade from "../CollectSpeedUpgrade";
 import ResourceUpgradeManager from "./ResourceUpgradeManager";
 
 export default class LogUpgradeManager extends ResourceUpgradeManager<Log> {

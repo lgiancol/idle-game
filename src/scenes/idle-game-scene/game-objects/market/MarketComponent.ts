@@ -1,5 +1,5 @@
 import MarketManager from "../../market-manager/MarketManager";
-import ResourceUpgradeManager from "../../upgrade-managers/resource-upgrade-managers/ResourceUpgradeManager";
+import ResourceUpgradeManager from "../../resources/upgrades/upgrade-managers/ResourceUpgradeManager";
 import { ResourceUpgradeMarketGroupComponent } from "./resource-upgrade-market-groups/ResourceUpgradeMarketGroupComponent";
 
 export default class MarketComponent extends Phaser.GameObjects.Rectangle {

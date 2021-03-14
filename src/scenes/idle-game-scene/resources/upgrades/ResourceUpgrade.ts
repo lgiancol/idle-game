@@ -1,4 +1,4 @@
-import Upgrade from "../Upgrade";
+import Upgrade from "../../upgrades/Upgrade";
 
 export default abstract class ResourceUpgrade extends Upgrade {
 	public constructor(level: number, name: string, type: string, cost: number) {

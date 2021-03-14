@@ -1,11 +1,11 @@
-import Queue from "../../../../utils/queue/Queue";
-import Log from "../../resources/Log";
-import Resource from "../../resources/Resource";
-import ResourceManager from "../../resources/resource-managers/ResourceManager";
-import ResourceUpgrade from "../../upgrades/resource-upgrades/ResourceUpgrade";
-import Upgrade from "../../upgrades/Upgrade";
-import CollectSpeedUpgrade from "../../upgrades/resource-upgrades/CollectSpeedUpgrade";
-import UpgradeManager from "../UpgradeManager";
+import Queue from "../../../../../utils/queue/Queue";
+import Log from "../../Log";
+import Resource from "../../Resource";
+import ResourceManager from "../../resource-managers/ResourceManager";
+import ResourceUpgrade from "../ResourceUpgrade";
+import Upgrade from "../../../upgrades/Upgrade";
+import CollectSpeedUpgrade from "../CollectSpeedUpgrade";
+import UpgradeManager from "../../../upgrades/UpgradeManager";
 
 export default abstract class ResourceUpgradeManager<T extends Resource> extends UpgradeManager<T> {
 	public constructor(public resourceManager: ResourceManager<Log>) {

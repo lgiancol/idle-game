@@ -1,7 +1,7 @@
-import Coal from "../../resources/Coal";
-import ResourceManager from "../../resources/resource-managers/ResourceManager";
-import Upgrade from "../../upgrades/Upgrade";
-import CollectSpeedUpgrade from "../../upgrades/resource-upgrades/CollectSpeedUpgrade";
+import Coal from "../../Coal";
+import ResourceManager from "../../resource-managers/ResourceManager";
+import Upgrade from "../../../upgrades/Upgrade";
+import CollectSpeedUpgrade from "../CollectSpeedUpgrade";
 import ResourceUpgradeManager from "./ResourceUpgradeManager";
 
 export default class CoalUpgradeManager extends ResourceUpgradeManager<Coal> {

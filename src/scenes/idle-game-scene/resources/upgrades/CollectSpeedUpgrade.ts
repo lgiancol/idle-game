@@ -1,5 +1,5 @@
 import ResourceUpgrade from "./ResourceUpgrade";
-import Upgrade from "../Upgrade";
+import Upgrade from "../../upgrades/Upgrade";
 
 export default class CollectSpeedUpgrade extends ResourceUpgrade {
 	public constructor(level: number, name: string, public collectSpeedMultiplier: number, cost: number) {
