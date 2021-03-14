@@ -4,12 +4,15 @@ import '../../ui/LuuButton';
 import './game-objects/Home';
 import './game-objects/market/MarketGameObject';
 import './game-objects/resource-collectors/LogResourceCollector';
+import './game-objects/resource-collectors/CoalResourceCollector';
 import './game-objects/resource-upgrades/ResourceUpgradeGameObject';
 import CampManager from './home-managers/CampManager';
 import HomeManager from './home-managers/HomeManager';
 import MarketManager from './market-manager/MarketManager';
 import { ResourceType } from './resources/Resource';
+import CoalManager from './resources/resource-managers/CoalManager';
 import LogManager from "./resources/resource-managers/LogManager";
+import CoalUpgradeManager from './upgrades/upgrade-managers/CoalUpgradeManager';
 import LogUpgradeManager from './upgrades/upgrade-managers/LogUpgradeManager';
 
 export class IdleGameScene extends Phaser.Scene {
@@ -18,7 +21,7 @@ export class IdleGameScene extends Phaser.Scene {
 	
 	// All the resources available to the user
 	public logManager = new LogManager();
-	// public coalManager = new CoalManager();
+	public coalManager = new CoalManager();
 	
 	public marketManager: MarketManager;
 
@@ -44,6 +47,7 @@ export class IdleGameScene extends Phaser.Scene {
 
 		// Set all the upgrade managers this market can handle
 		this.marketManager.setUpgradeManager(ResourceType.LOG, new LogUpgradeManager(this.logManager));
+		this.marketManager.setUpgradeManager(ResourceType.COAL, new CoalUpgradeManager(this.coalManager));
 
 		// HOME
 		this.homeManager = new CampManager(this.logManager);
@@ -51,11 +55,12 @@ export class IdleGameScene extends Phaser.Scene {
 		this.add.home(this.homeManager, 200, 200);
 
 		this.add.logResourceCollector(this.logManager, 10, 10);
-		// this.add.resourceCollector<Coal>(this.coalManager, 200, 10);
+		this.add.coalResourceCollector(this.coalManager, 200, 10);
 	}
 	
 	public update(time: number, delta: number) {
 		this.logManager.update(delta);
+		this.coalManager.update(delta);
 		this.homeManager.update(delta);
 	}
 }
