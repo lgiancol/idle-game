@@ -1,3 +1,4 @@
+import Queue from "../../../../utils/queue/Queue";
 import Log from "../../resources/Log";
 import Resource from "../../resources/Resource";
 import ResourceManager from "../../resources/resource-managers/ResourceManager";
@@ -11,10 +12,7 @@ export default abstract class ResourceUpgradeManager<T extends Resource> extends
 		super();
 
 		this.upgrades = {
-			[Upgrade.Type.COLLECT_SPEED]: []
-		};
-		this.currentUpgradeIndex = {
-			[Upgrade.Type.COLLECT_SPEED]: 0
+			[Upgrade.Type.COLLECT_SPEED]: new Queue<Upgrade>()
 		};
 	}
 
@@ -23,18 +21,16 @@ export default abstract class ResourceUpgradeManager<T extends Resource> extends
 	}
 
 	public getCurrentUpgrade(upgradeName: string) {
-		return this.upgrades[upgradeName][this.currentUpgradeIndex[upgradeName]] as ResourceUpgrade;
+		return this.upgrades[upgradeName].peek() as ResourceUpgrade;
 	}
 
-	public buyCollectSpeedUpgrade(level: number) {
-		let upgrade = this.upgrades[Upgrade.Type.COLLECT_SPEED][level - 1] as CollectSpeedUpgrade; // Levels != index
+	public buyCollectSpeedUpgrade() {
+		let upgrade = this.upgrades[Upgrade.Type.COLLECT_SPEED].dequeue() as CollectSpeedUpgrade; // Levels != index
 		
 		this.resourceManager.resourceQuantity.decreaseQuantity(upgrade.cost);
 		if(this.resourceManager.autoCollectSpeed == 0) {
 			this.resourceManager.autoCollectSpeed = 1;
 		}
 		this.resourceManager.autoCollectSpeed *= upgrade.collectSpeedMultiplier;
-
-		this.currentUpgradeIndex[Upgrade.Type.COLLECT_SPEED]++;
 	}
 } 

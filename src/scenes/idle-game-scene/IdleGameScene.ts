@@ -1,6 +1,9 @@
 // These are imported this way so we can get the type descriptors loaded for each game-object
 import { getGameHeight, getGameWidth } from '../../helpers';
 import '../../ui/LuuButton';
+import LinkedList from '../../utils/linked-list/LinkedList';
+import ListNode from '../../utils/linked-list/ListNode';
+import Queue from '../../utils/queue/Queue';
 import './game-objects';
 import CampManager from './home-managers/CampManager';
 import HomeManager from './home-managers/HomeManager';
@@ -20,7 +23,6 @@ export class IdleGameScene extends Phaser.Scene {
 	public coalManager = new CoalManager();
 	
 	public marketManager: MarketManager;
-
 
 	public constructor() {
 		super({key: 'IdleGame'});
