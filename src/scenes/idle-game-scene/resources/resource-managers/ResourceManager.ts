@@ -1,10 +1,14 @@
 import Resource from "../Resource";
+import ResourceUpgrade from "../upgrades/ResourceUpgrade";
+import LogUpgradeManager from "../upgrades/upgrade-managers/LogUpgradeManager";
+import ResourceUpgradeManager from "../upgrades/upgrade-managers/ResourceUpgradeManager";
 import ResourceCollector from "./resource-collector/ResourceCollector";
 import ResourceSeller from "./resource-seller/ResourceSeller";
 
 export default class ResourceManager {
 	private _resourceCollector: ResourceCollector = new ResourceCollector();
 	private _resourceSeller: ResourceSeller = new ResourceSeller();
+	private _resourceUpgrades: ResourceUpgradeManager = new LogUpgradeManager();
 
 	public constructor(public resourceType: string, public resource: Resource) {}
 
@@ -24,10 +28,7 @@ export default class ResourceManager {
 		this._resourceCollector.update(delta);
 	}
 
-	public updateCollectorProperty(propertyName: string, value: any) {
-		this._resourceCollector[propertyName] = value;
-	}
-
+	// COLLECTING AREA
 	public collectResource(amountToCollect: number) {
 		this._resourceCollector.increaseQuantity(amountToCollect);
 	}
@@ -36,6 +37,7 @@ export default class ResourceManager {
 		this._resourceCollector.decreaseQuantity(amountToRemove);
 	}
 
+	// SELLING AREA
 	public sellResource(amountToSell: number) {
 		if(this._resourceCollector.quantity >= amountToSell) {
 			this._resourceCollector.decreaseQuantity(amountToSell);
@@ -43,6 +45,21 @@ export default class ResourceManager {
 		}
 
 		return -1;
+	}
+
+	// UPGRADING AREA
+	public getCurrentUpgrade(upgradeType: string) {
+		return this._resourceUpgrades.peekCurrentUpgrade(upgradeType);
+	}
+	
+	public buyUpgrade(upgradeType: string) {
+		let upgrade = this._resourceUpgrades.
+		upgrades[upgradeType].dequeue() as ResourceUpgrade; // Levels != index
+		
+		this.removeResource(upgrade.cost); // TODO: This should actually change to be money
+		Object.entries(upgrade.upgradeValues).forEach((upgradeValueEntry: [string, number]) => {
+			this._resourceCollector[upgradeValueEntry[0]] = upgradeValueEntry[1];
+		});
 	}
 
 	public hasMinimumOf(min: number) {

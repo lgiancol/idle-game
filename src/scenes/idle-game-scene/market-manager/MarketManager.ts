@@ -1,4 +1,5 @@
 import Resource, { ResourceType } from "../resources/Resource";
+import ResourceManager from "../resources/resource-managers/ResourceManager";
 import ResourceUpgradeManager from "../resources/upgrades/upgrade-managers/ResourceUpgradeManager";
 
 export default class MarketManager extends Phaser.Events.EventEmitter {
@@ -6,12 +7,12 @@ export default class MarketManager extends Phaser.Events.EventEmitter {
 
 	// All the upgrades by resource
 	// All the upgrades available to the user
-	private resourceUpgradeManagers: {[resourceName: string]: ResourceUpgradeManager};
+	private managers: {[resourceName: string]: ResourceManager}; // TODO: This should end up being just a manager type
 	private activeResource: ResourceType = null;
 
 	public constructor() {
 		super();
-		this.resourceUpgradeManagers = {};
+		this.managers = {};
 	}
 
 	public getActiveResource() {
@@ -20,18 +21,18 @@ export default class MarketManager extends Phaser.Events.EventEmitter {
 
 	public setActiveResource(activeResource: ResourceType) {
 		this.activeResource = activeResource;
-		this.emit('activeresourcechange', this.getActiveResourceManager());
+		this.emit('activeresourcechange', this.getActiveManager());
 	}
 
-	public getActiveResourceManager() {
-		return this.resourceUpgradeManagers[this.activeResource];
+	public getActiveManager() {
+		return this.managers[this.activeResource];
 	}
 
-	public setUpgradeManager(resourceType: ResourceType, resourceUpgradeManager: ResourceUpgradeManager) {
-		this.resourceUpgradeManagers[resourceType] = resourceUpgradeManager;
+	public addResourceManager(resourceType: ResourceType, resourceUpgradeManager: ResourceManager) {
+		this.managers[resourceType] = resourceUpgradeManager;
 	}
 
 	public getUpgradeManager(resourceType: ResourceType) {
-		return this.resourceUpgradeManagers[resourceType];
+		return this.managers[resourceType];
 	}
 }

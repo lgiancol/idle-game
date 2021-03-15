@@ -1,12 +1,10 @@
 import UpgradeType from "../../../upgrades/UpgradeType";
-import Coal from "../../Coal";
-import ResourceManager from "../../resource-managers/ResourceManager";
-import CollectSpeedUpgrade from "../CollectSpeedUpgrade";
+import ResourceUpgrade, { ResourceUpgradeValue } from "../ResourceUpgrade";
 import ResourceUpgradeManager from "./ResourceUpgradeManager";
 
 export default class CoalUpgradeManager extends ResourceUpgradeManager {
-	public constructor(resourceManager: ResourceManager) {
-		super(resourceManager);
+	public constructor() {
+		super();
 
 		this.initializeUpgrades();
 	}
@@ -17,15 +15,12 @@ export default class CoalUpgradeManager extends ResourceUpgradeManager {
 		for(let i = 0; i < 10; i++) {
 			let upgradeCost = Math.round(baseCost * Math.pow(2.65, i));
 			let upgradeSpeed = Math.round(baseSpeed * 1.8);
-			this.upgrades[UpgradeType.COLLECT_SPEED].enqueue(new CollectSpeedUpgrade(i + 1, 'COAL_COLLECT_SPEED_INCREASE_' + i, upgradeSpeed, upgradeCost));
-		}
-	}
 
-	public buyUpgrade(upgradeGroup: string) {
-		switch(upgradeGroup) {
-			case UpgradeType.COLLECT_SPEED: {
-				this.buyCollectSpeedUpgrade();
-			}
+			const upgradeValues = {
+				autoCollectMultiplier: upgradeSpeed
+			} as ResourceUpgradeValue;
+			const collectSpeedUpgrade = new ResourceUpgrade('COAL_COLLECT_SPEED_INCREASE_' + i, UpgradeType.COLLECT_SPEED, upgradeCost, upgradeValues);
+			this.upgrades[UpgradeType.COLLECT_SPEED].enqueue(collectSpeedUpgrade);
 		}
 	}
 }

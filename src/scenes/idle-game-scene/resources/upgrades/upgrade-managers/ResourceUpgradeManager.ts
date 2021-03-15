@@ -9,7 +9,7 @@ import CollectSpeedUpgrade from "../CollectSpeedUpgrade";
 import ResourceUpgrade from "../ResourceUpgrade";
 
 export default abstract class ResourceUpgradeManager extends UpgradeManager {
-	public constructor(public resourceManager: ResourceManager) {
+	public constructor() {
 		super();
 
 		this.upgrades = {
@@ -17,18 +17,18 @@ export default abstract class ResourceUpgradeManager extends UpgradeManager {
 		};
 	}
 
-	public canAffordUpgrade(upgrade: Upgrade) {
-		return this.resourceManager.hasMinimumOf(upgrade.cost);
-	}
-
-	public getCurrentUpgrade(upgradeName: string) {
+	public peekCurrentUpgrade(upgradeName: string) {
 		return this.upgrades[upgradeName].peek() as ResourceUpgrade;
 	}
 
-	public buyCollectSpeedUpgrade() {
-		let upgrade = this.upgrades[UpgradeType.COLLECT_SPEED].dequeue() as CollectSpeedUpgrade; // Levels != index
-		
-		this.resourceManager.removeResource(upgrade.cost); // TODO: This should actually change to be money
-		this.resourceManager.updateCollectorProperty('autoCollectMultiplier', upgrade.collectSpeedMultiplier);
+	public dequeueUpgrade(upgradeName: string) {
+		return this.upgrades[upgradeName].dequeue();
 	}
+
+	// public buyCollectSpeedUpgrade() {
+	// 	let upgrade = this.upgrades[UpgradeType.COLLECT_SPEED].dequeue() as CollectSpeedUpgrade; // Levels != index
+		
+	// 	this.resourceManager.removeResource(upgrade.cost); // TODO: This should actually change to be money
+	// 	this.resourceManager.updateCollectorProperty('autoCollectMultiplier', upgrade.collectSpeedMultiplier);
+	// }
 } 

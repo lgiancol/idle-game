@@ -1,9 +1,10 @@
 import MarketManager from "../../market-manager/MarketManager";
+import ResourceManager from "../../resources/resource-managers/ResourceManager";
 import UpgradeManager from "../../upgrades/UpgradeManager";
 import MarketGroupComponent from "./MarketGroupComponent";
 
 export default class MarketComponent extends Phaser.GameObjects.Rectangle {
-	private activeMarketGroup: MarketGroupComponent;
+	private marketGroup: MarketGroupComponent; // TODO: Needs to be updated to actually be a Tab
 
 	public constructor(scene: Phaser.Scene, public marketManager: MarketManager, x: number, y: number, width: number, height: number) {
 		super(scene, x, y, width, height);
@@ -11,14 +12,14 @@ export default class MarketComponent extends Phaser.GameObjects.Rectangle {
 	}
 
 	private init() {
-		const activeUpgradeManager = this.marketManager.getActiveResourceManager();
-		this.activeMarketGroup = this.scene.add.resourceUpgradeMarketGroup(activeUpgradeManager, this.x, this.y, this.width, this.height);
+		const activeManager = this.marketManager.getActiveManager();
+		this.marketGroup = this.scene.add.resourceUpgradeMarketGroup(activeManager, this.x, this.y, this.width, this.height);
 		
-		this.marketManager.on('activeresourcechange', this.setActiveUpgradeResourceManagerGo.bind(this));
+		this.marketManager.on('activeresourcechange', this.setActiveUpgradeResourceManager.bind(this));
 	}
 
-	private setActiveUpgradeResourceManagerGo(upgradeManager: UpgradeManager) {
-		this.activeMarketGroup.activeUpgradeManager = upgradeManager;
+	private setActiveUpgradeResourceManager(resourceManager: ResourceManager) {
+		this.marketGroup.activeResourceManager = resourceManager;
 	}
 }
 
