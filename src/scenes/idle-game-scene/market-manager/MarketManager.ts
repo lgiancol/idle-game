@@ -6,7 +6,7 @@ export default class MarketManager extends Phaser.Events.EventEmitter {
 
 	// All the upgrades by resource
 	// All the upgrades available to the user
-	public resourceUpgradeManagers: {[resourceName: string]: ResourceUpgradeManager<any>};
+	private resourceUpgradeManagers: {[resourceName: string]: ResourceUpgradeManager<any>};
 	private activeResource: ResourceType = null;
 
 	public constructor() {
