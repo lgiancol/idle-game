@@ -2,7 +2,6 @@ import '../../../../../ui/LuuButton';
 import LuuButton from '../../../../../ui/LuuButton';
 import CollectSpeedUpgrade from "../../../resources/upgrades/CollectSpeedUpgrade";
 import ResourceUpgradeManager from "../../../resources/upgrades/upgrade-managers/ResourceUpgradeManager";
-import Upgrade from "../../../upgrades/Upgrade";
 import UpgradeType from '../../../upgrades/UpgradeType';
 import MarketGroupComponent from "../MarketGroupComponent";
 
@@ -10,7 +9,7 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 	private resourceLabel: Phaser.GameObjects.Text;
 	private collectSpeedUpgrade: LuuButton;
 
-	public constructor(scene: Phaser.Scene, resourceUpgradeManager: ResourceUpgradeManager<any>, x: number, y: number, width: number = 100, height: number = 75) {
+	public constructor(scene: Phaser.Scene, resourceUpgradeManager: ResourceUpgradeManager, x: number, y: number, width: number = 100, height: number = 75) {
 		super(scene, resourceUpgradeManager, x, y, width, height);
 		this.init();
 	}
@@ -20,7 +19,7 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 			this.resourceLabel?.destroy();
 			this.collectSpeedUpgrade?.destroy();
 
-			let resourceUpgradeManager = this.activeUpgradeManager as ResourceUpgradeManager<any>;
+			let resourceUpgradeManager = this.activeUpgradeManager as ResourceUpgradeManager;
 			this.setStrokeStyle(1, 0xffffff);
 			
 			this.resourceLabel = this.scene.add.text(this.x + 10, this.y + 10, `${resourceUpgradeManager.resourceManager.resource.name}`)
@@ -40,7 +39,7 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 		
 	}
 
-	private initUpgradeButton(resourceUpgradeManager: ResourceUpgradeManager<any>, upgradeType: string) {
+	private initUpgradeButton(resourceUpgradeManager: ResourceUpgradeManager, upgradeType: string) {
 		let currentUpgrade = resourceUpgradeManager.getCurrentUpgrade(UpgradeType[upgradeType]);
 
 		const padding = 10;
@@ -58,7 +57,7 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 
 	private updateUpgradeButtons() {
 		if(this.collectSpeedUpgrade) {
-			let resourceUpgradeManager = this.activeUpgradeManager as ResourceUpgradeManager<any>;
+			let resourceUpgradeManager = this.activeUpgradeManager as ResourceUpgradeManager;
 			const upgrade = this.collectSpeedUpgrade.getData('upgrade');
 			if(upgrade) {
 				// Need to keep track of if it's enabled
@@ -68,7 +67,7 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 	}
 
 	public onCollectSpeedUpgradeClick() {
-		let resourceUpgradeManager = this.activeUpgradeManager as ResourceUpgradeManager<any>;
+		let resourceUpgradeManager = this.activeUpgradeManager as ResourceUpgradeManager;
 		const upgrade = this.collectSpeedUpgrade.getData('upgrade') as CollectSpeedUpgrade;
 		if(resourceUpgradeManager && resourceUpgradeManager.canAffordUpgrade(upgrade)) {
 			resourceUpgradeManager.buyUpgrade(upgrade.type);
@@ -90,7 +89,7 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 
 Phaser.GameObjects.GameObjectFactory.register(
 	'resourceUpgradeMarketGroup',
-	function(this: Phaser.GameObjects.GameObjectFactory, resourceUpgradeManager: ResourceUpgradeManager<any>, x: number, y: number, width: number = 100, height: number = 84) {
+	function(this: Phaser.GameObjects.GameObjectFactory, resourceUpgradeManager: ResourceUpgradeManager, x: number, y: number, width: number = 100, height: number = 84) {
 		const resourceUpgrade = new ResourceUpgradeMarketGroupComponent(this.scene, resourceUpgradeManager, x, y, width, height);
 		resourceUpgrade.setOrigin(0);
 		
@@ -107,7 +106,7 @@ declare global
 	{
 		interface GameObjectFactory
 		{
-			resourceUpgradeMarketGroup(resourceUpgradeManager: ResourceUpgradeManager<any>, x: number, y: number, width?: number, height?: number): ResourceUpgradeMarketGroupComponent
+			resourceUpgradeMarketGroup(resourceUpgradeManager: ResourceUpgradeManager, x: number, y: number, width?: number, height?: number): ResourceUpgradeMarketGroupComponent
 		}
 	}
 }

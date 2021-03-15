@@ -1,4 +1,3 @@
-import ResourceManager from "./resource-managers/ResourceManager";
 
 export enum ResourceType {
 	LOG,

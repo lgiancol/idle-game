@@ -4,8 +4,8 @@ import ResourceManager from "../../resource-managers/ResourceManager";
 import CollectSpeedUpgrade from "../CollectSpeedUpgrade";
 import ResourceUpgradeManager from "./ResourceUpgradeManager";
 
-export default class LogUpgradeManager extends ResourceUpgradeManager<Log> {
-	public constructor(resourceManager: ResourceManager<Log>) {
+export default class LogUpgradeManager extends ResourceUpgradeManager {
+	public constructor(resourceManager: ResourceManager) {
 		super(resourceManager);
 
 		this.initializeUpgrades();

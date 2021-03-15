@@ -1,8 +1,7 @@
 import Coal from "../Coal";
-import Log from "../Log";
 import ResourceManager from "./ResourceManager";
 
-export default class CoalManager extends ResourceManager<Coal> {
+export default class CoalManager extends ResourceManager {
 	public constructor() {
 		super('Coal', new Coal());
 	}

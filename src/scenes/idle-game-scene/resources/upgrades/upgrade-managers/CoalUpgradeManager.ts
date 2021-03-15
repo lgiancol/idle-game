@@ -4,8 +4,8 @@ import ResourceManager from "../../resource-managers/ResourceManager";
 import CollectSpeedUpgrade from "../CollectSpeedUpgrade";
 import ResourceUpgradeManager from "./ResourceUpgradeManager";
 
-export default class CoalUpgradeManager extends ResourceUpgradeManager<Coal> {
-	public constructor(resourceManager: ResourceManager<Coal>) {
+export default class CoalUpgradeManager extends ResourceUpgradeManager {
+	public constructor(resourceManager: ResourceManager) {
 		super(resourceManager);
 
 		this.initializeUpgrades();

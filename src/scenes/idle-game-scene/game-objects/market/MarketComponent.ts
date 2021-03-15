@@ -17,7 +17,7 @@ export default class MarketComponent extends Phaser.GameObjects.Rectangle {
 		this.marketManager.on('activeresourcechange', this.setActiveUpgradeResourceManagerGo.bind(this));
 	}
 
-	private setActiveUpgradeResourceManagerGo(upgradeManager: UpgradeManager<any>) {
+	private setActiveUpgradeResourceManagerGo(upgradeManager: UpgradeManager) {
 		this.activeMarketGroup.activeUpgradeManager = upgradeManager;
 	}
 }

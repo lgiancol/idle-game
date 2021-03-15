@@ -8,8 +8,8 @@ import ResourceManager from "../../resource-managers/ResourceManager";
 import CollectSpeedUpgrade from "../CollectSpeedUpgrade";
 import ResourceUpgrade from "../ResourceUpgrade";
 
-export default abstract class ResourceUpgradeManager<T extends Resource> extends UpgradeManager<T> {
-	public constructor(public resourceManager: ResourceManager<Log>) {
+export default abstract class ResourceUpgradeManager extends UpgradeManager {
+	public constructor(public resourceManager: ResourceManager) {
 		super();
 
 		this.upgrades = {

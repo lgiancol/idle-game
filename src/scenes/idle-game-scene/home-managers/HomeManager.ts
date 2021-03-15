@@ -5,7 +5,7 @@ export default abstract class HomeManager {
 	private currentFuelIndex = -1;
 	public totalRemaingFuel = 0;
 
-	public constructor(public homeType: string, public resourceManager: ResourceManager<any>, public fuelLimit: number, public fuelUseSpeed: number) {
+	public constructor(public homeType: string, public resourceManager: ResourceManager, public fuelLimit: number, public fuelUseSpeed: number) {
 		this.fuel = [];
 	}
 

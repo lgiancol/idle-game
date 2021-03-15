@@ -6,7 +6,7 @@ export default class MarketManager extends Phaser.Events.EventEmitter {
 
 	// All the upgrades by resource
 	// All the upgrades available to the user
-	private resourceUpgradeManagers: {[resourceName: string]: ResourceUpgradeManager<any>};
+	private resourceUpgradeManagers: {[resourceName: string]: ResourceUpgradeManager};
 	private activeResource: ResourceType = null;
 
 	public constructor() {
@@ -27,11 +27,11 @@ export default class MarketManager extends Phaser.Events.EventEmitter {
 		return this.resourceUpgradeManagers[this.activeResource];
 	}
 
-	public setUpgradeManager<T extends Resource>(resourceType: ResourceType, resourceUpgradeManager: ResourceUpgradeManager<T>) {
+	public setUpgradeManager(resourceType: ResourceType, resourceUpgradeManager: ResourceUpgradeManager) {
 		this.resourceUpgradeManagers[resourceType] = resourceUpgradeManager;
 	}
 
-	public getUpgradeManager<T extends Resource>(resourceType: ResourceType) {
-		return this.resourceUpgradeManagers[resourceType] as ResourceUpgradeManager<T>;
+	public getUpgradeManager(resourceType: ResourceType) {
+		return this.resourceUpgradeManagers[resourceType];
 	}
 }

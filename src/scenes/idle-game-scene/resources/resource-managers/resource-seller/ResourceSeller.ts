@@ -13,4 +13,8 @@ export default class ResourceSeller {
 	set valueMultiplier(valueMultiplier: number) {
 		this._valueMultiplier = valueMultiplier;
 	}
+
+	public sellResource(resourcesSold: number) {
+		return this.valuePer * resourcesSold;
+	}
 }

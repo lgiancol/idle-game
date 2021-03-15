@@ -1,7 +1,7 @@
 import UpgradeManager from "../../upgrades/UpgradeManager";
 
 export default abstract class MarketGroupComponent extends Phaser.GameObjects.Rectangle {
-	public constructor(scene: Phaser.Scene, private _activeUpgradeManager: UpgradeManager<any>, x: number, y: number, width: number, height: number) {
+	public constructor(scene: Phaser.Scene, private _activeUpgradeManager: UpgradeManager, x: number, y: number, width: number, height: number) {
 		super(scene, x, y, width, height);
 	}
 
@@ -9,7 +9,7 @@ export default abstract class MarketGroupComponent extends Phaser.GameObjects.Re
 		return this._activeUpgradeManager;
 	}
 
-	set activeUpgradeManager(activeUpgradeManager: UpgradeManager<any>) {
+	set activeUpgradeManager(activeUpgradeManager: UpgradeManager) {
 		this._activeUpgradeManager = activeUpgradeManager;
 		this.init();
 	}
