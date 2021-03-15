@@ -2,11 +2,22 @@ export default class ResourceCollector {
 	private  _quantity: number = 0;
 	private trueQuantity: number = 0;
 
-	public manualCollectSpeed: number = 1;
-	public autoCollectSpeed: number = 0;
+	private _manualCollectSpeed: number = 1;
+	private _manualCollectMultiplier: number = 1;
+
+	private _baseCollectSpeed: number = 1;
+	public autoCollectMultiplier: number = 0;
 
 	get quantity() {
 		return this._quantity;
+	}
+
+	get manualCollectSpeed() {
+		return this._manualCollectSpeed;
+	}
+
+	get autoCollectSpeed() {
+		return this._baseCollectSpeed * this.autoCollectMultiplier;
 	}
 
 	public increaseQuantity(increaseBy: number) {

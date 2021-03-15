@@ -3,37 +3,49 @@ import ResourceCollector from "./resource-collector/ResourceCollector";
 import ResourceSeller from "./resource-seller/ResourceSeller";
 
 export default class ResourceManager {
-	protected _resourceCollector: ResourceCollector = new ResourceCollector();
-	protected _resourceSeller: ResourceSeller = new ResourceSeller();
+	private _resourceCollector: ResourceCollector = new ResourceCollector();
+	private _resourceSeller: ResourceSeller = new ResourceSeller();
 
 	public constructor(public resourceType: string, public resource: Resource) {}
 
-	get resourceCollector() {
-		return this._resourceCollector;
+	get autoCollectSpeed() {
+		return this._resourceCollector.autoCollectSpeed;
 	}
 
-	get resourceSeller() {
-		return this._resourceSeller;
+	get clickCollectSpeed() {
+		return this._resourceCollector.manualCollectSpeed;
+	}
+
+	get quantity() {
+		return this._resourceCollector.quantity;
 	}
 
 	public update(delta: number) {
-		this.resourceCollector.update(delta);
+		this._resourceCollector.update(delta);
 	}
 
-	public collectResource() {
+	public updateCollectorProperty(propertyName: string, value: any) {
+		this._resourceCollector[propertyName] = value;
+	}
 
+	public collectResource(amountToCollect: number) {
+		this._resourceCollector.increaseQuantity(amountToCollect);
+	}
+
+	public removeResource(amountToRemove: number) {
+		this._resourceCollector.decreaseQuantity(amountToRemove);
 	}
 
 	public sellResource(amountToSell: number) {
-		if(this.resourceCollector.quantity >= amountToSell) {
-			this.resourceCollector.decreaseQuantity(amountToSell);
-			return this.resourceSeller.sellResource(amountToSell);
+		if(this._resourceCollector.quantity >= amountToSell) {
+			this._resourceCollector.decreaseQuantity(amountToSell);
+			return this._resourceSeller.sellResource(amountToSell);
 		}
 
 		return -1;
 	}
 
 	public hasMinimumOf(min: number) {
-		return this.resourceCollector.quantity >= min;
+		return this._resourceCollector.quantity >= min;
 	}
 }

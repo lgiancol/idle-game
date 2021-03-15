@@ -1,18 +1,19 @@
 import MarketManager from "../../market-manager/MarketManager";
 import { ResourceType } from "../../resources/Resource";
-import ResourceCollector from "../../resources/resource-managers/resource-collector/ResourceCollector";
+import LogManager from "../../resources/resource-managers/LogManager";
+import ResourceManager from "../../resources/resource-managers/ResourceManager";
 import ResourceCollectorComponent from "./ResourceCollectorComponent";
 
 export default class LogResourceCollector extends ResourceCollectorComponent {
-	public constructor(scene: Phaser.Scene, resourceCollector: ResourceCollector, public x: number, public y: number, public width = 100, public height = 84) {
-		super(scene, 'Log', resourceCollector, x, y);
+	public constructor(scene: Phaser.Scene, resourceManager: ResourceManager, public x: number, public y: number, public width = 100, public height = 84) {
+		super(scene, 'Log', resourceManager, x, y);
 	}
 }
 
 Phaser.GameObjects.GameObjectFactory.register(
 	'logResourceCollector',
-	function(this: Phaser.GameObjects.GameObjectFactory, resourceCollector: ResourceCollector, x: number, y: number, width: number = 100, height: number = 84) {
-		const resourceCollectorComponent = new LogResourceCollector(this.scene, resourceCollector, x, y, width, height);
+	function(this: Phaser.GameObjects.GameObjectFactory, resourceManager: ResourceManager, x: number, y: number, width: number = 100, height: number = 84) {
+		const resourceCollectorComponent = new LogResourceCollector(this.scene, resourceManager, x, y, width, height);
 		resourceCollectorComponent.setOrigin(0);
 		
 		this.displayList.add(resourceCollectorComponent);
@@ -21,7 +22,8 @@ Phaser.GameObjects.GameObjectFactory.register(
 		resourceCollectorComponent.setInteractive({useHandCursor: true});
 
 		function onClick() {
-			resourceCollectorComponent.resourceCollector.increaseQuantity(resourceCollectorComponent.resourceCollector.manualCollectSpeed);
+			const resourceManager = resourceCollectorComponent.resourceManager as LogManager;
+			resourceManager.collectResource(resourceManager.clickCollectSpeed);
 
 			const marketManager = (resourceCollectorComponent.scene.data.get('marketManager') as MarketManager);
 			const currentActiveResource = marketManager.getActiveResource();
@@ -33,7 +35,7 @@ Phaser.GameObjects.GameObjectFactory.register(
 		}
 
 		resourceCollectorComponent.on('pointerdown', onClick.bind(this));
-		return resourceCollector;
+		return resourceManager;
 	}
 );
 
@@ -43,7 +45,7 @@ declare global
 	{
 		interface GameObjectFactory
 		{
-			logResourceCollector(resourceCollector: ResourceCollector, x: number, y: number, width?: number, height?: number): LogResourceCollector
+			logResourceCollector(resourceManager: ResourceManager, x: number, y: number, width?: number, height?: number): LogResourceCollector
 		}
 	}
 }
