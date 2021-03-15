@@ -9,16 +9,20 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 	private resourceLabel: Phaser.GameObjects.Text;
 	private collectSpeedUpgrade: LuuButton;
 
-	public constructor(scene: Phaser.Scene, public resourceUpgradeManager: ResourceUpgradeManager<any>, x: number, y: number, width: number = 100, height: number = 75) {
-		super(scene, x, y, width, height);
+	public constructor(scene: Phaser.Scene, resourceUpgradeManager: ResourceUpgradeManager<any>, x: number, y: number, width: number = 100, height: number = 75) {
+		super(scene, resourceUpgradeManager, x, y, width, height);
 		this.init();
 	}
 
 	public init() {
-		if(this.resourceUpgradeManager) {
+		if(this.activeUpgradeManager) {
+			this.resourceLabel?.destroy();
+			this.collectSpeedUpgrade?.destroy();
+
+			let resourceUpgradeManager = this.activeUpgradeManager as ResourceUpgradeManager<any>;
 			this.setStrokeStyle(1, 0xffffff);
 			
-			this.resourceLabel = this.scene.add.text(this.x + 10, this.y + 10, `${this.resourceUpgradeManager?.resourceManager.resource.name}`)
+			this.resourceLabel = this.scene.add.text(this.x + 10, this.y + 10, `${resourceUpgradeManager.resourceManager.resource.name}`)
 			.setOrigin(0)
 			.setColor('white')
 			.setFontFamily('my-font')
@@ -26,15 +30,15 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 			
 			// Will go through all the different types of upgrades and create them
 			Object.keys(Upgrade.Type).forEach((upgradeType: string) => {
-				this.initUpgradeButton(upgradeType);
+				this.initUpgradeButton(resourceUpgradeManager, upgradeType);
 			});
 
 		}
 		
 	}
 
-	private initUpgradeButton(upgradeType: string) {
-		let currentUpgrade = this.resourceUpgradeManager.getCurrentUpgrade(Upgrade.Type[upgradeType]);
+	private initUpgradeButton(resourceUpgradeManager: ResourceUpgradeManager<any>, upgradeType: string) {
+		let currentUpgrade = resourceUpgradeManager.getCurrentUpgrade(Upgrade.Type[upgradeType]);
 
 		const padding = 10;
 		const buttonWidth = this.width - (padding * 2);
@@ -42,16 +46,7 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 		this.collectSpeedUpgrade = this.scene.add.luuButton(this.x + 10, this.y + 55, buttonWidth, buttonHeight, currentUpgrade.name + ` $${currentUpgrade.cost}`)
 		.setData('upgrade', currentUpgrade)
 		.addListener('pointerup', this.onCollectSpeedUpgradeClick.bind(this))
-		.setEnabled(this.resourceUpgradeManager.canAffordUpgrade(currentUpgrade));
-	}
-
-	public setActiveUpgradeManager(resourceUpgradeManager: ResourceUpgradeManager<any>) {
-		this.resourceUpgradeManager = resourceUpgradeManager;
-
-		this.resourceLabel?.destroy();
-		this.collectSpeedUpgrade?.destroy();
-
-		this.init();
+		.setEnabled(resourceUpgradeManager.canAffordUpgrade(currentUpgrade));
 	}
 
 	public preUpdate(delta: number) {
@@ -60,20 +55,22 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 
 	private updateUpgradeButtons() {
 		if(this.collectSpeedUpgrade) {
+			let resourceUpgradeManager = this.activeUpgradeManager as ResourceUpgradeManager<any>;
 			const upgrade = this.collectSpeedUpgrade.getData('upgrade');
 			if(upgrade) {
 				// Need to keep track of if it's enabled
-				this.collectSpeedUpgrade.setEnabled(this.resourceUpgradeManager.canAffordUpgrade(upgrade))
+				this.collectSpeedUpgrade.setEnabled(resourceUpgradeManager.canAffordUpgrade(upgrade))
 			}
 		}
 	}
 
 	public onCollectSpeedUpgradeClick() {
+		let resourceUpgradeManager = this.activeUpgradeManager as ResourceUpgradeManager<any>;
 		const upgrade = this.collectSpeedUpgrade.getData('upgrade') as CollectSpeedUpgrade;
-		if(this.resourceUpgradeManager.canAffordUpgrade(upgrade)) {
-			this.buyUpgrade(upgrade);
+		if(resourceUpgradeManager && resourceUpgradeManager.canAffordUpgrade(upgrade)) {
+			resourceUpgradeManager.buyUpgrade(upgrade.type);
 
-			let newUpgrade = this.resourceUpgradeManager.getCurrentUpgrade(Upgrade.Type.COLLECT_SPEED) as CollectSpeedUpgrade;
+			let newUpgrade = resourceUpgradeManager.getCurrentUpgrade(Upgrade.Type.COLLECT_SPEED) as CollectSpeedUpgrade;
 			this.collectSpeedUpgrade.setData('upgrade', newUpgrade);
 			if(newUpgrade) {
 				this.collectSpeedUpgrade.setText(newUpgrade.name + ` $${newUpgrade.cost}`);
@@ -86,14 +83,10 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 			
 		}
 	}
-
-	public buyUpgrade(toBuy: Upgrade) {
-		this.resourceUpgradeManager.buyUpgrade(toBuy.type, toBuy.level);
-	}
 }
 
 Phaser.GameObjects.GameObjectFactory.register(
-	'resourceUpgrade',
+	'resourceUpgradeMarketGroup',
 	function(this: Phaser.GameObjects.GameObjectFactory, resourceUpgradeManager: ResourceUpgradeManager<any>, x: number, y: number, width: number = 100, height: number = 84) {
 		const resourceUpgrade = new ResourceUpgradeMarketGroupComponent(this.scene, resourceUpgradeManager, x, y, width, height);
 		resourceUpgrade.setOrigin(0);
@@ -111,7 +104,7 @@ declare global
 	{
 		interface GameObjectFactory
 		{
-			resourceUpgrade(resourceUpgradeManager: ResourceUpgradeManager<any>, x: number, y: number, width?: number, height?: number): ResourceUpgradeMarketGroupComponent
+			resourceUpgradeMarketGroup(resourceUpgradeManager: ResourceUpgradeManager<any>, x: number, y: number, width?: number, height?: number): ResourceUpgradeMarketGroupComponent
 		}
 	}
 }

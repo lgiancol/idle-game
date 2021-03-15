@@ -1,9 +1,9 @@
 import MarketManager from "../../market-manager/MarketManager";
-import ResourceUpgradeManager from "../../resources/upgrades/upgrade-managers/ResourceUpgradeManager";
-import { ResourceUpgradeMarketGroupComponent } from "./resource-upgrade-market-groups/ResourceUpgradeMarketGroupComponent";
+import UpgradeManager from "../../upgrades/UpgradeManager";
+import MarketGroupComponent from "./MarketGroupComponent";
 
 export default class MarketComponent extends Phaser.GameObjects.Rectangle {
-	private resourceUpgradeMarketGroup: ResourceUpgradeMarketGroupComponent;
+	private activeMarketGroup: MarketGroupComponent;
 
 	public constructor(scene: Phaser.Scene, public marketManager: MarketManager, x: number, y: number, width: number, height: number) {
 		super(scene, x, y, width, height);
@@ -12,16 +12,16 @@ export default class MarketComponent extends Phaser.GameObjects.Rectangle {
 
 	private init() {
 		const activeUpgradeManager = this.marketManager.getActiveResourceManager();
-		this.resourceUpgradeMarketGroup = this.scene.add.resourceUpgrade(activeUpgradeManager, this.x, this.y, this.width, this.height);
+		this.activeMarketGroup = this.scene.add.resourceUpgradeMarketGroup(activeUpgradeManager, this.x, this.y, this.width, this.height);
 		
 		this.marketManager.on('activeresourcechange', this.setActiveUpgradeResourceManagerGo.bind(this));
 	}
 
-	public setActiveUpgradeResourceManagerGo(resourceManager: ResourceUpgradeManager<any>) {
-		this.resourceUpgradeMarketGroup.setActiveUpgradeManager(resourceManager);
+	public setActiveUpgradeResourceManagerGo(upgradeManager: UpgradeManager<any>) {
+		this.activeMarketGroup.activeUpgradeManager = upgradeManager;
 	}
 
-	public preUpdate() {}
+	// public preUpdate() {}
 }
 
 Phaser.GameObjects.GameObjectFactory.register(
@@ -31,7 +31,7 @@ Phaser.GameObjects.GameObjectFactory.register(
 		marketGameObject.setOrigin(0);
 		
 		this.displayList.add(marketGameObject);
-		this.updateList.add(marketGameObject);
+		// this.updateList.add(marketGameObject);
 
 		return marketGameObject;
 	}
