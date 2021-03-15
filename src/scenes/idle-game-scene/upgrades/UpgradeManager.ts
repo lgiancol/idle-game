@@ -5,6 +5,6 @@ export default abstract class UpgradeManager<T> {
 	public upgrades: {[upgradeGroup: string]: Queue<Upgrade>};
 
 	protected abstract initializeUpgrades();
-	public abstract canAffordUpgrade(upgrade: Upgrade);
+	public abstract canAffordUpgrade(upgrade: Upgrade): boolean;
 	public abstract buyUpgrade(upgradeGroup: string);
 }

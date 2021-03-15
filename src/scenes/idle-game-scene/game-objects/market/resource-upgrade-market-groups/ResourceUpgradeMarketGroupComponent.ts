@@ -1,8 +1,9 @@
 import '../../../../../ui/LuuButton';
 import LuuButton from '../../../../../ui/LuuButton';
-import Upgrade from "../../../upgrades/Upgrade";
-import ResourceUpgradeManager from "../../../resources/upgrades/upgrade-managers/ResourceUpgradeManager";
 import CollectSpeedUpgrade from "../../../resources/upgrades/CollectSpeedUpgrade";
+import ResourceUpgradeManager from "../../../resources/upgrades/upgrade-managers/ResourceUpgradeManager";
+import Upgrade from "../../../upgrades/Upgrade";
+import UpgradeType from '../../../upgrades/UpgradeType';
 import MarketGroupComponent from "../MarketGroupComponent";
 
 export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
@@ -29,7 +30,9 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 			.setFontSize(30);
 			
 			// Will go through all the different types of upgrades and create them
-			Object.keys(Upgrade.Type).forEach((upgradeType: string) => {
+			Object.keys(UpgradeType).forEach((upgradeType: string) => {
+				console.log(upgradeType);
+				
 				this.initUpgradeButton(resourceUpgradeManager, upgradeType);
 			});
 
@@ -38,7 +41,7 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 	}
 
 	private initUpgradeButton(resourceUpgradeManager: ResourceUpgradeManager<any>, upgradeType: string) {
-		let currentUpgrade = resourceUpgradeManager.getCurrentUpgrade(Upgrade.Type[upgradeType]);
+		let currentUpgrade = resourceUpgradeManager.getCurrentUpgrade(UpgradeType[upgradeType]);
 
 		const padding = 10;
 		const buttonWidth = this.width - (padding * 2);
@@ -70,7 +73,7 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 		if(resourceUpgradeManager && resourceUpgradeManager.canAffordUpgrade(upgrade)) {
 			resourceUpgradeManager.buyUpgrade(upgrade.type);
 
-			let newUpgrade = resourceUpgradeManager.getCurrentUpgrade(Upgrade.Type.COLLECT_SPEED) as CollectSpeedUpgrade;
+			let newUpgrade = resourceUpgradeManager.getCurrentUpgrade(UpgradeType.COLLECT_SPEED) as CollectSpeedUpgrade;
 			this.collectSpeedUpgrade.setData('upgrade', newUpgrade);
 			if(newUpgrade) {
 				this.collectSpeedUpgrade.setText(newUpgrade.name + ` $${newUpgrade.cost}`);

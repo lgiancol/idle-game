@@ -37,8 +37,6 @@ export class IdleGameScene extends Phaser.Scene {
 		const gameWidth = getGameWidth(this);
 		const gameHeight = getGameHeight(this);
 
-		// TODO: Create a custom GameObject to display this
-		// TODO: All this should also be inside the MarketManager class and will be create on new MarketManager();
 		// Market Area
 		this.marketManager = new MarketManager();
 		this.data.set('marketManager', this.marketManager as MarketManager);

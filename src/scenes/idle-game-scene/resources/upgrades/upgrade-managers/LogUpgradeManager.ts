@@ -1,6 +1,6 @@
+import UpgradeType from "../../../upgrades/UpgradeType";
 import Log from "../../Log";
 import ResourceManager from "../../resource-managers/ResourceManager";
-import Upgrade from "../../../upgrades/Upgrade";
 import CollectSpeedUpgrade from "../CollectSpeedUpgrade";
 import ResourceUpgradeManager from "./ResourceUpgradeManager";
 
@@ -12,18 +12,18 @@ export default class LogUpgradeManager extends ResourceUpgradeManager<Log> {
 	}
 
 	protected initializeUpgrades() {
-		let baseSpeed = 1;
+		let baseSpeed = 2;
 		const baseCost = 10;
 		for(let i = 0; i < 10; i++) {
 			let upgradeCost = Math.round(baseCost * Math.pow(2.65, i));
-			let upgradeSpeed = Math.round(baseSpeed * 1.8);
-			this.upgrades[Upgrade.Type.COLLECT_SPEED].enqueue(new CollectSpeedUpgrade(i + 1, 'LOG_COLLECT_SPEED_INCREASE_' + i, upgradeSpeed, upgradeCost));
+			let upgradeSpeed = Math.round(baseSpeed * (i + 1) * 1);
+			this.upgrades[UpgradeType.COLLECT_SPEED].enqueue(new CollectSpeedUpgrade(i + 1, 'LOG_COLLECT_SPEED_INCREASE_' + i, upgradeSpeed, upgradeCost));
 		}
 	}
 
 	public buyUpgrade(upgradeGroup: string) {
 		switch(upgradeGroup) {
-			case Upgrade.Type.COLLECT_SPEED: {
+			case UpgradeType.COLLECT_SPEED: {
 				this.buyCollectSpeedUpgrade();
 			}
 		}
