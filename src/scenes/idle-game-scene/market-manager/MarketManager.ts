@@ -1,6 +1,5 @@
-import Resource, { ResourceType } from "../resources/Resource";
+import { ResourceType } from "../resources/Resource";
 import ResourceManager from "../resources/resource-managers/ResourceManager";
-import ResourceUpgradeManager from "../resources/upgrades/upgrade-managers/ResourceUpgradeManager";
 
 export default class MarketManager extends Phaser.Events.EventEmitter {
 	public money: number;

@@ -2,7 +2,7 @@ import LuuiItem from "./LuuiItem";
 
 export default class LuuButton extends LuuiItem {
 	public label: Phaser.GameObjects.Text;
-	private enabled = false;
+	private enabled = true;
 	private isHover = false;
 
 	public constructor(scene: Phaser.Scene, public x: number, public y: number, public width: number, public height: number, public text: string) {
@@ -80,7 +80,8 @@ Phaser.GameObjects.GameObjectFactory.register(
 	'luuButton',
 	function(this: Phaser.GameObjects.GameObjectFactory, x: number, y: number, width: number, height: number, text: string) {
 		const luuButton = new LuuButton(this.scene, x, y, width, height, text)
-		.setOrigin(0);
+		.setOrigin(0)
+		.setInteractive();
 
 		luuButton.init();
 		

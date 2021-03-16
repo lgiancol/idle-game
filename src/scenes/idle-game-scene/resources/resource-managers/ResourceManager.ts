@@ -1,4 +1,4 @@
-import Resource from "../Resource";
+import Resource, { ResourceType } from "../Resource";
 import ResourceUpgrade from "../upgrades/ResourceUpgrade";
 import LogUpgradeManager from "../upgrades/upgrade-managers/LogUpgradeManager";
 import ResourceUpgradeManager from "../upgrades/upgrade-managers/ResourceUpgradeManager";
@@ -10,7 +10,11 @@ export default class ResourceManager {
 	private _resourceSeller: ResourceSeller = new ResourceSeller();
 	private _resourceUpgrades: ResourceUpgradeManager = new LogUpgradeManager();
 
-	public constructor(public resourceType: string, public resource: Resource) {}
+	public constructor(public resourceType: ResourceType, public resource: Resource) {}
+
+	get resourceName() {
+		return ResourceType[this.resourceType];
+	}
 
 	get autoCollectSpeed() {
 		return this._resourceCollector.autoCollectSpeed;

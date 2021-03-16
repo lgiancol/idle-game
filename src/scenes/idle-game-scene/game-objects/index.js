@@ -1,6 +1,5 @@
 import './HomeComponent';
 import './market/MarketComponent';
 import './market/MarketGroupComponent';
-import './resource-collectors/LogResourceCollector';
-import './resource-collectors/CoalResourceCollector';
+import './resource/ResourceComponent';
 import './market/resource-upgrade-market-groups/ResourceUpgradeMarketGroupComponent';
