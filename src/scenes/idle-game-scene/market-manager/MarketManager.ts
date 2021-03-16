@@ -39,4 +39,12 @@ export default class MarketManager extends Phaser.Events.EventEmitter {
 	public addFunds(toAdd: number) {
 		this.money += toAdd;
 	}
+
+	public removeFunds(toRemove: number) {
+		this.money -= toRemove;
+	}
+
+	public canAfford(cost: number) {
+		return this.money >= cost;
+	}
 }

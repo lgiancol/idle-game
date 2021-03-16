@@ -53,6 +53,7 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 
 	private initUpgradeButton(upgradeType: string) {
 		let currentUpgrade = this.activeResourceManager.getCurrentUpgrade(UpgradeType[upgradeType]);
+		let marketManager = this.scene.data.get('marketManager') as MarketManager;
 
 		const padding = 10;
 		const buttonWidth = this.width - (padding * 2);
@@ -60,7 +61,7 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 		this.collectSpeedUpgrade = this.scene.add.luuButton(this.x + padding, this.y + 50, buttonWidth, buttonHeight, currentUpgrade.name + ` $${currentUpgrade.cost}`)
 		.setData('upgrade', currentUpgrade)
 		.addListener('pointerdown', this.onCollectSpeedUpgradeClick.bind(this))
-		.setEnabled(this.activeResourceManager.hasMinimumOf(currentUpgrade.cost)); // TODO: This needs to change to money
+		.setEnabled(marketManager.canAfford(currentUpgrade.cost));
 	}
 
 	public preUpdate(delta: number) {
@@ -73,11 +74,11 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 
 	private updateUpgradeButtons() {
 		if(this.collectSpeedUpgrade) {
-			let resourceUpgradeManager = this.activeResourceManager as ResourceManager;
+			let marketManager = this.scene.data.get('marketManager') as MarketManager;
 			const upgrade = this.collectSpeedUpgrade.getData('upgrade') as Upgrade;
 			if(upgrade) {
 				// Need to keep track of if it's enabled
-				this.collectSpeedUpgrade.setEnabled(resourceUpgradeManager.hasMinimumOf(upgrade.cost))
+				this.collectSpeedUpgrade.setEnabled(marketManager.canAfford(upgrade.cost))
 			}
 		}
 	}
@@ -100,10 +101,13 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 	}
 
 	public onCollectSpeedUpgradeClick() {
-		let resourceManager = this.activeResourceManager as ResourceManager;
+		let marketManager = this.scene.data.get('marketManager') as MarketManager;
+		
 		const upgrade = this.collectSpeedUpgrade.getData('upgrade') as CollectSpeedUpgrade;
-		if(resourceManager && resourceManager.hasMinimumOf(upgrade.cost)) {
-			resourceManager.buyUpgrade(upgrade.type);
+		if(marketManager && marketManager.canAfford(upgrade.cost)) {
+			marketManager.removeFunds(upgrade.cost);
+			let resourceManager = this.activeResourceManager as ResourceManager;
+			resourceManager.applyUpgrade(upgrade.type);
 
 			let newUpgrade = resourceManager.getCurrentUpgrade(UpgradeType.COLLECT_SPEED) as CollectSpeedUpgrade;
 			this.collectSpeedUpgrade.setData('upgrade', newUpgrade);

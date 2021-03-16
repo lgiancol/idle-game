@@ -1,6 +1,7 @@
 export default class ResourceSeller {
 	private _valueMultiplier = 1; // How much to increase the _value
-	private _value = 1; // How much it can sell for
+
+	public constructor(private _value) {}
 
 	get valuePer() {
 		return this._value * this._valueMultiplier;

@@ -6,9 +6,11 @@ import ResourceSeller from "./resource-seller/ResourceSeller";
 
 export default class ResourceManager {
 	private _resourceCollector: ResourceCollector = new ResourceCollector();
-	private _resourceSeller: ResourceSeller = new ResourceSeller();
+	private _resourceSeller: ResourceSeller;
 
-	public constructor(public resourceType: ResourceType, public resource: Resource, private _resourceUpgradeManager: ResourceUpgradeManager) {}
+	public constructor(public resourceType: ResourceType, public resource: Resource, private _resourceUpgradeManager: ResourceUpgradeManager) {
+		this._resourceSeller = new ResourceSeller(resource.startingValue);
+	}
 
 	get resourceName() {
 		return ResourceType[this.resourceType];
@@ -54,11 +56,10 @@ export default class ResourceManager {
 		return this._resourceUpgradeManager.peekCurrentUpgrade(upgradeType);
 	}
 	
-	public buyUpgrade(upgradeType: string) {
+	public applyUpgrade(upgradeType: string) {
 		let upgrade = this._resourceUpgradeManager.
 		upgrades[upgradeType].dequeue() as ResourceUpgrade; // Levels != index
 		
-		this.removeResource(upgrade.cost); // TODO: This should actually change to be money
 		Object.entries(upgrade.upgradeValues).forEach((upgradeValueEntry: [string, number]) => {
 			this._resourceCollector[upgradeValueEntry[0]] = upgradeValueEntry[1];
 		});
