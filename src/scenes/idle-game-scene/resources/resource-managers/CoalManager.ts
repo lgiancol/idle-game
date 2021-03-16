@@ -1,9 +1,10 @@
 import Coal from "../Coal";
-import Log from "../Log";
+import { ResourceType } from "../Resource";
+import CoalUpgradeManager from "../upgrades/upgrade-managers/CoalUpgradeManager";
 import ResourceManager from "./ResourceManager";
 
-export default class CoalManager extends ResourceManager<Coal> {
+export default class CoalManager extends ResourceManager {
 	public constructor() {
-		super('Coal', new Coal());
+		super(ResourceType.COAL, new Coal(), new CoalUpgradeManager());
 	}
 }

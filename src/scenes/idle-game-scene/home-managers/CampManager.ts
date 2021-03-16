@@ -1,9 +1,8 @@
-import Log from "../resources/Log";
-import ResourceManager from "../resources/resource-managers/ResourceManager";
+import LogManager from "../resources/resource-managers/LogManager";
 import HomeManager from "./HomeManager";
 
 export default class CampManager extends HomeManager {
-	public constructor(resourcemanager: ResourceManager<Log>) {
+	public constructor(resourcemanager: LogManager) {
 		super('Camp', resourcemanager, 3, 0.15);
 	}
 }

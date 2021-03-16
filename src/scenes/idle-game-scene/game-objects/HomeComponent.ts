@@ -1,6 +1,6 @@
 import HomeManager from "../home-managers/HomeManager";
 
-export default class Home extends Phaser.GameObjects.Rectangle {
+export default class HomeComponent extends Phaser.GameObjects.Rectangle {
 	private nameLabel: Phaser.GameObjects.Text;
 	private quantityLabel: Phaser.GameObjects.Text;
 
@@ -44,7 +44,7 @@ export default class Home extends Phaser.GameObjects.Rectangle {
 Phaser.GameObjects.GameObjectFactory.register(
 	'home',
 	function (this: Phaser.GameObjects.GameObjectFactory, homeManager: HomeManager, x: number, y: number, width: number = 100, height: number = 84) {
-		const home = new Home(this.scene, homeManager, x, y, width, height);
+		const home = new HomeComponent(this.scene, homeManager, x, y, width, height);
 		home.setOrigin(0);
 		
 		this.displayList.add(home);
@@ -66,7 +66,7 @@ declare global
 	{
 		interface GameObjectFactory
 		{
-			home(homeManager: HomeManager, x: number, y: number, width?: number, height?: number): Home
+			home(homeManager: HomeManager, x: number, y: number, width?: number, height?: number): HomeComponent
 		}
 	}
 }

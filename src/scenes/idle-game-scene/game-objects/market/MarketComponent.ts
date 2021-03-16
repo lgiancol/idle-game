@@ -1,9 +1,11 @@
 import MarketManager from "../../market-manager/MarketManager";
-import ResourceUpgradeManager from "../../upgrades/upgrade-managers/ResourceUpgradeManager";
-import { ResourceUpgradeMarketGroupComponent } from "./resource-upgrade-market-groups/ResourceUpgradeMarketGroupComponent";
+import ResourceManager from "../../resources/resource-managers/ResourceManager";
+import MarketGroupComponent from "./MarketGroupComponent";
 
 export default class MarketComponent extends Phaser.GameObjects.Rectangle {
-	private resourceUpgradeMarketGroup: ResourceUpgradeMarketGroupComponent;
+	private label: Phaser.GameObjects.Text;
+	private moneyLabel: Phaser.GameObjects.Text;
+	private marketGroup: MarketGroupComponent; // TODO: Needs to be updated to actually be a Tab
 
 	public constructor(scene: Phaser.Scene, public marketManager: MarketManager, x: number, y: number, width: number, height: number) {
 		super(scene, x, y, width, height);
@@ -11,17 +13,36 @@ export default class MarketComponent extends Phaser.GameObjects.Rectangle {
 	}
 
 	private init() {
-		const activeUpgradeManager = this.marketManager.getActiveResourceManager();
-		this.resourceUpgradeMarketGroup = this.scene.add.resourceUpgrade(activeUpgradeManager, this.x, this.y, this.width, this.height);
+		const activeManager = this.marketManager.getActiveManager();
+		this.setStrokeStyle(1, 0xffffff);
+		this.label = this.scene.add.text(this.x + 10, this.y + 10, `Market`)
+		.setOrigin(0)
+		.setColor('white')
+		.setFontFamily('my-font')
+		.setFontSize(30);
+
+		let yOffset = this.label.y + this.label.getBounds().height;
 		
-		this.marketManager.emitter.on('activeresourcechange', this.setActiveUpgradeResourceManagerGo.bind(this));
+		this.moneyLabel = this.scene.add.text(this.x + this.width - 100, this.y + 10, `$${this.marketManager.money}`)
+		.setOrigin(0)
+		.setColor('white')
+		.setFontFamily('my-font')
+		.setFontSize(30)
+
+		this.marketGroup = this.scene.add.resourceUpgradeMarketGroup(activeManager, this.x, yOffset, this.width, this.height);
+		
+		this.marketManager.on('activeresourcechange', this.setActiveResourceManager.bind(this));
 	}
 
-	public setActiveUpgradeResourceManagerGo(resourceManager: ResourceUpgradeManager<any>) {
-		this.resourceUpgradeMarketGroup.setActiveUpgradeManager(resourceManager);
+	private setActiveResourceManager(resourceManager: ResourceManager) {
+		this.marketGroup.activeResourceManager = resourceManager;
 	}
 
-	public preUpdate() {}
+	public preUpdate(delta: number) {
+		this.moneyLabel
+		.setText(`$${this.marketManager.money}`)
+		.setPosition(this.x + this.width - this.moneyLabel.width - 10, this.moneyLabel.y);
+	}
 }
 
 Phaser.GameObjects.GameObjectFactory.register(

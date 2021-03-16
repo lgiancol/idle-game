@@ -5,20 +5,20 @@ export default abstract class HomeManager {
 	private currentFuelIndex = -1;
 	public totalRemaingFuel = 0;
 
-	public constructor(public homeType: string, public resourceManager: ResourceManager<any>, public fuelLimit: number, public fuelUseSpeed: number) {
+	public constructor(public homeType: string, public resourceManager: ResourceManager, public fuelLimit: number, public fuelUseSpeed: number) {
 		this.fuel = [];
 	}
 
 	public addFuel() {
 		// There's not enough of the fuel resource collected to actually use
 		//  || The fuel for the home is already at capacity
-		if(this.resourceManager.resourceQuantity.quantity < 1 || this.fuel.length == this.fuelLimit) return;
+		if(this.resourceManager.quantity < 1 || this.fuel.length == this.fuelLimit) return;
 
 		let fuel = {
 			startingAmount: this.resourceManager.resource.energyUnits,
 			remainingAmount: this.resourceManager.resource.energyUnits
 		} as {startingAmount: number, remainingAmount: number};
-		this.resourceManager.resourceQuantity.decreaseQuantity(1);
+		this.resourceManager.removeResource(1);
 
 		this.totalRemaingFuel += fuel.startingAmount;
 		this.fuel.push(fuel);
