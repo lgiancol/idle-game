@@ -1,46 +1,73 @@
 import '../../../../../ui/LuuButton';
 import LuuButton from '../../../../../ui/LuuButton';
+import MarketManager from '../../../market-manager/MarketManager';
 import ResourceManager from '../../../resources/resource-managers/ResourceManager';
 import CollectSpeedUpgrade from "../../../resources/upgrades/CollectSpeedUpgrade";
-import ResourceUpgradeManager from "../../../resources/upgrades/upgrade-managers/ResourceUpgradeManager";
 import Upgrade from '../../../upgrades/Upgrade';
 import UpgradeType from '../../../upgrades/UpgradeType';
 import MarketGroupComponent from "../MarketGroupComponent";
 
 export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 	private collectSpeedUpgrade: LuuButton;
+	private sellBtns: LuuButton[];
 
-	public constructor(scene: Phaser.Scene, resourceManager: ResourceManager, x: number, y: number, width: number = 100, height: number = 75) {
-		super(scene, resourceManager, x, y, width, height);
+	public constructor(scene: Phaser.Scene, activeResourceManager: ResourceManager, x: number, y: number, width: number = 100, height: number = 75) {
+		super(scene, activeResourceManager, x, y, width, height);
 		this.init();
 	}
 
 	public init() {
 		if(this.activeResourceManager) {
 			this.collectSpeedUpgrade?.destroy();
+			this.sellBtns?.forEach((btn: LuuButton) => {
+				btn.destroy();
+			});
 
-			let resourceManager = this.activeResourceManager as ResourceManager;
+			const padding = 10;
+			const sellBtnCount = 4;
+			const sellBtnWidth = (this.width / sellBtnCount) - (((sellBtnCount + 1) * padding) / sellBtnCount);
+			this.sellBtns = [];
+			for(let i = 0; i < sellBtnCount; i++) {
+				let sellAmount = Math.pow(10, i);
+				let sellAmountLabel = ''+ sellAmount;
+
+				if(i == sellBtnCount - 1) {
+					sellAmount = -1;
+					sellAmountLabel = 'All';
+				}
+
+				const x = this.x + (sellBtnWidth * i) + (10 * i);
+				const btn = this.scene.add.luuButton(x + 10, this.y + 10, sellBtnWidth, 30, `Sell ${sellAmountLabel}`)
+				.setData('sellAmount', sellAmount);
+
+				btn.on('pointerdown', this.createSellClickCallback(sellAmount));
+				this.sellBtns.push(btn);
+			}
 			
 			// Will go through all the different types of upgrades and create them
 			Object.keys(UpgradeType).forEach((upgradeType: string) => {
-				this.initUpgradeButton(resourceManager, upgradeType);
+				this.initUpgradeButton(upgradeType);
 			});
 		}
 	}
 
-	private initUpgradeButton(resourceManager: ResourceManager, upgradeType: string) {
-		let currentUpgrade = resourceManager.getCurrentUpgrade(UpgradeType[upgradeType]);
+	private initUpgradeButton(upgradeType: string) {
+		let currentUpgrade = this.activeResourceManager.getCurrentUpgrade(UpgradeType[upgradeType]);
 
 		const padding = 10;
 		const buttonWidth = this.width - (padding * 2);
 		const buttonHeight = 70;
-		this.collectSpeedUpgrade = this.scene.add.luuButton(this.x + 10, this.y + 55, buttonWidth, buttonHeight, currentUpgrade.name + ` $${currentUpgrade.cost}`)
+		this.collectSpeedUpgrade = this.scene.add.luuButton(this.x + padding, this.y + 50, buttonWidth, buttonHeight, currentUpgrade.name + ` $${currentUpgrade.cost}`)
 		.setData('upgrade', currentUpgrade)
-		.addListener('pointerup', this.onCollectSpeedUpgradeClick.bind(this))
-		.setEnabled(resourceManager.hasMinimumOf(currentUpgrade.cost)); // TODO: This needs to change to money
+		.addListener('pointerdown', this.onCollectSpeedUpgradeClick.bind(this))
+		.setEnabled(this.activeResourceManager.hasMinimumOf(currentUpgrade.cost)); // TODO: This needs to change to money
 	}
 
 	public preUpdate(delta: number) {
+		this.sellBtns?.forEach((sellBtn: LuuButton) => {
+			let sellAmount = sellBtn.getData('sellAmount') as number;
+			sellBtn.setEnabled(this.activeResourceManager.quantity >= sellAmount)
+		});
 		this.updateUpgradeButtons();
 	}
 
@@ -53,6 +80,23 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 				this.collectSpeedUpgrade.setEnabled(resourceUpgradeManager.hasMinimumOf(upgrade.cost))
 			}
 		}
+	}
+
+	private createSellClickCallback(sellAmount: number) {
+		const marketGroupComponent = this;
+		const marketManager = this.scene.data.get('marketManager') as MarketManager;
+		function onSellClick() {
+			let truSellAmount = sellAmount;
+			if(sellAmount == -1) {
+				truSellAmount = marketGroupComponent.activeResourceManager.quantity;
+			}
+			if(marketGroupComponent.activeResourceManager.hasMinimumOf(truSellAmount)) {
+				const fundsToAdd = marketGroupComponent.activeResourceManager.sellResource(truSellAmount);
+				marketManager.addFunds(fundsToAdd)
+			}
+		}
+
+		return onSellClick.bind(this);
 	}
 
 	public onCollectSpeedUpgradeClick() {
@@ -69,9 +113,6 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 				this.collectSpeedUpgrade.setText('No more upgrades available');
 				this.collectSpeedUpgrade.setEnabled(false);
 			}
-		} else {
-			console.log('Cannot buy; Not enough funds');
-			
 		}
 	}
 }

@@ -2,7 +2,7 @@ import { ResourceType } from "../resources/Resource";
 import ResourceManager from "../resources/resource-managers/ResourceManager";
 
 export default class MarketManager extends Phaser.Events.EventEmitter {
-	public money: number;
+	public money: number = 0;
 
 	// All the upgrades by resource
 	// All the upgrades available to the user
@@ -33,5 +33,10 @@ export default class MarketManager extends Phaser.Events.EventEmitter {
 
 	public getUpgradeManager(resourceType: ResourceType) {
 		return this.managers[resourceType];
+	}
+
+	// Money area
+	public addFunds(toAdd: number) {
+		this.money += toAdd;
 	}
 }
