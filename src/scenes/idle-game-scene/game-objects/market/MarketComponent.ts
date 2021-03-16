@@ -1,6 +1,5 @@
 import MarketManager from "../../market-manager/MarketManager";
 import ResourceManager from "../../resources/resource-managers/ResourceManager";
-import UpgradeManager from "../../upgrades/UpgradeManager";
 import MarketGroupComponent from "./MarketGroupComponent";
 
 export default class MarketComponent extends Phaser.GameObjects.Rectangle {
@@ -15,10 +14,10 @@ export default class MarketComponent extends Phaser.GameObjects.Rectangle {
 		const activeManager = this.marketManager.getActiveManager();
 		this.marketGroup = this.scene.add.resourceUpgradeMarketGroup(activeManager, this.x, this.y, this.width, this.height);
 		
-		this.marketManager.on('activeresourcechange', this.setActiveUpgradeResourceManager.bind(this));
+		this.marketManager.on('activeresourcechange', this.setActiveResourceManager.bind(this));
 	}
 
-	private setActiveUpgradeResourceManager(resourceManager: ResourceManager) {
+	private setActiveResourceManager(resourceManager: ResourceManager) {
 		this.marketGroup.activeResourceManager = resourceManager;
 	}
 }

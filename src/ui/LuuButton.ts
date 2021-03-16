@@ -5,15 +5,15 @@ export default class LuuButton extends LuuiItem {
 	private enabled = true;
 	private isHover = false;
 
-	public constructor(scene: Phaser.Scene, public x: number, public y: number, public width: number, public height: number, public text: string) {
+	public constructor(scene: Phaser.Scene, x: number, y: number, width: number, height: number, public text: string) {
 		super(scene, x, y, width, height);
 	}
 
 	public init() {
 		this.setFillStyle(0x993399);
 
-		this.label = this.scene.add.text(this.x + 10, this.y + 10, this.text)
-		.setOrigin(0)
+		this.label = this.scene.add.text(this.x + this.width / 2, this.y + this.height / 2, this.text)
+		.setOrigin(0.5)
 		.setColor('black')
 		.setFontFamily('my-font')
 		.setDepth(1);

@@ -5,6 +5,7 @@ import ResourceManager from "../../resources/resource-managers/ResourceManager";
 export default class ResourceComponent extends Phaser.GameObjects.Rectangle {
 	private nameLabel: Phaser.GameObjects.Text;
 	private collectResourceBtn: LuuButton;
+	private openStoreBtn: LuuButton;
 
 	public constructor(scene: Phaser.Scene, public resourceManager: ResourceManager, public x: number, public y: number, width = 100, height = 84) {
 		super(scene, x, y, width, height);
@@ -13,6 +14,8 @@ export default class ResourceComponent extends Phaser.GameObjects.Rectangle {
 	}
 
 	private init() {
+		let btnHeight = 30;
+
 		this.setStrokeStyle(1, 0xffffff);
 		
 		let yOffset = this.y + 10;
@@ -24,10 +27,14 @@ export default class ResourceComponent extends Phaser.GameObjects.Rectangle {
 		.setDepth(1);
 
 		yOffset += this.nameLabel.getBounds().height + 10;
-		this.collectResourceBtn = this.scene.add.luuButton(this.x + 10, yOffset, this.width - 20, 45, `Collect (x${this.resourceManager.clickCollectSpeed})`)
+		this.collectResourceBtn = this.scene.add.luuButton(this.x + 10, yOffset, this.width - 20, btnHeight, `Collect (x${this.resourceManager.clickCollectSpeed})`)
 		.on('pointerdown', this.onCollect.bind(this));
 
-		this.displayHeight = 10 + this.nameLabel.height + 10 + this.collectResourceBtn.height + 10;
+		yOffset += this.collectResourceBtn.getBounds().height + 10;
+		this.openStoreBtn = this.scene.add.luuButton(this.x + 10, yOffset, this.width - 20, btnHeight, 'Store')
+		.on('pointerdown', this.onOpenStore.bind(this));
+
+		this.displayHeight = 10 + this.nameLabel.height + 10 + this.collectResourceBtn.height + 10 + this.openStoreBtn.height + 10;
 
 	}
 
@@ -39,14 +46,15 @@ export default class ResourceComponent extends Phaser.GameObjects.Rectangle {
 	private onCollect() {		
 		const resourceManager = this.resourceManager;
 		resourceManager.collectResource(resourceManager.clickCollectSpeed);
+	}
 
+	private onOpenStore() {
 		const marketManager = (this.scene.data.get('marketManager') as MarketManager);
 		const currentActiveResource = marketManager.getActiveResource();
 
 		if(currentActiveResource == null || currentActiveResource != this.resourceManager.resourceType) {
 			marketManager.setActiveResource(this.resourceManager.resourceType);
 		}
-		
 	}
 }
 
