@@ -1,6 +1,5 @@
 import Resource, { ResourceType } from "../Resource";
 import ResourceUpgrade from "../upgrades/ResourceUpgrade";
-import LogUpgradeManager from "../upgrades/upgrade-managers/LogUpgradeManager";
 import ResourceUpgradeManager from "../upgrades/upgrade-managers/ResourceUpgradeManager";
 import ResourceCollector from "./resource-collector/ResourceCollector";
 import ResourceSeller from "./resource-seller/ResourceSeller";
@@ -8,9 +7,8 @@ import ResourceSeller from "./resource-seller/ResourceSeller";
 export default class ResourceManager {
 	private _resourceCollector: ResourceCollector = new ResourceCollector();
 	private _resourceSeller: ResourceSeller = new ResourceSeller();
-	private _resourceUpgrades: ResourceUpgradeManager = new LogUpgradeManager();
 
-	public constructor(public resourceType: ResourceType, public resource: Resource) {}
+	public constructor(public resourceType: ResourceType, public resource: Resource, private _resourceUpgradeManager: ResourceUpgradeManager) {}
 
 	get resourceName() {
 		return ResourceType[this.resourceType];
@@ -53,11 +51,11 @@ export default class ResourceManager {
 
 	// UPGRADING AREA
 	public getCurrentUpgrade(upgradeType: string) {
-		return this._resourceUpgrades.peekCurrentUpgrade(upgradeType);
+		return this._resourceUpgradeManager.peekCurrentUpgrade(upgradeType);
 	}
 	
 	public buyUpgrade(upgradeType: string) {
-		let upgrade = this._resourceUpgrades.
+		let upgrade = this._resourceUpgradeManager.
 		upgrades[upgradeType].dequeue() as ResourceUpgrade; // Levels != index
 		
 		this.removeResource(upgrade.cost); // TODO: This should actually change to be money

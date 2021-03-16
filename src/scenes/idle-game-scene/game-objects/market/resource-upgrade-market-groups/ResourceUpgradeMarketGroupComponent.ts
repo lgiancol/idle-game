@@ -8,7 +8,6 @@ import UpgradeType from '../../../upgrades/UpgradeType';
 import MarketGroupComponent from "../MarketGroupComponent";
 
 export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
-	private resourceLabel: Phaser.GameObjects.Text;
 	private collectSpeedUpgrade: LuuButton;
 
 	public constructor(scene: Phaser.Scene, resourceManager: ResourceManager, x: number, y: number, width: number = 100, height: number = 75) {
@@ -18,25 +17,15 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 
 	public init() {
 		if(this.activeResourceManager) {
-			this.resourceLabel?.destroy();
 			this.collectSpeedUpgrade?.destroy();
 
 			let resourceManager = this.activeResourceManager as ResourceManager;
-			this.setStrokeStyle(1, 0xffffff);
-			
-			this.resourceLabel = this.scene.add.text(this.x + 10, this.y + 10, `${resourceManager.resource.name}`)
-			.setOrigin(0)
-			.setColor('white')
-			.setFontFamily('my-font')
-			.setFontSize(30);
 			
 			// Will go through all the different types of upgrades and create them
 			Object.keys(UpgradeType).forEach((upgradeType: string) => {
 				this.initUpgradeButton(resourceManager, upgradeType);
 			});
-
 		}
-		
 	}
 
 	private initUpgradeButton(resourceManager: ResourceManager, upgradeType: string) {
