@@ -5,24 +5,47 @@ export default abstract class HomeManager {
 	private currentFuelIndex = -1;
 	public totalRemaingFuel = 0;
 
-	public constructor(public homeType: string, public resourceManager: ResourceManager, public fuelLimit: number, public fuelUseSpeed: number) {
+	// Feezing variables
+	private _isFeezing = false;
+	private _currentFreezeTime = 0;
+
+	public constructor(
+		public homeType: string,
+		public resourceManager: ResourceManager,
+		public fuelLimit: number,
+		public fuelUseSpeed: number,
+		private _freezeToDeathTime: number) {
 		this._fuel = [];
+		for(let i = 0; i < this.fuelLimit; i++) {
+			this.addFuel();
+		}
 	}
 
 	get currentFuelLevel() {
 		return this._fuel.length;
 	}
 
-	public addFuel() {
-		// There's not enough of the fuel resource collected to actually use
-		//  || The fuel for the home is already at capacity
-		if(this.resourceManager.quantity < 1 || this._fuel.length == this.fuelLimit) return;
+	get freezeToDeathTime() {
+		return this._freezeToDeathTime;
+	}
 
+	get freezeTimeReminaing() {
+		return this._freezeToDeathTime - this._currentFreezeTime;
+	}
+
+	get isFrozen() {
+		return this.freezeTimeReminaing == 0;
+	}
+
+	get canAddFuel() {
+		return this.resourceManager.quantity > 0 && this._fuel.length != this.fuelLimit;
+	}
+
+	public addFuel() {
 		let fuel = {
 			startingAmount: this.resourceManager.resource.energyUnits,
 			remainingAmount: this.resourceManager.resource.energyUnits
 		} as {startingAmount: number, remainingAmount: number};
-		this.resourceManager.removeResource(1);
 
 		this.totalRemaingFuel += fuel.startingAmount;
 		this._fuel.push(fuel);
@@ -34,11 +57,26 @@ export default abstract class HomeManager {
 
 	public update(delta: number) {
 		this.updateFuel(delta);
+
+		const deltaSecond = delta / 1000;
+		if(this._isFeezing) {
+			this._currentFreezeTime += deltaSecond;
+
+			if(this._currentFreezeTime > this._freezeToDeathTime) this._currentFreezeTime = this.freezeToDeathTime;
+		} else if(this._currentFreezeTime > 0) {
+			this._currentFreezeTime -= deltaSecond;
+
+			if(this._currentFreezeTime < 0) this._currentFreezeTime = 0;
+		}
 	}
 
 	private updateFuel(delta: number) {
-		if(this._fuel.length == 0) return;
+		if(this._fuel.length == 0) {
+			this._isFeezing = true;
+			return;
+		}
 
+		this._isFeezing = false;
 		const deltaSecond = delta / 1000;
 		let fuel = this._fuel[this.currentFuelIndex];
         let deltaFuelUsed = this.fuelUseSpeed * deltaSecond;

@@ -10,6 +10,10 @@ import CoalManager from './resources/resource-managers/CoalManager';
 import LogManager from "./resources/resource-managers/LogManager";
 
 export class IdleGameScene extends Phaser.Scene {
+	// Game state
+	public isLost = false; // TODO: Turn this into some sort of GameState manager or something
+	public lostText: Phaser.GameObjects.Text;
+
 	// The home available to the user
 	public homeManager: HomeManager;
 	
@@ -49,12 +53,28 @@ export class IdleGameScene extends Phaser.Scene {
 		
 		this.add.resource(this.coalManager, resource.x + resource.width + 10, 10, 200);
 
-		// this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
+		// TEMP
+		this.lostText = this.add.text(gameWidth / 2, gameHeight / 2, 'YOU LOSE!!')
+		.setOrigin(0.5)
+		.setColor('white')
+		.setFontFamily('my-font')
+		.setFontSize(100)
+		.setVisible(false);
 	}
 	
 	public update(time: number, delta: number) {
-		this.logManager.update(delta);
-		this.coalManager.update(delta);
-		this.homeManager.update(delta);
+		this.checkLoss();
+		
+		if(!this.isLost) {
+			this.logManager.update(delta);
+			this.coalManager.update(delta);
+			this.homeManager.update(delta);
+		} else {
+			this.lostText.setVisible(true);
+		}
+	}
+
+	private checkLoss() {
+		this.isLost = this.homeManager.isFrozen;
 	}
 }

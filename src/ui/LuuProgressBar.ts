@@ -1,6 +1,7 @@
 export default class LuuProgressbar extends Phaser.GameObjects.Rectangle {
   private percentage = 0;
   private percentBar: Phaser.GameObjects.Rectangle;
+  private label: Phaser.GameObjects.Text;
 
   public constructor(scene: Phaser.Scene, x: number, y: number, width: number, height: number) {
     super(scene, x, y, width, height);
@@ -29,6 +30,23 @@ export default class LuuProgressbar extends Phaser.GameObjects.Rectangle {
     this.percentage = percentage;
 
     this.update();
+
+	return this;
+  }
+
+  public setText(text: string) {
+	let centerX = this.x + (this.width / 2);
+	let centerY = this.y + (this.height / 2);
+	if(!this.label) {
+		this.label = this.scene.add.text(centerX, centerY, text)
+		.setOrigin(0.5)
+		.setColor('white')
+		.setFontFamily('my-font')
+		.setFontSize(20)
+		.setDepth(1);
+	}
+
+	this.label.setText(text);
 
 	return this;
   }
