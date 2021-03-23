@@ -55,6 +55,14 @@ export default class ResourceComponent extends Phaser.GameObjects.Rectangle {
 			marketManager.setActiveResource(this.resourceManager.resourceType);
 		}
 	}
+
+	public destroy() {
+		super.destroy();
+
+		this.nameLabel.destroy();
+		this.collectResourceBtn.destroy();
+		this.openStoreBtn.destroy();
+	}
 }
 
 Phaser.GameObjects.GameObjectFactory.register(

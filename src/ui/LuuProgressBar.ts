@@ -54,6 +54,13 @@ export default class LuuProgressbar extends Phaser.GameObjects.Rectangle {
   public preUpdate(): void {
     this.percentBar.width = this.getBounds().width * this.percentage;
   }
+
+  public destroy() {
+	  super.destroy();
+
+	  this.label?.destroy();
+	  this.percentBar.destroy();
+  }
 }
 
 Phaser.GameObjects.GameObjectFactory.register(

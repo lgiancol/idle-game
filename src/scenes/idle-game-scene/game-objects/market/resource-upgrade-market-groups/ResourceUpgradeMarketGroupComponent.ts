@@ -119,6 +119,13 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 			}
 		}
 	}
+
+	public destroy() {
+		super.destroy();
+
+		this.collectSpeedUpgrade?.destroy();
+		this.sellBtns?.forEach((btn: LuuButton) => btn.destroy());
+	}
 }
 
 Phaser.GameObjects.GameObjectFactory.register(

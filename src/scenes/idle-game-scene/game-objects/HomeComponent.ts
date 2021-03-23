@@ -49,6 +49,8 @@ export default class HomeComponent extends Phaser.GameObjects.Rectangle {
 		super.destroy();
 
 		this.nameLabel.destroy();
+		this.fuelProgressBar.destroy();
+		this.deathProgressBar.destroy();
 	}
 }
 
