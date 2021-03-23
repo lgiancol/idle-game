@@ -1,19 +1,13 @@
 // These are imported this way so we can get the type descriptors loaded for each game-object
 import { getGameHeight, getGameWidth } from '../../helpers';
-import '../../ui/LuuButton';
-import LinkedList from '../../utils/linked-list/LinkedList';
-import ListNode from '../../utils/linked-list/ListNode';
-import Queue from '../../utils/queue/Queue';
+import '../../ui';
 import './game-objects';
 import CampManager from './home-managers/CampManager';
 import HomeManager from './home-managers/HomeManager';
 import MarketManager from './market-manager/MarketManager';
-import Log from './resources/Log';
 import { ResourceType } from './resources/Resource';
 import CoalManager from './resources/resource-managers/CoalManager';
 import LogManager from "./resources/resource-managers/LogManager";
-import CoalUpgradeManager from './resources/upgrades/upgrade-managers/CoalUpgradeManager';
-import LogUpgradeManager from './resources/upgrades/upgrade-managers/LogUpgradeManager';
 
 export class IdleGameScene extends Phaser.Scene {
 	// The home available to the user
@@ -49,11 +43,13 @@ export class IdleGameScene extends Phaser.Scene {
 		// HOME
 		this.homeManager = new CampManager(this.logManager);
 		
-		this.add.home(this.homeManager, 200, 200);
+		this.add.home(this.homeManager, 200, 200, 225, 150);
 
 		const resource = this.add.resource(this.logManager, 10, 10, 200);
 		
 		this.add.resource(this.coalManager, resource.x + resource.width + 10, 10, 200);
+
+		// this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
 	}
 	
 	public update(time: number, delta: number) {

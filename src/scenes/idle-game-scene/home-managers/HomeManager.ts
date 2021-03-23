@@ -1,18 +1,22 @@
 import ResourceManager from "../resources/resource-managers/ResourceManager";
 
 export default abstract class HomeManager {
-	public fuel: {startingAmount: number, remainingAmount: number}[]; // TODO: Turn this into a class Fuel or something
+	private _fuel: {startingAmount: number, remainingAmount: number}[]; // TODO: Turn this into a class Fuel or something
 	private currentFuelIndex = -1;
 	public totalRemaingFuel = 0;
 
 	public constructor(public homeType: string, public resourceManager: ResourceManager, public fuelLimit: number, public fuelUseSpeed: number) {
-		this.fuel = [];
+		this._fuel = [];
+	}
+
+	get currentFuelLevel() {
+		return this._fuel.length;
 	}
 
 	public addFuel() {
 		// There's not enough of the fuel resource collected to actually use
 		//  || The fuel for the home is already at capacity
-		if(this.resourceManager.quantity < 1 || this.fuel.length == this.fuelLimit) return;
+		if(this.resourceManager.quantity < 1 || this._fuel.length == this.fuelLimit) return;
 
 		let fuel = {
 			startingAmount: this.resourceManager.resource.energyUnits,
@@ -21,10 +25,10 @@ export default abstract class HomeManager {
 		this.resourceManager.removeResource(1);
 
 		this.totalRemaingFuel += fuel.startingAmount;
-		this.fuel.push(fuel);
+		this._fuel.push(fuel);
 
 		if(this.currentFuelIndex == -1) {
-            this.currentFuelIndex = this.fuel.length - 1;
+            this.currentFuelIndex = this._fuel.length - 1;
         }
 	}
 
@@ -33,10 +37,10 @@ export default abstract class HomeManager {
 	}
 
 	private updateFuel(delta: number) {
-		if(this.fuel.length == 0) return;
+		if(this._fuel.length == 0) return;
 
 		const deltaSecond = delta / 1000;
-		let fuel = this.fuel[this.currentFuelIndex];
+		let fuel = this._fuel[this.currentFuelIndex];
         let deltaFuelUsed = this.fuelUseSpeed * deltaSecond;
 		this.totalRemaingFuel -= deltaFuelUsed;
 
@@ -47,11 +51,11 @@ export default abstract class HomeManager {
             fuel.remainingAmount = newFuelAmount;
         } else {
 			// We need to go into the next fuel resource if available
-            this.fuel.splice(this.currentFuelIndex, 1);
-            this.currentFuelIndex = this.fuel.length - 1;
+            this._fuel.splice(this.currentFuelIndex, 1);
+            this.currentFuelIndex = this._fuel.length - 1;
             
             if(this.currentFuelIndex >= 0) {
-				fuel = this.fuel[this.currentFuelIndex];
+				fuel = this._fuel[this.currentFuelIndex];
 				let remainingFuelToRemove = newFuelAmount * -1; // Will be 0 or negative and we want it positive
 				fuel.remainingAmount -= remainingFuelToRemove;
 			}
