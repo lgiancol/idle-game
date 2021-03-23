@@ -14,7 +14,7 @@ export default class LogUpgradeManager extends ResourceUpgradeManager {
 		const baseCost = 10;
 		for(let i = 0; i < 10; i++) {
 			let upgradeCost = Math.round(baseCost * Math.pow(2.65, i));
-			let upgradeSpeed = Math.round(baseSpeed * (i + 1) * 1);
+			let upgradeSpeed = Math.round(baseSpeed * (i + 1) * (Math.random() + 1));
 
 			const upgradeValues = {
 				autoCollectMultiplier: upgradeSpeed

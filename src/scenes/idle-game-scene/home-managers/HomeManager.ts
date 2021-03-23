@@ -38,7 +38,7 @@ export default abstract class HomeManager {
 	}
 
 	get canAddFuel() {
-		return this.resourceManager.quantity > 0 && this._fuel.length != this.fuelLimit;
+		return this.resourceManager.quantity > 0 && this.totalRemaingFuel != this.fuelLimit * this.resourceManager.resource.energyUnits;
 	}
 
 	public addFuel() {
@@ -47,8 +47,14 @@ export default abstract class HomeManager {
 			remainingAmount: this.resourceManager.resource.energyUnits
 		} as {startingAmount: number, remainingAmount: number};
 
-		this.totalRemaingFuel += fuel.startingAmount;
-		this._fuel.push(fuel);
+		if(this._fuel.length == this.fuelLimit) {
+			const currentFuel = this._fuel[this.currentFuelIndex];
+			currentFuel.remainingAmount = currentFuel.startingAmount;
+		} else {
+			this._fuel.push(fuel);
+		}
+
+		this.totalRemaingFuel = Math.min(this.totalRemaingFuel + fuel.startingAmount, this.fuelLimit * this.resourceManager.resource.energyUnits);
 
 		if(this.currentFuelIndex == -1) {
             this.currentFuelIndex = this._fuel.length - 1;
