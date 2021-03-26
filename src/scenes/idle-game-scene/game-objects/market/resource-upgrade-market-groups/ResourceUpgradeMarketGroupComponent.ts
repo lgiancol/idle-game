@@ -2,13 +2,13 @@ import '../../../../../ui/LuuButton';
 import LuuButton from '../../../../../ui/LuuButton';
 import MarketManager from '../../../market-manager/MarketManager';
 import ResourceManager from '../../../resources/resource-managers/ResourceManager';
-import CollectSpeedUpgrade from "../../../resources/upgrades/CollectSpeedUpgrade";
-import Upgrade from '../../../upgrades/Upgrade';
+import ResourceUpgrade from '../../../resources/upgrades/ResourceUpgrade';
 import UpgradeType from '../../../upgrades/UpgradeType';
 import MarketGroupComponent from "../MarketGroupComponent";
 
 export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
-	private collectSpeedUpgrade: LuuButton;
+	// private collectSpeedUpgradeBtn: LuuButton;
+	private upgradeBtns: LuuButton[];
 	private sellBtns: LuuButton[];
 
 	public constructor(scene: Phaser.Scene, activeResourceManager: ResourceManager, x: number, y: number, width: number = 100, height: number = 75) {
@@ -18,7 +18,9 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 
 	public init() {
 		if(this.activeResourceManager) {
-			this.collectSpeedUpgrade?.destroy();
+			this.upgradeBtns?.forEach((btn: LuuButton) => {
+				btn.destroy();
+			});
 			this.sellBtns?.forEach((btn: LuuButton) => {
 				btn.destroy();
 			});
@@ -44,6 +46,7 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 				this.sellBtns.push(btn);
 			}
 			
+			this.upgradeBtns = [];
 			// Will go through all the different types of upgrades and create them
 			Object.keys(UpgradeType).forEach((upgradeType: string) => {
 				this.initUpgradeButton(upgradeType);
@@ -58,10 +61,13 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 		const padding = 10;
 		const buttonWidth = this.width - (padding * 2);
 		const buttonHeight = 70;
-		this.collectSpeedUpgrade = this.scene.add.luuButton(this.x + padding, this.y + 50, buttonWidth, buttonHeight, currentUpgrade.name + ` $${currentUpgrade.cost}`)
+		const upgradeBtn = this.scene.add.luuButton(this.x + padding, this.y + 50, buttonWidth, buttonHeight, currentUpgrade.name + ` $${currentUpgrade.cost}`)
 		.setData('upgrade', currentUpgrade)
-		.addListener('pointerdown', this.onCollectSpeedUpgradeClick.bind(this))
 		.setEnabled(marketManager.canAfford(currentUpgrade.cost));
+
+		upgradeBtn.addListener('pointerdown', this.makeUpgradeBtnHandler(upgradeBtn), this);
+
+		this.upgradeBtns.push(upgradeBtn);
 	}
 
 	public preUpdate(delta: number) {
@@ -73,13 +79,15 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 	}
 
 	private updateUpgradeButtons() {
-		if(this.collectSpeedUpgrade) {
-			let marketManager = this.scene.data.get('marketManager') as MarketManager;
-			const upgrade = this.collectSpeedUpgrade.getData('upgrade') as Upgrade;
-			if(upgrade) {
-				// Need to keep track of if it's enabled
-				this.collectSpeedUpgrade.setEnabled(marketManager.canAfford(upgrade.cost))
-			}
+		if(this.upgradeBtns?.length > 0) {
+			this.upgradeBtns.forEach((btn: LuuButton) => {
+				let marketManager = this.scene.data.get('marketManager') as MarketManager;
+				const upgrade = btn.getData('upgrade') as ResourceUpgrade;
+				if(upgrade) {
+					// Need to keep track of if it's enabled
+					btn.setEnabled(marketManager.canAfford(upgrade.cost));
+				}
+			});
 		}
 	}
 
@@ -100,22 +108,30 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 		return onSellClick.bind(this);
 	}
 
-	public onCollectSpeedUpgradeClick() {
+	private makeUpgradeBtnHandler(btn: LuuButton) {
+		function onClick() {
+			this.onUpgradeBtnClick(btn);
+		}
+
+		return onClick.bind(this);
+	}
+
+	public onUpgradeBtnClick(upgradeBtn: LuuButton) {
 		let marketManager = this.scene.data.get('marketManager') as MarketManager;
 		
-		const upgrade = this.collectSpeedUpgrade.getData('upgrade') as CollectSpeedUpgrade;
+		const upgrade = upgradeBtn.getData('upgrade') as ResourceUpgrade;
 		if(marketManager && marketManager.canAfford(upgrade.cost)) {
 			marketManager.removeFunds(upgrade.cost);
 			let resourceManager = this.activeResourceManager as ResourceManager;
 			resourceManager.applyUpgrade(upgrade.type);
 
-			let newUpgrade = resourceManager.getCurrentUpgrade(UpgradeType.COLLECT_SPEED) as CollectSpeedUpgrade;
-			this.collectSpeedUpgrade.setData('upgrade', newUpgrade);
+			let newUpgrade = resourceManager.getCurrentUpgrade(upgrade.type);
+			upgradeBtn.setData('upgrade', newUpgrade);
 			if(newUpgrade) {
-				this.collectSpeedUpgrade.setText(newUpgrade.name + ` $${newUpgrade.cost}`);
+				upgradeBtn.setText(newUpgrade.name + ` $${newUpgrade.cost}`);
 			} else {
-				this.collectSpeedUpgrade.setText('No more upgrades available');
-				this.collectSpeedUpgrade.setEnabled(false);
+				upgradeBtn.setText('No more upgrades available');
+				upgradeBtn.setEnabled(false);
 			}
 		}
 	}
@@ -123,7 +139,7 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 	public destroy() {
 		super.destroy();
 
-		this.collectSpeedUpgrade?.destroy();
+		this.upgradeBtns?.forEach((btn: LuuButton) => btn.destroy());
 		this.sellBtns?.forEach((btn: LuuButton) => btn.destroy());
 	}
 }

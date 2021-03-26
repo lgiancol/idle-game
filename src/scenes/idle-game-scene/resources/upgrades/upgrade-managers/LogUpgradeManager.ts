@@ -9,7 +9,7 @@ export default class LogUpgradeManager extends ResourceUpgradeManager {
 		this.initializeUpgrades();
 	}
 
-	protected initializeUpgrades() {
+	protected initCollectSpeedUpgrades() {
 		let baseSpeed = 2;
 		const baseCost = 10;
 		for(let i = 0; i < 10; i++) {
@@ -21,5 +21,9 @@ export default class LogUpgradeManager extends ResourceUpgradeManager {
 			} as ResourceUpgradeValue;
 			this.upgrades[UpgradeType.COLLECT_SPEED].enqueue(new ResourceUpgrade('LOG_COLLECT_SPEED_INCREASE_' + i, UpgradeType.COLLECT_SPEED, upgradeCost, upgradeValues));
 		}
+	}
+
+	protected initValueUpgrades() {
+		
 	}
 }
