@@ -1,6 +1,5 @@
 import ResourceManager from "../../resources/resource-managers/ResourceManager";
 import ResourceUpgradeManager from "../../resources/upgrades/upgrade-managers/ResourceUpgradeManager";
-import UpgradeManager from "../../upgrades/UpgradeManager";
 
 export default class MarketGroupComponent extends Phaser.GameObjects.Rectangle {
 	public constructor(scene: Phaser.Scene, private _activeResourceManager: ResourceManager, x: number, y: number, width: number, height: number) {

@@ -1,16 +1,18 @@
+import LuuProgressbar from "../../../ui/LuuProgressBar";
 import HomeManager from "../home-managers/HomeManager";
 
 export default class HomeComponent extends Phaser.GameObjects.Rectangle {
 	private nameLabel: Phaser.GameObjects.Text;
-	private quantityLabel: Phaser.GameObjects.Text;
+	private fuelProgressBar: LuuProgressbar;
+	private deathProgressBar: LuuProgressbar;
 
-	public constructor(scene: Phaser.Scene, public homeManager: HomeManager, public x: number, public y: number, public width = 100, public height = 84) {
-		super(scene, x, y);
+	public constructor(scene: Phaser.Scene, public homeManager: HomeManager, public x: number, public y: number, width = 100, height = 84) {
+		super(scene, x, y, width, height);
 		this.init();
 	}
 
 	private init() {
-		this.setFillStyle(0xffbb22);
+		this.setStrokeStyle(1, 0xffffff);
 		
 		let yOffset = this.y + 10;
 		this.nameLabel = this.scene.add.text(this.x + 10, yOffset, `${this.homeManager.homeType}`)
@@ -21,23 +23,34 @@ export default class HomeComponent extends Phaser.GameObjects.Rectangle {
 		.setDepth(1);
 
 		yOffset += this.nameLabel.getBounds().height + 10;
-		this.quantityLabel = this.scene.add.text(this.x + 10, yOffset + 10, `${this.homeManager.totalRemaingFuel} / ${(this.homeManager.resourceManager.resource.energyUnits * this.homeManager.fuelLimit)}`)
-		.setOrigin(0)
-		.setColor('white')
-		.setFontFamily('my-font')
-		.setFontSize(20)
-		.setDepth(1);
+
+		this.fuelProgressBar = this.scene.add.luuProgressBar(this.x + 10, yOffset, this.width - 20, 20)
+		.setPercentage(this.homeManager.totalRemaingFuel / (this.homeManager.resourceManager.resource.energyUnits * this.homeManager.fuelLimit));
+		// .setText(`${this.homeManager.currentFuelLevel} / ${(this.homeManager.resourceManager.resource.energyUnits * this.homeManager.fuelLimit)}`);
+
+		yOffset += this.fuelProgressBar.getBounds().height + 10;
+
+		this.deathProgressBar = this.scene.add.luuProgressBar(this.x + 10, yOffset, this.width - 20, 20)
+		.setPercentage(this.homeManager.freezeTimeReminaing / this.homeManager.freezeToDeathTime);
+
+		this.displayHeight = 10 + this.nameLabel.height +
+			10 + this.fuelProgressBar.height +
+			10 + this.deathProgressBar.height + 10 + 2; // this.quantityLabel.height
 	}
 
 	// This is where we actually update this object
 	public preUpdate() {
-		this.quantityLabel.setText(`${this.homeManager.fuel.length} / ${this.homeManager.fuelLimit}`);
+		// this.fuelProgressBar.setText(`${this.homeManager.currentFuelLevel} / ${(this.homeManager.resourceManager.resource.energyUnits * this.homeManager.fuelLimit)}`);
+		this.fuelProgressBar.setPercentage(this.homeManager.totalRemaingFuel / (this.homeManager.resourceManager.resource.energyUnits * this.homeManager.fuelLimit));
+		this.deathProgressBar.setPercentage(this.homeManager.freezeTimeReminaing / this.homeManager.freezeToDeathTime);
 	}
 
 	public destroy() {
 		super.destroy();
 
 		this.nameLabel.destroy();
+		this.fuelProgressBar.destroy();
+		this.deathProgressBar.destroy();
 	}
 }
 
@@ -53,7 +66,10 @@ Phaser.GameObjects.GameObjectFactory.register(
 		home.setInteractive({useHandCursor: true});
 
 		function onClick() {
-			home.homeManager.addFuel()
+			if(home.homeManager.canAddFuel) {
+				home.homeManager.resourceManager.removeResource(1);
+				home.homeManager.addFuel()
+			}
 		}
 		home.on('pointerdown', onClick);
 		return home;

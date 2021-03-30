@@ -43,6 +43,14 @@ export default class MarketComponent extends Phaser.GameObjects.Rectangle {
 		.setText(`$${this.marketManager.money}`)
 		.setPosition(this.x + this.width - this.moneyLabel.width - 10, this.moneyLabel.y);
 	}
+
+	public destroy() {
+		super.destroy();
+
+		this.label.destroy();
+		this.moneyLabel.destroy();
+		this.marketGroup?.destroy();
+	}
 }
 
 Phaser.GameObjects.GameObjectFactory.register(

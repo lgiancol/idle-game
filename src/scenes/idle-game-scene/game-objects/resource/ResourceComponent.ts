@@ -35,7 +35,6 @@ export default class ResourceComponent extends Phaser.GameObjects.Rectangle {
 		.on('pointerdown', this.onOpenStore.bind(this));
 
 		this.displayHeight = 10 + this.nameLabel.height + 10 + this.collectResourceBtn.height + 10 + this.openStoreBtn.height + 10;
-
 	}
 
 	public preUpdate(delta: number) {
@@ -55,6 +54,14 @@ export default class ResourceComponent extends Phaser.GameObjects.Rectangle {
 		if(currentActiveResource == null || currentActiveResource != this.resourceManager.resourceType) {
 			marketManager.setActiveResource(this.resourceManager.resourceType);
 		}
+	}
+
+	public destroy() {
+		super.destroy();
+
+		this.nameLabel.destroy();
+		this.collectResourceBtn.destroy();
+		this.openStoreBtn.destroy();
 	}
 }
 

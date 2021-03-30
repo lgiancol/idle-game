@@ -1,42 +1,90 @@
 import ResourceManager from "../resources/resource-managers/ResourceManager";
 
 export default abstract class HomeManager {
-	public fuel: {startingAmount: number, remainingAmount: number}[]; // TODO: Turn this into a class Fuel or something
+	private _fuel: {startingAmount: number, remainingAmount: number}[]; // TODO: Turn this into a class Fuel or something
 	private currentFuelIndex = -1;
 	public totalRemaingFuel = 0;
 
-	public constructor(public homeType: string, public resourceManager: ResourceManager, public fuelLimit: number, public fuelUseSpeed: number) {
-		this.fuel = [];
+	// Feezing variables
+	private _isFeezing = false;
+	private _currentFreezeTime = 0;
+
+	public constructor(
+		public homeType: string,
+		public resourceManager: ResourceManager,
+		public fuelLimit: number,
+		public fuelUseSpeed: number,
+		private _freezeToDeathTime: number) {
+		this._fuel = [];
+		for(let i = 0; i < this.fuelLimit; i++) {
+			this.addFuel();
+		}
+	}
+
+	get currentFuelLevel() {
+		return this._fuel.length;
+	}
+
+	get freezeToDeathTime() {
+		return this._freezeToDeathTime;
+	}
+
+	get freezeTimeReminaing() {
+		return this._freezeToDeathTime - this._currentFreezeTime;
+	}
+
+	get isFrozen() {
+		return this.freezeTimeReminaing == 0;
+	}
+
+	get canAddFuel() {
+		return this.resourceManager.quantity > 0 && this.totalRemaingFuel != this.fuelLimit * this.resourceManager.resource.energyUnits;
 	}
 
 	public addFuel() {
-		// There's not enough of the fuel resource collected to actually use
-		//  || The fuel for the home is already at capacity
-		if(this.resourceManager.quantity < 1 || this.fuel.length == this.fuelLimit) return;
-
 		let fuel = {
 			startingAmount: this.resourceManager.resource.energyUnits,
 			remainingAmount: this.resourceManager.resource.energyUnits
 		} as {startingAmount: number, remainingAmount: number};
-		this.resourceManager.removeResource(1);
 
-		this.totalRemaingFuel += fuel.startingAmount;
-		this.fuel.push(fuel);
+		if(this._fuel.length == this.fuelLimit) {
+			const currentFuel = this._fuel[this.currentFuelIndex];
+			currentFuel.remainingAmount = currentFuel.startingAmount;
+		} else {
+			this._fuel.push(fuel);
+		}
+
+		this.totalRemaingFuel = Math.min(this.totalRemaingFuel + fuel.startingAmount, this.fuelLimit * this.resourceManager.resource.energyUnits);
 
 		if(this.currentFuelIndex == -1) {
-            this.currentFuelIndex = this.fuel.length - 1;
+            this.currentFuelIndex = this._fuel.length - 1;
         }
 	}
 
 	public update(delta: number) {
 		this.updateFuel(delta);
+
+		const deltaSecond = delta / 1000;
+		if(this._isFeezing) {
+			this._currentFreezeTime += deltaSecond;
+
+			if(this._currentFreezeTime > this._freezeToDeathTime) this._currentFreezeTime = this.freezeToDeathTime;
+		} else if(this._currentFreezeTime > 0) {
+			this._currentFreezeTime -= deltaSecond;
+
+			if(this._currentFreezeTime < 0) this._currentFreezeTime = 0;
+		}
 	}
 
 	private updateFuel(delta: number) {
-		if(this.fuel.length == 0) return;
+		if(this._fuel.length == 0) {
+			this._isFeezing = true;
+			return;
+		}
 
+		this._isFeezing = false;
 		const deltaSecond = delta / 1000;
-		let fuel = this.fuel[this.currentFuelIndex];
+		let fuel = this._fuel[this.currentFuelIndex];
         let deltaFuelUsed = this.fuelUseSpeed * deltaSecond;
 		this.totalRemaingFuel -= deltaFuelUsed;
 
@@ -47,11 +95,11 @@ export default abstract class HomeManager {
             fuel.remainingAmount = newFuelAmount;
         } else {
 			// We need to go into the next fuel resource if available
-            this.fuel.splice(this.currentFuelIndex, 1);
-            this.currentFuelIndex = this.fuel.length - 1;
+            this._fuel.splice(this.currentFuelIndex, 1);
+            this.currentFuelIndex = this._fuel.length - 1;
             
             if(this.currentFuelIndex >= 0) {
-				fuel = this.fuel[this.currentFuelIndex];
+				fuel = this._fuel[this.currentFuelIndex];
 				let remainingFuelToRemove = newFuelAmount * -1; // Will be 0 or negative and we want it positive
 				fuel.remainingAmount -= remainingFuelToRemove;
 			}

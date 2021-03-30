@@ -11,6 +11,16 @@ export default abstract class ResourceUpgradeManager extends UpgradeManager {
 		this.upgrades = {
 			[UpgradeType.COLLECT_SPEED]: new Queue<Upgrade>()
 		};
+
+		this.initializeUpgrades();
+	}
+
+	protected abstract initCollectSpeedUpgrades();
+	protected abstract initValueUpgrades();
+
+	protected initializeUpgrades() {
+		this.initCollectSpeedUpgrades();
+		this.initValueUpgrades();
 	}
 
 	public peekCurrentUpgrade(upgradeName: string) {
