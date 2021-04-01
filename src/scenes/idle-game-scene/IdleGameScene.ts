@@ -9,12 +9,15 @@ import ResourceComponent from './game-objects/resource/ResourceComponent';
 import CampManager from './home-managers/CampManager';
 import HomeManager from './home-managers/HomeManager';
 import MarketManager from './market-manager/MarketManager';
+import Player from './Player';
 import { ResourceType } from './resources/Resource';
 import CoalManager from './resources/resource-managers/CoalManager';
 import LogManager from "./resources/resource-managers/LogManager";
 import ResourceManager from './resources/resource-managers/ResourceManager';
 
 export class IdleGameScene extends Phaser.Scene {
+	private player: Player;
+
 	// Game state
 	public isLost = false; // TODO: Turn this into some sort of GameState manager or something
 	public lostText: Phaser.GameObjects.Text;
