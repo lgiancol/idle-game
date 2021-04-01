@@ -34,15 +34,38 @@ export class IdleGameScene extends Phaser.Scene {
 	public marketManager: MarketManager;
 	public marketComponent: MarketComponent;
 
+	// TEMP map things
+	private startMapDragX: number = null;
+
 	public constructor() {
 		super({key: 'IdleGame'});
 	}
 
 	public preload() {
 		// Load any assets here
+		this.load.image('map', 'assets/temp.png');
 	}
 
 	public create() {
+		let cam = this.cameras.main;
+		var map = this.add.image(0, 0, 'map').setOrigin(0, 0).setScale(40);
+
+		// cam.setZoom(2);
+		cam.setBounds(0, 0, map.displayWidth, map.displayHeight);
+		this.input.on('pointermove', (p) => {
+			if (!p.isDown) return;
+
+			// const start = new Phaser.Math.Vector2(cam.x, cam.y).normalize();
+			// const end = new Phaser.Math.Vector2(p.x, p.y);
+			// const lerpedDir = start.lerp(end, 0.002);
+
+			let speedX = 0.8;
+			let speedY = 0.8;
+			
+			cam.scrollX -= ((p.x - p.prevPosition.x) * speedX) / cam.zoom;
+			cam.scrollY -= ((p.y - p.prevPosition.y) * speedY) / cam.zoom;
+		  });
+
 		this.resetGame();
 	}
 
