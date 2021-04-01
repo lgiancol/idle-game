@@ -5,7 +5,6 @@ import ResourceManager from "../../resources/resource-managers/ResourceManager";
 export default class ResourceComponent extends Phaser.GameObjects.Rectangle {
 	private nameLabel: Phaser.GameObjects.Text;
 	private collectResourceBtn: LuuButton;
-	private openStoreBtn: LuuButton;
 
 	public constructor(scene: Phaser.Scene, public resourceManager: ResourceManager, public x: number, public y: number, width = 100, height = 84) {
 		super(scene, x, y, width, height);
@@ -31,10 +30,8 @@ export default class ResourceComponent extends Phaser.GameObjects.Rectangle {
 		.on('pointerdown', this.onCollect.bind(this));
 
 		yOffset += this.collectResourceBtn.getBounds().height + 10;
-		this.openStoreBtn = this.scene.add.luuButton(this.x + 10, yOffset, this.width - 20, btnHeight, 'Store')
-		.on('pointerdown', this.onOpenStore.bind(this));
 
-		this.displayHeight = 10 + this.nameLabel.height + 10 + this.collectResourceBtn.height + 10 + this.openStoreBtn.height + 10;
+		this.displayHeight = 10 + this.nameLabel.height + 10 + this.collectResourceBtn.height + 10;
 	}
 
 	public preUpdate(delta: number) {
@@ -61,7 +58,6 @@ export default class ResourceComponent extends Phaser.GameObjects.Rectangle {
 
 		this.nameLabel.destroy();
 		this.collectResourceBtn.destroy();
-		this.openStoreBtn.destroy();
 	}
 }
 

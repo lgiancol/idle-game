@@ -1,6 +1,7 @@
 import '../../../../../ui/LuuButton';
 import LuuButton from '../../../../../ui/LuuButton';
 import MarketManager from '../../../market-manager/MarketManager';
+import Player from '../../../Player';
 import ResourceManager from '../../../resources/resource-managers/ResourceManager';
 import ResourceUpgrade from '../../../resources/upgrades/ResourceUpgrade';
 import UpgradeType from '../../../upgrades/UpgradeType';
@@ -10,9 +11,11 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 	// private collectSpeedUpgradeBtn: LuuButton;
 	private upgradeBtns: LuuButton[];
 	private sellBtns: LuuButton[];
+	private player: Player;
 
 	public constructor(scene: Phaser.Scene, activeResourceManager: ResourceManager, x: number, y: number, width: number = 100, height: number = 75) {
 		super(scene, activeResourceManager, x, y, width, height);
+		this.player = Player.getInstance();
 		this.init();
 	}
 
@@ -81,11 +84,11 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 	private updateUpgradeButtons() {
 		if(this.upgradeBtns?.length > 0) {
 			this.upgradeBtns.forEach((btn: LuuButton) => {
-				let marketManager = this.scene.data.get('marketManager') as MarketManager;
+				const player = this.player;
 				const upgrade = btn.getData('upgrade') as ResourceUpgrade;
 				if(upgrade) {
 					// Need to keep track of if it's enabled
-					btn.setEnabled(marketManager.canAfford(upgrade.cost));
+					btn.setEnabled(player.canAfford(upgrade.cost));
 				}
 			});
 		}
@@ -93,7 +96,7 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 
 	private createSellClickCallback(sellAmount: number) {
 		const marketGroupComponent = this;
-		const marketManager = this.scene.data.get('marketManager') as MarketManager;
+		// const marketManager = this.scene.data.get('marketManager') as MarketManager;
 		function onSellClick() {
 			let truSellAmount = sellAmount;
 			if(sellAmount == -1) {
@@ -101,7 +104,7 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 			}
 			if(marketGroupComponent.activeResourceManager.hasMinimumOf(truSellAmount)) {
 				const fundsToAdd = marketGroupComponent.activeResourceManager.sellResource(truSellAmount);
-				marketManager.addFunds(fundsToAdd)
+				Player.getInstance().addFunds(fundsToAdd)
 			}
 		}
 
@@ -117,11 +120,10 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 	}
 
 	public onUpgradeBtnClick(upgradeBtn: LuuButton) {
-		let marketManager = this.scene.data.get('marketManager') as MarketManager;
-		
 		const upgrade = upgradeBtn.getData('upgrade') as ResourceUpgrade;
-		if(marketManager && marketManager.canAfford(upgrade.cost)) {
-			marketManager.removeFunds(upgrade.cost);
+
+		if(this.player.canAfford(upgrade.cost)) {
+			this.player.removeFunds(upgrade.cost);
 			let resourceManager = this.activeResourceManager as ResourceManager;
 			resourceManager.applyUpgrade(upgrade.type);
 

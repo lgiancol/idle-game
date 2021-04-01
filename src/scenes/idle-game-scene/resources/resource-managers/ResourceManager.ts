@@ -1,4 +1,5 @@
-import Resource, { ResourceType } from "../Resource";
+import { ResourceType } from "../Resource";
+import Resources from "../Resources";
 import ResourceUpgrade from "../upgrades/ResourceUpgrade";
 import ResourceUpgradeManager from "../upgrades/upgrade-managers/ResourceUpgradeManager";
 import ResourceCollector from "./resource-collector/ResourceCollector";
@@ -8,8 +9,8 @@ export default class ResourceManager {
 	private _resourceCollector: ResourceCollector = new ResourceCollector();
 	private _resourceSeller: ResourceSeller;
 
-	public constructor(public resourceType: ResourceType, public resource: Resource, private _resourceUpgradeManager: ResourceUpgradeManager) {
-		this._resourceSeller = new ResourceSeller(resource.startingValue);
+	public constructor(public resourceType: ResourceType, private _resourceUpgradeManager: ResourceUpgradeManager) {
+		this._resourceSeller = new ResourceSeller(Resources.getByType(resourceType).startingValue);
 	}
 
 	get resourceName() {

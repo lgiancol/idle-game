@@ -1,6 +1,8 @@
+import Resource from "../resources/Resource";
 import ResourceManager from "../resources/resource-managers/ResourceManager";
 
 export default abstract class HomeManager {
+	private _acceptedFuelResource: Resource;
 	private _fuel: {startingAmount: number, remainingAmount: number}[]; // TODO: Turn this into a class Fuel or something
 	private currentFuelIndex = -1;
 	public totalRemaingFuel = 0;
@@ -21,6 +23,10 @@ export default abstract class HomeManager {
 		}
 	}
 
+	get acceptedFuelResource() {
+		return this._acceptedFuelResource;
+	}
+
 	get currentFuelLevel() {
 		return this._fuel.length;
 	}
@@ -38,13 +44,13 @@ export default abstract class HomeManager {
 	}
 
 	get canAddFuel() {
-		return this.resourceManager.quantity > 0 && this.totalRemaingFuel != this.fuelLimit * this.resourceManager.resource.energyUnits;
+		return this.resourceManager.quantity > 0 && this.totalRemaingFuel != this.fuelLimit * this._acceptedFuelResource.energyUnits;
 	}
 
 	public addFuel() {
 		let fuel = {
-			startingAmount: this.resourceManager.resource.energyUnits,
-			remainingAmount: this.resourceManager.resource.energyUnits
+			startingAmount: this._acceptedFuelResource.energyUnits,
+			remainingAmount: this._acceptedFuelResource.energyUnits
 		} as {startingAmount: number, remainingAmount: number};
 
 		if(this._fuel.length == this.fuelLimit) {
@@ -54,7 +60,7 @@ export default abstract class HomeManager {
 			this._fuel.push(fuel);
 		}
 
-		this.totalRemaingFuel = Math.min(this.totalRemaingFuel + fuel.startingAmount, this.fuelLimit * this.resourceManager.resource.energyUnits);
+		this.totalRemaingFuel = Math.min(this.totalRemaingFuel + fuel.startingAmount, this.fuelLimit * this._acceptedFuelResource.energyUnits);
 
 		if(this.currentFuelIndex == -1) {
             this.currentFuelIndex = this._fuel.length - 1;

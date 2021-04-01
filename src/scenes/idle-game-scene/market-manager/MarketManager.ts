@@ -1,4 +1,5 @@
-import { ResourceType } from "../resources/Resource";
+import Player from "../Player";
+import Resource, { ResourceType } from "../resources/Resource";
 import ResourceManager from "../resources/resource-managers/ResourceManager";
 
 export default class MarketManager extends Phaser.Events.EventEmitter {
@@ -12,6 +13,12 @@ export default class MarketManager extends Phaser.Events.EventEmitter {
 	public constructor() {
 		super();
 		this.managers = {};
+
+		const player = Player.getInstance();
+
+		Object.values(player.resourceManagers).forEach((resourceManager: ResourceManager) => {
+			this.addResourceManager(resourceManager.resourceType, resourceManager);
+		});
 	}
 
 	public getActiveResource() {

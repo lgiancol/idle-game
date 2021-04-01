@@ -1,4 +1,5 @@
 import MarketManager from "../../market-manager/MarketManager";
+import Player from "../../Player";
 import ResourceManager from "../../resources/resource-managers/ResourceManager";
 import MarketGroupComponent from "./MarketGroupComponent";
 
@@ -6,9 +7,11 @@ export default class MarketComponent extends Phaser.GameObjects.Rectangle {
 	private label: Phaser.GameObjects.Text;
 	private moneyLabel: Phaser.GameObjects.Text;
 	private marketGroup: MarketGroupComponent; // TODO: Needs to be updated to actually be a Tab
+	private player: Player;
 
 	public constructor(scene: Phaser.Scene, public marketManager: MarketManager, x: number, y: number, width: number, height: number) {
 		super(scene, x, y, width, height);
+		this.player = Player.getInstance();
 		this.init();
 	}
 
@@ -23,7 +26,7 @@ export default class MarketComponent extends Phaser.GameObjects.Rectangle {
 
 		let yOffset = this.label.y + this.label.getBounds().height;
 		
-		this.moneyLabel = this.scene.add.text(this.x + this.width - 100, this.y + 10, `$${this.marketManager.money}`)
+		this.moneyLabel = this.scene.add.text(this.x + this.width - 100, this.y + 10, `$${this.player.money}`)
 		.setOrigin(0)
 		.setColor('white')
 		.setFontFamily('my-font')
@@ -40,7 +43,7 @@ export default class MarketComponent extends Phaser.GameObjects.Rectangle {
 
 	public preUpdate(delta: number) {
 		this.moneyLabel
-		.setText(`$${this.marketManager.money}`)
+		.setText(`$${this.player.money}`)
 		.setPosition(this.x + this.width - this.moneyLabel.width - 10, this.moneyLabel.y);
 	}
 
