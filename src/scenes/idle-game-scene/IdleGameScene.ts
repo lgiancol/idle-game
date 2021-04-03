@@ -42,6 +42,8 @@ export class IdleGameScene extends Phaser.Scene {
 
 	public preload() {
 		// Load any assets here
+		this.load.image('purple_btn', 'assets/UI/purple_btn.png');
+		this.load.image('purple_btn_active', 'assets/UI/purple_btn_active.png');
 	}
 
 	public create() {

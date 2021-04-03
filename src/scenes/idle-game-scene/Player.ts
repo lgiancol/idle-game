@@ -46,6 +46,10 @@ export default class Player {
 		return this._resourceManagers;
 	}
 
+	get resourcemanagersArr() {
+		return Object.values(this._resourceManagers);
+	}
+
 	public addResourceManager(resourceManager: ResourceManager) {
 		this._resourceManagers[resourceManager.resourceType] = resourceManager;
 	}

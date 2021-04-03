@@ -1,6 +1,5 @@
 import '../../../../../ui/LuuButton';
 import LuuButton from '../../../../../ui/LuuButton';
-import MarketManager from '../../../market-manager/MarketManager';
 import Player from '../../../Player';
 import ResourceManager from '../../../resources/resource-managers/ResourceManager';
 import ResourceUpgrade from '../../../resources/upgrades/ResourceUpgrade';
@@ -42,11 +41,12 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 				}
 
 				const x = this.x + (sellBtnWidth * i) + (10 * i);
-				const btn = this.scene.add.luuButton(x + 10, this.y + 10, sellBtnWidth, 30, `Sell ${sellAmountLabel}`)
+				const sellBtn = this.scene.add.luuButton(x + 10, this.y + 10, sellBtnWidth, 30, `Sell ${sellAmountLabel}`)
 				.setData('sellAmount', sellAmount);
 
-				btn.on('pointerdown', this.createSellClickCallback(sellAmount));
-				this.sellBtns.push(btn);
+				sellBtn.on('pointerdown', this.createSellClickCallback(sellAmount));
+				this.add(sellBtn);
+				this.sellBtns.push(sellBtn);
 			}
 			
 			this.upgradeBtns = [];
@@ -59,24 +59,24 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 
 	private initUpgradeButton(upgradeType: string) {
 		let currentUpgrade = this.activeResourceManager.getCurrentUpgrade(UpgradeType[upgradeType]);
-		let marketManager = this.scene.data.get('marketManager') as MarketManager;
 
 		const padding = 10;
 		const buttonWidth = this.width - (padding * 2);
 		const buttonHeight = 70;
 		const upgradeBtn = this.scene.add.luuButton(this.x + padding, this.y + 50, buttonWidth, buttonHeight, currentUpgrade.name + ` $${currentUpgrade.cost}`)
 		.setData('upgrade', currentUpgrade)
-		.setEnabled(marketManager.canAfford(currentUpgrade.cost));
+		.setEnabled(this.player.canAfford(currentUpgrade.cost));
 
 		upgradeBtn.addListener('pointerdown', this.makeUpgradeBtnHandler(upgradeBtn), this);
 
+		this.add(upgradeBtn);
 		this.upgradeBtns.push(upgradeBtn);
 	}
 
 	public preUpdate(delta: number) {
 		this.sellBtns?.forEach((sellBtn: LuuButton) => {
 			let sellAmount = sellBtn.getData('sellAmount') as number;
-			sellBtn.setEnabled(this.activeResourceManager.quantity >= sellAmount)
+			sellBtn.setEnabled(this.player.getResourceManager(this.activeResourceManager.resourceType).quantity >= sellAmount)
 		});
 		this.updateUpgradeButtons();
 	}
@@ -84,11 +84,10 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 	private updateUpgradeButtons() {
 		if(this.upgradeBtns?.length > 0) {
 			this.upgradeBtns.forEach((btn: LuuButton) => {
-				const player = this.player;
 				const upgrade = btn.getData('upgrade') as ResourceUpgrade;
 				if(upgrade) {
 					// Need to keep track of if it's enabled
-					btn.setEnabled(player.canAfford(upgrade.cost));
+					btn.setEnabled(this.player.canAfford(upgrade.cost));
 				}
 			});
 		}
@@ -149,13 +148,14 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 Phaser.GameObjects.GameObjectFactory.register(
 	'resourceUpgradeMarketGroup',
 	function(this: Phaser.GameObjects.GameObjectFactory, resourceManager: ResourceManager, x: number, y: number, width: number = 100, height: number = 84) {
-		const resourceUpgrade = new ResourceUpgradeMarketGroupComponent(this.scene, resourceManager, x, y, width, height);
-		resourceUpgrade.setOrigin(0);
+		const resourceUpgradeMarketGroupComponent = new ResourceUpgradeMarketGroupComponent(this.scene, resourceManager, x, y, width, height);
+		resourceUpgradeMarketGroupComponent.setOrigin(0);
+		resourceUpgradeMarketGroupComponent.runChildUpdate = true;
 		
-		this.displayList.add(resourceUpgrade);
-		this.updateList.add(resourceUpgrade);
+		// this.displayList.add(resourceUpgradeMarketGroupComponent);
+		// this.updateList.add(resourceUpgradeMarketGroupComponent);
 
-		return resourceUpgrade;
+		return resourceUpgradeMarketGroupComponent;
 	}
 );
 
