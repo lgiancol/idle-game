@@ -1,4 +1,3 @@
-import LuuButton from "../../../../ui/LuuButton";
 import MarketManager from "../../market-manager/MarketManager";
 import Player from "../../Player";
 import ResourceManager from "../../resources/resource-managers/ResourceManager";
@@ -49,11 +48,16 @@ export default class MarketComponent extends Phaser.GameObjects.Rectangle {
 
 			this.itemSelect.add(resourceItemBtn);
 		});
-
-		// this.itemSelect.setVisible(false);
 	}
 
 	private setActiveResourceManager(resourceManager: ResourceManager) {
+		let hasResourceManager = resourceManager != null;
+		
+		this.itemSelect.setVisible(!hasResourceManager);
+		
+		this.itemMarket.setActive(hasResourceManager);
+		this.itemMarket.setVisible(hasResourceManager);
+
 		this.itemMarket.activeResourceManager = resourceManager;
 	}
 
@@ -61,9 +65,6 @@ export default class MarketComponent extends Phaser.GameObjects.Rectangle {
 		this.moneyLabel
 		.setText(`$${this.player.money}`)
 		.setPosition(this.x + this.width - this.moneyLabel.width - 10, this.moneyLabel.y);
-
-		this.itemSelect.setVisible(this.itemMarket.activeResourceManager == null);
-		this.itemMarket.setVisible(this.itemMarket.activeResourceManager != null);
 	}
 
 	public destroy() {

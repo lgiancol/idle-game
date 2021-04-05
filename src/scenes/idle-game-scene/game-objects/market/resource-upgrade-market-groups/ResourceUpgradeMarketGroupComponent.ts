@@ -8,6 +8,8 @@ import MarketGroupComponent from "../MarketGroupComponent";
 
 export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 	// private collectSpeedUpgradeBtn: LuuButton;
+	private sellBtnsGroup: Phaser.GameObjects.Group;
+	private upgradeBtnsGroup: Phaser.GameObjects.Group;
 	private upgradeBtns: LuuButton[];
 	private sellBtns: LuuButton[];
 	private player: Player;
@@ -15,70 +17,90 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 	public constructor(scene: Phaser.Scene, activeResourceManager: ResourceManager, x: number, y: number, width: number = 100, height: number = 75) {
 		super(scene, activeResourceManager, x, y, width, height);
 		this.player = Player.getInstance();
-		this.init();
 	}
 
 	public init() {
-		if(this.activeResourceManager) {
-			this.upgradeBtns?.forEach((btn: LuuButton) => {
-				btn.destroy();
-			});
-			this.sellBtns?.forEach((btn: LuuButton) => {
-				btn.destroy();
-			});
+		this.sellBtnsGroup?.destroy();
+		this.upgradeBtnsGroup?.destroy();
 
-			const padding = 10;
-			const sellBtnCount = 4;
-			const sellBtnWidth = (this.width / sellBtnCount) - (((sellBtnCount + 1) * padding) / sellBtnCount);
-			this.sellBtns = [];
-			for(let i = 0; i < sellBtnCount; i++) {
-				let sellAmount = Math.pow(10, i);
-				let sellAmountLabel = ''+ sellAmount;
+		this.initSellButtons();
+		this.sellBtnsGroup = this.scene.add.group(this.sellBtns, { runChildUpdate: true});
+		
+		this.initUpgradeButtons();
+		this.upgradeBtnsGroup = this.scene.add.group(this.upgradeBtns, { runChildUpdate: true });
+	}
 
-				if(i == sellBtnCount - 1) {
-					sellAmount = -1;
-					sellAmountLabel = 'All';
-				}
+	public setVisible(value: boolean) {
+		this.visible = value;
+		this.sellBtnsGroup?.setVisible(value);
+		this.upgradeBtnsGroup?.setVisible(value);
 
-				const x = this.x + (sellBtnWidth * i) + (10 * i);
-				const sellBtn = this.scene.add.luuButton(x + 10, this.y + 10, sellBtnWidth, 30, `Sell ${sellAmountLabel}`)
-				.setData('sellAmount', sellAmount);
+		return this;
+	}
 
-				sellBtn.on('pointerdown', this.createSellClickCallback(sellAmount));
-				this.add(sellBtn);
-				this.sellBtns.push(sellBtn);
+	public setActive(value: boolean) {
+		this.sellBtnsGroup?.setActive(value);
+		this.upgradeBtnsGroup?.setActive(value);
+
+		return this;
+	}
+
+	private initSellButtons() {
+		this.sellBtns = [];
+		const padding = 10;
+		const sellBtnCount = 4;
+		const sellBtnWidth = (this.width / sellBtnCount) - (((sellBtnCount + 1) * padding) / sellBtnCount);
+
+		for(let i = 0; i < sellBtnCount; i++) {
+			let sellAmount = Math.pow(10, i);
+			let sellAmountLabel = ''+ sellAmount;
+
+			if(i == sellBtnCount - 1) {
+				sellAmount = -1;
+				sellAmountLabel = 'All';
 			}
-			
-			this.upgradeBtns = [];
-			// Will go through all the different types of upgrades and create them
-			Object.keys(UpgradeType).forEach((upgradeType: string) => {
-				this.initUpgradeButton(upgradeType);
-			});
+
+			const x = this.x + (sellBtnWidth * i) + (10 * i);
+			const sellBtn = this.scene.add.luuButton(x + 10, this.y + 10, sellBtnWidth, 30, `Sell ${sellAmountLabel}`)
+			.setData('sellAmount', sellAmount)
+			.setActive(this.active)
+			.setEnabled(this.player.getResourceManager(this.activeResourceManager.resourceType).hasMinimumOf(sellAmount))
+			.setVisible(this.visible);
+
+			sellBtn.on('pointerdown', this.createSellClickCallback(sellAmount));
+			this.sellBtns.push(sellBtn);
 		}
 	}
 
-	private initUpgradeButton(upgradeType: string) {
-		let currentUpgrade = this.activeResourceManager.getCurrentUpgrade(UpgradeType[upgradeType]);
-
+	private initUpgradeButtons() {
+		this.upgradeBtns = [];
 		const padding = 10;
 		const buttonWidth = this.width - (padding * 2);
 		const buttonHeight = 70;
-		const upgradeBtn = this.scene.add.luuButton(this.x + padding, this.y + 50, buttonWidth, buttonHeight, currentUpgrade.name + ` $${currentUpgrade.cost}`)
-		.setData('upgrade', currentUpgrade)
-		.setEnabled(this.player.canAfford(currentUpgrade.cost));
 
-		upgradeBtn.addListener('pointerdown', this.makeUpgradeBtnHandler(upgradeBtn), this);
-
-		this.add(upgradeBtn);
-		this.upgradeBtns.push(upgradeBtn);
+		// Will go through all the different types of upgrades and create them
+		Object.keys(UpgradeType).forEach((upgradeType: string) => {
+			let currentUpgrade = this.activeResourceManager.getCurrentUpgrade(UpgradeType[upgradeType]);
+			const upgradeBtn = this.scene.add.luuButton(this.x + padding, this.y + 50, buttonWidth, buttonHeight, currentUpgrade.name + ` $${currentUpgrade.cost}`)
+			.setData('upgrade', currentUpgrade)
+			.setActive(this.active)
+			.setEnabled(this.player.canAfford(currentUpgrade.cost))
+			.setVisible(this.visible);
+			
+			upgradeBtn.addListener('pointerdown', this.makeUpgradeBtnHandler(upgradeBtn), this);
+			this.upgradeBtns.push(upgradeBtn);
+		});
 	}
 
-	public preUpdate(delta: number) {
+	public preUpdate(delta: number, time: number) {
 		this.sellBtns?.forEach((sellBtn: LuuButton) => {
 			let sellAmount = sellBtn.getData('sellAmount') as number;
 			sellBtn.setEnabled(this.player.getResourceManager(this.activeResourceManager.resourceType).quantity >= sellAmount)
 		});
+
 		this.updateUpgradeButtons();
+
+		return this;
 	}
 
 	private updateUpgradeButtons() {
@@ -138,10 +160,10 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 	}
 
 	public destroy() {
+		this.sellBtnsGroup?.destroy();
+		this.upgradeBtnsGroup?.destroy();
+		
 		super.destroy();
-
-		this.upgradeBtns?.forEach((btn: LuuButton) => btn.destroy());
-		this.sellBtns?.forEach((btn: LuuButton) => btn.destroy());
 	}
 }
 
@@ -149,11 +171,7 @@ Phaser.GameObjects.GameObjectFactory.register(
 	'resourceUpgradeMarketGroup',
 	function(this: Phaser.GameObjects.GameObjectFactory, resourceManager: ResourceManager, x: number, y: number, width: number = 100, height: number = 84) {
 		const resourceUpgradeMarketGroupComponent = new ResourceUpgradeMarketGroupComponent(this.scene, resourceManager, x, y, width, height);
-		resourceUpgradeMarketGroupComponent.setOrigin(0);
-		resourceUpgradeMarketGroupComponent.runChildUpdate = true;
-		
-		// this.displayList.add(resourceUpgradeMarketGroupComponent);
-		// this.updateList.add(resourceUpgradeMarketGroupComponent);
+		resourceUpgradeMarketGroupComponent.addToUpdateList();
 
 		return resourceUpgradeMarketGroupComponent;
 	}
