@@ -1,7 +1,7 @@
 import ResourceManager from "../../resources/resource-managers/ResourceManager";
 
 export default abstract class MarketGroupComponent extends Phaser.GameObjects.GameObject implements Phaser.GameObjects.Components.Visible {
-	public visible = false;
+	public visible = true;
 
 	public constructor(scene: Phaser.Scene, private _activeResourceManager: ResourceManager, public x: number, public y: number, public width: number, public height: number) {
 		super(scene, 'MarketGroup');

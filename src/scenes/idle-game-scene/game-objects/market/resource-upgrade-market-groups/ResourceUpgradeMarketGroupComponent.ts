@@ -7,7 +7,6 @@ import UpgradeType from '../../../upgrades/UpgradeType';
 import MarketGroupComponent from "../MarketGroupComponent";
 
 export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
-	// private collectSpeedUpgradeBtn: LuuButton;
 	private sellBtnsGroup: Phaser.GameObjects.Group;
 	private upgradeBtnsGroup: Phaser.GameObjects.Group;
 	private upgradeBtns: LuuButton[];
@@ -20,20 +19,21 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 	}
 
 	public init() {
-		this.sellBtnsGroup?.destroy();
-		this.upgradeBtnsGroup?.destroy();
+		this.destroyInterior();
 
-		this.initSellButtons();
-		this.sellBtnsGroup = this.scene.add.group(this.sellBtns, { runChildUpdate: true});
-		
-		this.initUpgradeButtons();
-		this.upgradeBtnsGroup = this.scene.add.group(this.upgradeBtns, { runChildUpdate: true });
+		if(this.activeResourceManager) {
+			this.initSellButtons();
+			this.sellBtnsGroup = this.scene.add.group(this.sellBtns, { runChildUpdate: true });
+			
+			this.initUpgradeButtons();
+			this.upgradeBtnsGroup = this.scene.add.group(this.upgradeBtns, { runChildUpdate: true });
+		}
 	}
 
 	public setVisible(value: boolean) {
 		this.visible = value;
-		this.sellBtnsGroup?.setVisible(value);
-		this.upgradeBtnsGroup?.setVisible(value);
+		this.sellBtns?.forEach((btn: LuuButton) => btn.setVisible(value));
+		this.upgradeBtns?.forEach((btn: LuuButton) => btn.setVisible(value));
 
 		return this;
 	}
@@ -50,6 +50,7 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 		const padding = 10;
 		const sellBtnCount = 4;
 		const sellBtnWidth = (this.width / sellBtnCount) - (((sellBtnCount + 1) * padding) / sellBtnCount);
+		const y = this.y;
 
 		for(let i = 0; i < sellBtnCount; i++) {
 			let sellAmount = Math.pow(10, i);
@@ -60,8 +61,8 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 				sellAmountLabel = 'All';
 			}
 
-			const x = this.x + (sellBtnWidth * i) + (10 * i);
-			const sellBtn = this.scene.add.luuButton(x + 10, this.y + 10, sellBtnWidth, 30, `Sell ${sellAmountLabel}`)
+			const x = this.x + (sellBtnWidth * i) + (padding * i);
+			const sellBtn = this.scene.add.luuButton(x + padding, y, sellBtnWidth, 30, `Sell ${sellAmountLabel}`)
 			.setData('sellAmount', sellAmount)
 			.setActive(this.active)
 			.setEnabled(this.player.getResourceManager(this.activeResourceManager.resourceType).hasMinimumOf(sellAmount))
@@ -159,9 +160,17 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 		}
 	}
 
+	private destroyInterior() {
+		this.sellBtnsGroup?.destroy(true, true);
+		delete this.sellBtnsGroup;
+		delete this.sellBtns;
+		this.upgradeBtnsGroup?.destroy(true, true);
+		delete this.upgradeBtnsGroup;
+		delete this.upgradeBtns;
+	}
+
 	public destroy() {
-		this.sellBtnsGroup?.destroy();
-		this.upgradeBtnsGroup?.destroy();
+		this.destroyInterior();
 		
 		super.destroy();
 	}

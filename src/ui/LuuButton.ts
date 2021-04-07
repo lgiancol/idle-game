@@ -1,6 +1,5 @@
 
 export default class LuuButton extends Phaser.GameObjects.Sprite {
-	public btnRect: Phaser.GameObjects.Rectangle;
 	public label: Phaser.GameObjects.Text;
 	private enabled = true;
 	private isHover = false;
@@ -73,6 +72,8 @@ export default class LuuButton extends Phaser.GameObjects.Sprite {
 	}
 
 	public destroy() {
+		this.label.destroy();
+
 		super.destroy();
 	}
 
