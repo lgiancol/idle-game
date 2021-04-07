@@ -1,5 +1,5 @@
 import Player from "../Player";
-import Resource, { ResourceType } from "../resources/Resource";
+import { ResourceType } from "../resources/ResourceTypes";
 import ResourceManager from "../resources/resource-managers/ResourceManager";
 
 export default class MarketManager extends Phaser.Events.EventEmitter {

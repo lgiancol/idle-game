@@ -3,6 +3,10 @@ export default class ResourceSeller {
 
 	public constructor(private _value) {}
 
+	get startingValue() {
+		return this._value;
+	}
+
 	get valuePer() {
 		return this._value * this._valueMultiplier;
 	}

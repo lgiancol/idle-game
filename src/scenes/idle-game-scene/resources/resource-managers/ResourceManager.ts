@@ -1,5 +1,5 @@
-import { ResourceType } from "../Resource";
-import Resources from "../Resources";
+import { ResourceType } from "../ResourceTypes";
+// import Resources from "../Resources";
 import ResourceUpgrade from "../upgrades/ResourceUpgrade";
 import ResourceUpgradeManager from "../upgrades/upgrade-managers/ResourceUpgradeManager";
 import ResourceCollector from "./resource-collector/ResourceCollector";
@@ -9,12 +9,12 @@ export default class ResourceManager {
 	private _resourceCollector: ResourceCollector = new ResourceCollector();
 	private _resourceSeller: ResourceSeller;
 
-	public constructor(public resourceType: ResourceType, private _resourceUpgradeManager: ResourceUpgradeManager) {
-		this._resourceSeller = new ResourceSeller(Resources.getByType(resourceType).startingValue);
+	public constructor(public resourceType: ResourceType, startingValue: number, private _resourceUpgradeManager: ResourceUpgradeManager) {
+		this._resourceSeller = new ResourceSeller(startingValue);
 	}
 
 	get resourceName() {
-		return ResourceType[this.resourceType];
+		return this.resourceType;
 	}
 
 	get autoCollectSpeed() {
@@ -45,7 +45,7 @@ export default class ResourceManager {
 	// SELLING AREA
 	public sellResource(amountToSell: number) {
 		if(this._resourceCollector.quantity >= amountToSell) {
-			this._resourceCollector.decreaseQuantity(amountToSell);
+			this.removeResource(amountToSell);
 			return this._resourceSeller.sellResource(amountToSell);
 		}
 

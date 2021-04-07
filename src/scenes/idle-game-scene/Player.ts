@@ -1,9 +1,9 @@
-import { ResourceType } from './resources/Resource';
+import { ResourceType } from './resources/ResourceTypes';
 import ResourceManager from './resources/resource-managers/ResourceManager';
 export default class Player {
 	private static _instance: Player;
 	private _money: number;
-	private _resourceManagers: { [resourceType: number]: ResourceManager};
+	private _resourceManagers: { [resourceType: string]: ResourceManager};
 
 	private constructor() {
 		this._money = 0;

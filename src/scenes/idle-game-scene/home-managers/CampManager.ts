@@ -1,4 +1,4 @@
-import { ResourceType } from "../resources/Resource";
+import { ResourceType } from "../resources/ResourceTypes";
 import LogManager from "../resources/resource-managers/LogManager";
 import HomeManager from "./HomeManager";
 

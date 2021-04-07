@@ -1,7 +1,5 @@
 import Player from "../Player";
-import Resource, { ResourceType } from "../resources/Resource";
-import ResourceManager from "../resources/resource-managers/ResourceManager";
-
+import { ResourceType } from "../resources/ResourceTypes";
 export default abstract class HomeManager {
 	private player: Player;
 	private _fuel: {startingAmount: number, remainingAmount: number}[]; // TODO: Turn this into a class Fuel or something

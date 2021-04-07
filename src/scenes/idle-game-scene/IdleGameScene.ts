@@ -10,7 +10,7 @@ import CampManager from './home-managers/CampManager';
 import HomeManager from './home-managers/HomeManager';
 import MarketManager from './market-manager/MarketManager';
 import Player from './Player';
-import { ResourceType } from './resources/Resource';
+import { ResourceType } from './resources/ResourceTypes';
 import ResourceManager from './resources/resource-managers/ResourceManager';
 import CoalUpgradeManager from './resources/upgrades/upgrade-managers/CoalUpgradeManager';
 import LogUpgradeManager from './resources/upgrades/upgrade-managers/LogUpgradeManager';
@@ -73,7 +73,7 @@ export class IdleGameScene extends Phaser.Scene {
 		const gameHeight = getGameHeight(this);
 		
 		// RESOURCES
-		this.player.addResourceManager(new ResourceManager(ResourceType.LOG, new LogUpgradeManager()));
+		this.player.addResourceManager(new ResourceManager(ResourceType.LOG, 0.5, new LogUpgradeManager()));
 		// this.player.addResourceManager(new ResourceManager(ResourceType.COAL, new CoalUpgradeManager()));
 
 		this.logCollectorComponent = this.add.resource(this.player.getResourceManager(ResourceType.LOG), 10, 10, 200);
@@ -81,7 +81,6 @@ export class IdleGameScene extends Phaser.Scene {
 
 		// Market Area
 		this.marketManager = new MarketManager();
-		// this.data.set('marketManager', this.marketManager as MarketManager);
 		this.marketComponent = this.add.market(this.marketManager, (gameWidth / 2) + 10, 10, ((gameWidth / 2) - 20), gameHeight - 20);
 		
 		// HOME
