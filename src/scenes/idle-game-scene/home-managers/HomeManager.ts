@@ -1,8 +1,9 @@
-import Resource from "../resources/Resource";
+import Player from "../Player";
+import Resource, { ResourceType } from "../resources/Resource";
 import ResourceManager from "../resources/resource-managers/ResourceManager";
 
 export default abstract class HomeManager {
-	private _acceptedFuelResource: Resource;
+	private player: Player;
 	private _fuel: {startingAmount: number, remainingAmount: number}[]; // TODO: Turn this into a class Fuel or something
 	private currentFuelIndex = -1;
 	public totalRemaingFuel = 0;
@@ -13,18 +14,19 @@ export default abstract class HomeManager {
 
 	public constructor(
 		public homeType: string,
-		public resourceManager: ResourceManager,
+		private _acceptedResourceType: ResourceType,
 		public fuelLimit: number,
 		public fuelUseSpeed: number,
 		private _freezeToDeathTime: number) {
-		this._fuel = [];
-		for(let i = 0; i < this.fuelLimit; i++) {
-			this.addFuel();
-		}
+			this.player = Player.getInstance();
+			this._fuel = [];
+			for(let i = 0; i < this.fuelLimit; i++) {
+				this.addFuel();
+			}
 	}
 
 	get acceptedFuelResource() {
-		return this._acceptedFuelResource;
+		return this._acceptedResourceType;
 	}
 
 	get currentFuelLevel() {
@@ -44,13 +46,15 @@ export default abstract class HomeManager {
 	}
 
 	get canAddFuel() {
-		return this.resourceManager.quantity > 0 && this.totalRemaingFuel != this.fuelLimit * this._acceptedFuelResource.energyUnits;
+		return this.player.getResourceManager(this._acceptedResourceType).quantity > 0;
 	}
 
 	public addFuel() {
 		let fuel = {
-			startingAmount: this._acceptedFuelResource.energyUnits,
-			remainingAmount: this._acceptedFuelResource.energyUnits
+			// startingAmount: this._acceptedResourceType.energyUnits,
+			// remainingAmount: this._acceptedResourceType.energyUnits
+			startingAmount: 10,
+			remainingAmount: 10
 		} as {startingAmount: number, remainingAmount: number};
 
 		if(this._fuel.length == this.fuelLimit) {
@@ -60,7 +64,8 @@ export default abstract class HomeManager {
 			this._fuel.push(fuel);
 		}
 
-		this.totalRemaingFuel = Math.min(this.totalRemaingFuel + fuel.startingAmount, this.fuelLimit * this._acceptedFuelResource.energyUnits);
+		// this.totalRemaingFuel = Math.min(this.totalRemaingFuel + fuel.startingAmount, this.fuelLimit * this._acceptedResourceType.energyUnits);
+		this.totalRemaingFuel = Math.min(this.totalRemaingFuel + fuel.startingAmount, this.fuelLimit * 10);
 
 		if(this.currentFuelIndex == -1) {
             this.currentFuelIndex = this._fuel.length - 1;

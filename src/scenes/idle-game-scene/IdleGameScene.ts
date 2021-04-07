@@ -6,6 +6,7 @@ import './game-objects';
 import HomeComponent from './game-objects/HomeComponent';
 import MarketComponent from './game-objects/market/MarketComponent';
 import ResourceComponent from './game-objects/resource/ResourceComponent';
+import CampManager from './home-managers/CampManager';
 import HomeManager from './home-managers/HomeManager';
 import MarketManager from './market-manager/MarketManager';
 import Player from './Player';
@@ -82,14 +83,10 @@ export class IdleGameScene extends Phaser.Scene {
 		this.marketManager = new MarketManager();
 		// this.data.set('marketManager', this.marketManager as MarketManager);
 		this.marketComponent = this.add.market(this.marketManager, (gameWidth / 2) + 10, 10, ((gameWidth / 2) - 20), gameHeight - 20);
-
-		// Set all the upgrade managers this market can handle
-		// this.marketManager.addResourceManager(ResourceType.LOG, this.player.getResourceManager(ResourceType.LOG));
-		// this.marketManager.addResourceManager(ResourceType.COAL, this.coalManager);
 		
 		// HOME
-		// this.homeManager = new CampManager(this.logManager);
-		// this.homeComponent = this.add.home(this.homeManager, 200, 200, 225, 150);
+		this.homeManager = new CampManager();
+		this.homeComponent = this.add.home(this.homeManager, 200, 200, 225, 150);
 
 		// TEMP
 		// this.lostText = this.add.text(gameWidth / 2, gameHeight / 2, 'YOU LOSE!!')
@@ -110,7 +107,7 @@ export class IdleGameScene extends Phaser.Scene {
 
 		if(!this.isLost) {
 			this.player.update(delta);
-		// 	this.homeManager.update(delta);
+			this.homeManager.update(delta);
 		}
 	}
 
