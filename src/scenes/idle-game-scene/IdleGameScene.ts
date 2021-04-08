@@ -10,10 +10,9 @@ import CampManager from './home-managers/CampManager';
 import HomeManager from './home-managers/HomeManager';
 import MarketManager from './market-manager/MarketManager';
 import Player from './Player';
-import { ResourceType } from './resources/ResourceTypes';
+import LogManager from './resources/resource-managers/LogManager';
 import ResourceManager from './resources/resource-managers/ResourceManager';
-import CoalUpgradeManager from './resources/upgrades/upgrade-managers/CoalUpgradeManager';
-import LogUpgradeManager from './resources/upgrades/upgrade-managers/LogUpgradeManager';
+import { ResourceType } from './resources/ResourceTypes';
 
 export class IdleGameScene extends Phaser.Scene {
 	private player: Player;
@@ -73,7 +72,7 @@ export class IdleGameScene extends Phaser.Scene {
 		const gameHeight = getGameHeight(this);
 		
 		// RESOURCES
-		this.player.addResourceManager(new ResourceManager(ResourceType.LOG, 0.5, new LogUpgradeManager()));
+		this.player.addResourceManager(new LogManager());
 		// this.player.addResourceManager(new ResourceManager(ResourceType.COAL, new CoalUpgradeManager()));
 
 		this.logCollectorComponent = this.add.resource(this.player.getResourceManager(ResourceType.LOG), 10, 10, 200);

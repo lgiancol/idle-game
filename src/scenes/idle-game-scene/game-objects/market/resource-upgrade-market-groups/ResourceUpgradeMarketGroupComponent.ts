@@ -3,7 +3,7 @@ import LuuButton from '../../../../../ui/LuuButton';
 import Player from '../../../Player';
 import ResourceManager from '../../../resources/resource-managers/ResourceManager';
 import ResourceUpgrade from '../../../resources/upgrades/ResourceUpgrade';
-import UpgradeType from '../../../upgrades/UpgradeType';
+import { UpgradeType } from '../../../upgrades/UpgradeType';
 import MarketGroupComponent from "../MarketGroupComponent";
 
 export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
@@ -80,16 +80,19 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 		const buttonHeight = 70;
 
 		// Will go through all the different types of upgrades and create them
-		Object.keys(UpgradeType).forEach((upgradeType: string) => {
-			let currentUpgrade = this.activeResourceManager.getCurrentUpgrade(UpgradeType[upgradeType]);
-			const upgradeBtn = this.scene.add.luuButton(this.x + padding, this.y + 50, buttonWidth, buttonHeight, currentUpgrade.name + ` $${currentUpgrade.cost}`)
-			.setData('upgrade', currentUpgrade)
-			.setActive(this.active)
-			.setEnabled(this.player.canAfford(currentUpgrade.cost))
-			.setVisible(this.visible);
-			
-			upgradeBtn.addListener('pointerdown', this.makeUpgradeBtnHandler(upgradeBtn), this);
-			this.upgradeBtns.push(upgradeBtn);
+		Object.values(this.activeResourceManager.upgradeTypes).forEach((upgradeType: string) => {
+			console.log(upgradeType);
+			let currentUpgrade = this.activeResourceManager.getCurrentUpgrade(upgradeType);
+			if(currentUpgrade != null) {
+				const upgradeBtn = this.scene.add.luuButton(this.x + padding, this.y + 50, buttonWidth, buttonHeight, currentUpgrade.name + ` $${currentUpgrade.cost}`)
+				.setData('upgrade', currentUpgrade)
+				.setActive(this.active)
+				.setEnabled(this.player.canAfford(currentUpgrade.cost))
+				.setVisible(this.visible);
+				
+				upgradeBtn.addListener('pointerdown', this.makeUpgradeBtnHandler(upgradeBtn), this);
+				this.upgradeBtns.push(upgradeBtn);
+			}
 		});
 	}
 

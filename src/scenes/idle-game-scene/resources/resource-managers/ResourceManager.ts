@@ -1,5 +1,5 @@
+import { UpgradeType } from "../../upgrades/UpgradeType";
 import { ResourceType } from "../ResourceTypes";
-// import Resources from "../Resources";
 import ResourceUpgrade from "../upgrades/ResourceUpgrade";
 import ResourceUpgradeManager from "../upgrades/upgrade-managers/ResourceUpgradeManager";
 import ResourceCollector from "./resource-collector/ResourceCollector";
@@ -7,10 +7,18 @@ import ResourceSeller from "./resource-seller/ResourceSeller";
 
 export default class ResourceManager {
 	private _resourceCollector: ResourceCollector = new ResourceCollector();
+	private _resourceUpgradeManager: ResourceUpgradeManager
 	private _resourceSeller: ResourceSeller;
 
-	public constructor(public resourceType: ResourceType, startingValue: number, private _resourceUpgradeManager: ResourceUpgradeManager) {
-		this._resourceSeller = new ResourceSeller(startingValue);
+	public constructor(public resourceType: ResourceType, startingSellValue: number) {
+		this._resourceUpgradeManager = new ResourceUpgradeManager(this.upgradeTypes);
+		this._resourceSeller = new ResourceSeller(startingSellValue);
+	}
+
+	get upgradeTypes() {
+		return [
+			UpgradeType.COLLECT_SPEED,
+		];
 	}
 
 	get resourceName() {
