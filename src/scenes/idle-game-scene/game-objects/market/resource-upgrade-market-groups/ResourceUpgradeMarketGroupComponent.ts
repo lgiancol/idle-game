@@ -80,11 +80,10 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 		const buttonHeight = 70;
 
 		// Will go through all the different types of upgrades and create them
-		Object.values(this.activeResourceManager.upgradeTypes).forEach((upgradeType: string) => {
-			console.log(upgradeType);
+		Object.values(this.activeResourceManager.upgradeTypes).forEach((upgradeType: string, i: number) => {
 			let currentUpgrade = this.activeResourceManager.getCurrentUpgrade(upgradeType);
 			if(currentUpgrade != null) {
-				const upgradeBtn = this.scene.add.luuButton(this.x + padding, this.y + 50, buttonWidth, buttonHeight, currentUpgrade.name + ` $${currentUpgrade.cost}`)
+				const upgradeBtn = this.scene.add.luuButton(this.x + padding, this.y + 50 + (buttonHeight * i) + (10 * i), buttonWidth, buttonHeight, currentUpgrade.name + ` $${currentUpgrade.cost}`)
 				.setData('upgrade', currentUpgrade)
 				.setActive(this.active)
 				.setEnabled(this.player.canAfford(currentUpgrade.cost))

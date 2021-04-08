@@ -2,45 +2,41 @@ import Queue from "../../../../../utils/queue/Queue";
 import Upgrade from "../../../upgrades/Upgrade";
 import UpgradeManager from "../../../upgrades/UpgradeManager";
 import { UpgradeType } from "../../../upgrades/UpgradeType";
+import { ResourceType } from "../../ResourceTypes";
 import ResourceUpgrade, { ResourceUpgradeValue } from "../ResourceUpgrade";
 
 export default class ResourceUpgradeManager extends UpgradeManager {
 
-	public constructor(private _validUpgradeTypes: UpgradeType[]) {
+	public constructor(protected _resourceType: ResourceType, upgradeConfigs: {[upgradeType: string]: { upgradeNames: string[], baseCost: number, baseValue: number, upgradeValueIndex: string }}) {
 		super();
 
 		this.upgrades = {};
-		this._validUpgradeTypes.forEach((upgradeType: UpgradeType) => {
+		Object.keys(upgradeConfigs).forEach((upgradeType: UpgradeType) => {
 			this.upgrades[upgradeType] = new Queue<Upgrade>();
 		});
 
-		this.initializeUpgrades();
+		this.initializeUpgrades(upgradeConfigs);
 	}
 
-	get validUpgrades() {
-		return this._validUpgradeTypes;
+	protected initializeUpgrades(upgradeConfigs: {[upgradeType: string]: { upgradeNames: string[], baseCost: number, baseValue: number, upgradeValueIndex: string }}) {
+		Object.entries(upgradeConfigs).forEach((entry) => {
+			this.initUpgradesOfType(entry[0], entry[1]);
+		});
 	}
 
-	protected initializeUpgrades() {
-		this.initCollectSpeedUpgrades();
-	}
+	private initUpgradesOfType(upgradeType: string, upgradeConfig: {upgradeNames: string[], baseCost: number, baseValue: number, upgradeValueIndex: string}) {
+			upgradeConfig.upgradeNames.forEach((upgradeName: string, i: number) => {
+			let upgradeCost = Math.round(upgradeConfig.baseCost * Math.pow(2.65, i));
+			let upgradeValue = Math.round(upgradeConfig.baseValue * (i + 1));
 	
-	private initCollectSpeedUpgrades() {
-		let baseSpeed = 2;
-		const baseCost = 10;
-		for(let i = 0; i < 10; i++) {
-			let upgradeCost = Math.round(baseCost * Math.pow(2.65, i));
-			let upgradeSpeed = Math.round(baseSpeed * (i + 1) * (Math.random() + 1));
-
 			const upgradeValues = {
-				autoCollectMultiplier: upgradeSpeed
+				[upgradeConfig.upgradeValueIndex]: upgradeValue
 			} as ResourceUpgradeValue;
-			this.upgrades[UpgradeType.COLLECT_SPEED].enqueue(new ResourceUpgrade('LOG_COLLECT_SPEED_INCREASE_' + i, UpgradeType.COLLECT_SPEED, upgradeCost, upgradeValues));
-		}
+			this.upgrades[upgradeType].enqueue(new ResourceUpgrade(upgradeName,upgradeType, upgradeCost, upgradeValues));
+		});
 	}
 
-	public peekCurrentUpgrade(upgradeName: string) {
-		console.log(this.upgrades);
+	public peekCurrentUpgrade(upgradeName: string) {	
 		return this.upgrades[upgradeName].peek() as ResourceUpgrade;
 	}
 

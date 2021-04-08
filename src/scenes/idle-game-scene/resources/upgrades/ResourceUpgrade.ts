@@ -1,7 +1,8 @@
 import Upgrade from "../../upgrades/Upgrade";
 
 export interface ResourceUpgradeValue {
-	autoCollectMultiplier?: number
+	manualCollectMultiplier?: number,
+	autoCollectMultiplier?: number,
 }
 
 export default class ResourceUpgrade extends Upgrade {

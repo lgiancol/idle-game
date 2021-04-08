@@ -3,7 +3,7 @@ export default class ResourceCollector {
 	private trueQuantity: number = 0;
 
 	private _manualCollectSpeed: number = 1;
-	private _manualCollectMultiplier: number = 1;
+	public manualCollectMultiplier: number = 1;
 
 	private _baseCollectSpeed: number = 1;
 	public autoCollectMultiplier: number = 0;
@@ -13,7 +13,7 @@ export default class ResourceCollector {
 	}
 
 	get manualCollectSpeed() {
-		return this._manualCollectSpeed;
+		return this._manualCollectSpeed * this.manualCollectMultiplier;
 	}
 
 	get autoCollectSpeed() {

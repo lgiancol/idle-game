@@ -1,4 +1,4 @@
 export enum UpgradeType {
-	CLICK_MULTIPLIER = 'click_multiplier',
-	COLLECT_SPEED = 'collect_speed',
+	CLICK_MULTIPLIER = 'CLICK_MULTIPLIER',
+	COLLECT_SPEED = 'COLLECT_SPEED',
 }

@@ -10,15 +10,18 @@ export default class ResourceManager {
 	private _resourceUpgradeManager: ResourceUpgradeManager
 	private _resourceSeller: ResourceSeller;
 
+	private upgrades = {
+		[UpgradeType.CLICK_MULTIPLIER]: { upgradeNames: ['Ouu', 'Eee', 'Ahh', 'Meh'], baseCost: 2, baseValue: 1, upgradeValueIndex: 'manualCollectMultiplier'},
+		[UpgradeType.COLLECT_SPEED]: { upgradeNames: ['Level 1', 'Level 2', 'Level 3'], baseCost: 10, baseValue: 2, upgradeValueIndex: 'autoCollectMultiplier'},
+	};
+
 	public constructor(public resourceType: ResourceType, startingSellValue: number) {
-		this._resourceUpgradeManager = new ResourceUpgradeManager(this.upgradeTypes);
+		this._resourceUpgradeManager = new ResourceUpgradeManager(this.resourceType, this.upgrades);
 		this._resourceSeller = new ResourceSeller(startingSellValue);
 	}
 
 	get upgradeTypes() {
-		return [
-			UpgradeType.COLLECT_SPEED,
-		];
+		return Object.keys(this.upgrades).map((upgradeTypeStr: string) => UpgradeType[upgradeTypeStr]);
 	}
 
 	get resourceName() {
@@ -66,9 +69,8 @@ export default class ResourceManager {
 	}
 	
 	public applyUpgrade(upgradeType: string) {
-		let upgrade = this._resourceUpgradeManager.
-		upgrades[upgradeType].dequeue() as ResourceUpgrade; // Levels != index
-		
+		let upgrade = this._resourceUpgradeManager.upgrades[upgradeType].dequeue() as ResourceUpgrade;
+
 		Object.entries(upgrade.upgradeValues).forEach((upgradeValueEntry: [string, number]) => {
 			this._resourceCollector[upgradeValueEntry[0]] = upgradeValueEntry[1];
 		});
