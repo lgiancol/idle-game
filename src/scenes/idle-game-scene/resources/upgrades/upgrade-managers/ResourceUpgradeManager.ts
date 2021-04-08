@@ -1,29 +1,42 @@
 import Queue from "../../../../../utils/queue/Queue";
 import Upgrade from "../../../upgrades/Upgrade";
-import UpgradeManager from "../../../upgrades/UpgradeManager";
-import UpgradeType from "../../../upgrades/UpgradeType";
-import ResourceUpgrade from "../ResourceUpgrade";
+import UpgradeManager, { UpgradeConfig } from "../../../upgrades/UpgradeManager";
+import { UpgradeType } from "../../../upgrades/UpgradeType";
+import { ResourceType } from "../../ResourceTypes";
+import ResourceUpgrade, { ResourceUpgradeValue } from "../ResourceUpgrade";
 
-export default abstract class ResourceUpgradeManager extends UpgradeManager {
-	public constructor() {
+export default class ResourceUpgradeManager extends UpgradeManager {
+
+	public constructor(protected _resourceType: ResourceType, upgradeConfigs: {[upgradeType: string]: UpgradeConfig}) {
 		super();
 
-		this.upgrades = {
-			[UpgradeType.COLLECT_SPEED]: new Queue<Upgrade>()
-		};
+		this.upgrades = {};
+		Object.keys(upgradeConfigs).forEach((upgradeType: UpgradeType) => {
+			this.upgrades[upgradeType] = new Queue<Upgrade>();
+		});
 
-		this.initializeUpgrades();
+		this.initializeUpgrades(upgradeConfigs);
 	}
 
-	protected abstract initCollectSpeedUpgrades();
-	protected abstract initValueUpgrades();
-
-	protected initializeUpgrades() {
-		this.initCollectSpeedUpgrades();
-		this.initValueUpgrades();
+	protected initializeUpgrades(upgradeConfigs: {[upgradeType: string]: UpgradeConfig}) {
+		Object.entries(upgradeConfigs).forEach((entry) => {
+			this.initUpgradesOfType(entry[0], entry[1]);
+		});
 	}
 
-	public peekCurrentUpgrade(upgradeName: string) {
+	private initUpgradesOfType(upgradeType: string, upgradesConfig: UpgradeConfig) {
+			upgradesConfig.upgradeNames.forEach((upgradeName: string, i: number) => {
+			let upgradeCost = Math.round(upgradesConfig.baseCost * Math.pow(2.65, i));
+			let upgradeValue = Math.round(upgradesConfig.baseValue * (i + 1));
+	
+			const upgradeValues = {
+				[upgradesConfig.upgradeValueIndex]: upgradeValue
+			} as ResourceUpgradeValue;
+			this.upgrades[upgradeType].enqueue(new ResourceUpgrade(upgradeName,upgradeType, upgradeCost, upgradeValues));
+		});
+	}
+
+	public peekCurrentUpgrade(upgradeName: string) {	
 		return this.upgrades[upgradeName].peek() as ResourceUpgrade;
 	}
 

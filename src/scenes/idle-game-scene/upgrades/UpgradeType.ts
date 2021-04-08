@@ -1,3 +1,4 @@
-export default {
-	COLLECT_SPEED: 'collect_speed'
+export enum UpgradeType {
+	CLICK_MULTIPLIER = 'CLICK_MULTIPLIER',
+	COLLECT_SPEED = 'COLLECT_SPEED',
 }

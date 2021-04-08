@@ -1,11 +1,9 @@
 import LuuButton from "../../../../ui/LuuButton";
-import MarketManager from "../../market-manager/MarketManager";
 import ResourceManager from "../../resources/resource-managers/ResourceManager";
 
 export default class ResourceComponent extends Phaser.GameObjects.Rectangle {
 	private nameLabel: Phaser.GameObjects.Text;
 	private collectResourceBtn: LuuButton;
-	private openStoreBtn: LuuButton;
 
 	public constructor(scene: Phaser.Scene, public resourceManager: ResourceManager, public x: number, public y: number, width = 100, height = 84) {
 		super(scene, x, y, width, height);
@@ -14,11 +12,11 @@ export default class ResourceComponent extends Phaser.GameObjects.Rectangle {
 	}
 
 	private init() {
-		let btnHeight = 30;
+		let btnHeight = 50;
 
 		this.setStrokeStyle(1, 0xffffff);
 		
-		let yOffset = this.y + 10;
+		let yOffset = this.y + 10 + 1;
 		this.nameLabel = this.scene.add.text(this.x + 10, yOffset, `${this.resourceManager.resourceName} ${this.resourceManager.quantity} [${this.resourceManager.autoCollectSpeed}/s]`)
 		.setOrigin(0)
 		.setColor('white')
@@ -30,11 +28,7 @@ export default class ResourceComponent extends Phaser.GameObjects.Rectangle {
 		this.collectResourceBtn = this.scene.add.luuButton(this.x + 10, yOffset, this.width - 20, btnHeight, `Collect (x${this.resourceManager.clickCollectSpeed})`)
 		.on('pointerdown', this.onCollect.bind(this));
 
-		yOffset += this.collectResourceBtn.getBounds().height + 10;
-		this.openStoreBtn = this.scene.add.luuButton(this.x + 10, yOffset, this.width - 20, btnHeight, 'Store')
-		.on('pointerdown', this.onOpenStore.bind(this));
-
-		this.displayHeight = 10 + this.nameLabel.height + 10 + this.collectResourceBtn.height + 10 + this.openStoreBtn.height + 10;
+		this.displayHeight = 10 + this.nameLabel.height + 10 + this.collectResourceBtn.getBounds().height + 10;
 	}
 
 	public preUpdate(delta: number) {
@@ -47,21 +41,11 @@ export default class ResourceComponent extends Phaser.GameObjects.Rectangle {
 		resourceManager.collectResource(resourceManager.clickCollectSpeed);
 	}
 
-	private onOpenStore() {
-		const marketManager = (this.scene.data.get('marketManager') as MarketManager);
-		const currentActiveResource = marketManager.getActiveResource();
-
-		if(currentActiveResource == null || currentActiveResource != this.resourceManager.resourceType) {
-			marketManager.setActiveResource(this.resourceManager.resourceType);
-		}
-	}
-
 	public destroy() {
 		super.destroy();
 
 		this.nameLabel.destroy();
 		this.collectResourceBtn.destroy();
-		this.openStoreBtn.destroy();
 	}
 }
 
