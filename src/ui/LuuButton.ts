@@ -6,6 +6,8 @@ export default class LuuButton extends Phaser.GameObjects.Sprite {
 
 	public constructor(scene: Phaser.Scene, x: number, y: number, width: number, height: number, public text: string) {
 		super(scene, x, y, 'purple_btn');
+		this.setSize(width, height)
+		.setDisplaySize(width, height)
 	}
 
 	public init() {
@@ -84,9 +86,7 @@ Phaser.GameObjects.GameObjectFactory.register(
 	function(this: Phaser.GameObjects.GameObjectFactory, x: number, y: number, width: number, height: number, text: string) {
 		const luuButton = new LuuButton(this.scene, x, y, width, height, text);
 		luuButton.setInteractive()
-		.setOrigin(0)
-		.setSize(width, height)
-		.setDisplaySize(width, height);
+		.setOrigin(0);
 
 		luuButton.init();
 		

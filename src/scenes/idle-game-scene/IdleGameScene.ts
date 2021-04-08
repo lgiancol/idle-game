@@ -87,6 +87,8 @@ export class IdleGameScene extends Phaser.Scene {
 		this.homeManager = new CampManager();
 		this.homeComponent = this.add.home(this.homeManager, 200, 200, 225, 150);
 
+		this.add.luuIOverlayContainer(10, 10, 'large');
+
 		// TEMP
 		// this.lostText = this.add.text(gameWidth / 2, gameHeight / 2, 'YOU LOSE!!')
 		// .setOrigin(0.5)
