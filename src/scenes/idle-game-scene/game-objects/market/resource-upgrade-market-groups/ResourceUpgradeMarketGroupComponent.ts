@@ -63,6 +63,7 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 
 			const x = this.x + (sellBtnWidth * i) + (padding * i);
 			const sellBtn = this.scene.add.luuButton(x + padding, y, sellBtnWidth, 30, `Sell ${sellAmountLabel}`)
+			.setDepth(this.depth)
 			.setData('sellAmount', sellAmount)
 			.setActive(this.active)
 			.setEnabled(this.player.getResourceManager(this.activeResourceManager.resourceType).hasMinimumOf(sellAmount))
@@ -84,6 +85,7 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 			let currentUpgrade = this.activeResourceManager.getCurrentUpgrade(upgradeType);
 			if(currentUpgrade != null) {
 				const upgradeBtn = this.scene.add.luuButton(this.x + padding, this.y + 50 + (buttonHeight * i) + (10 * i), buttonWidth, buttonHeight, currentUpgrade.name + ` $${currentUpgrade.cost}`)
+				.setDepth(this.depth)
 				.setData('upgrade', currentUpgrade)
 				.setActive(this.active)
 				.setEnabled(this.player.canAfford(currentUpgrade.cost))

@@ -13,7 +13,7 @@ import Player from './Player';
 import CoalManager from './resources/resource-managers/CoalManager';
 import LogManager from './resources/resource-managers/LogManager';
 import ResourceManager from './resources/resource-managers/ResourceManager';
-import { ResourceType } from './resources/ResourceTypes';
+import Resource, { ResourceType } from './resources/ResourceTypes';
 
 export class IdleGameScene extends Phaser.Scene {
 	private player: Player;
@@ -45,6 +45,8 @@ export class IdleGameScene extends Phaser.Scene {
 		// Load any assets here
 		this.load.image('purple_btn', 'assets/UI/purple_btn.png');
 		this.load.image('purple_btn_active', 'assets/UI/purple_btn_active.png');
+
+		this.load.image('overlay_bg', 'assets/UI/overlay_background.png');
 	}
 
 	public create() {
@@ -81,30 +83,35 @@ export class IdleGameScene extends Phaser.Scene {
 
 		// Market Area
 		this.marketManager = new MarketManager();
-		this.marketComponent = this.add.market(this.marketManager, (gameWidth / 2) + 10, 10, ((gameWidth / 2) - 20), gameHeight - 20);
-		
+		// this.marketComponent = this.add.market(this.marketManager, (gameWidth / 2) + 10, 10, ((gameWidth / 2) - 20), gameHeight - 20);
+
 		// HOME
 		this.homeManager = new CampManager();
 		this.homeComponent = this.add.home(this.homeManager, 200, 200, 225, 150);
 
-		this.add.luuIOverlayContainer(10, 10, 'large');
+		this.add.luuButton((gameWidth / 2) - 100, (gameHeight / 2) - 25, 200, 50, 'Overlay!')
+		// .setOrigin(0.5)
+		.on('pointerdown', () => {
+			const temp = this.add.luuIOverlayContainerLarge();
+			temp.content = this.add.market(this.marketManager, (gameWidth / 2) + 10, 10, ((gameWidth / 2) - 20), gameHeight - 20);;
+		});
 
 		// TEMP
-		// this.lostText = this.add.text(gameWidth / 2, gameHeight / 2, 'YOU LOSE!!')
-		// .setOrigin(0.5)
-		// .setColor('white')
-		// .setFontFamily('my-font')
-		// .setFontSize(100)
-		// .setVisible(false);
+		this.lostText = this.add.text(gameWidth / 2, gameHeight / 2, 'YOU LOSE!!')
+		.setOrigin(0.5)
+		.setColor('white')
+		.setFontFamily('my-font')
+		.setFontSize(100)
+		.setVisible(false);
 
-		// this.resetBtn = this.add.luuButton(gameWidth / 2, this.lostText.y + (this.lostText.height / 2) + 20, 200, 50, 'Reset')
-		// .setOrigin(0.5)
-		// .setVisible(false)
-		// .on('pointerdown', this.resetGame.bind(this));
+		this.resetBtn = this.add.luuButton(gameWidth / 2, this.lostText.y + (this.lostText.height / 2) + 20, 200, 50, 'Reset')
+		.setOrigin(0.5)
+		.setVisible(false)
+		.on('pointerdown', this.resetGame.bind(this));
 	}
 	
 	public update(time: number, delta: number) {
-		// this.checkLoss();
+		this.checkLoss();
 
 		if(!this.isLost) {
 			this.player.update(delta);
