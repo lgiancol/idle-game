@@ -47,13 +47,14 @@ function helper(scene: Phaser.Scene, x: number, y: number, width: number, height
 
 Phaser.GameObjects.GameObjectFactory.register(
 	'luuIOverlayContainerSmall',
-	function(this: Phaser.GameObjects.GameObjectFactory) {
+	function(this: Phaser.GameObjects.GameObjectFactory, content?: LuuIOverlayContentComponent) {
 		const gameWidth = getGameWidth(this.scene);
 		const gameHeight = getGameHeight(this.scene);
 		let width = gameWidth * 0.4;
 		let height = gameHeight * 0.4;
 		
 		const luuIOverlayContainer = helper(this.scene, gameWidth / 2, gameHeight / 2, width, height);
+		luuIOverlayContainer.content = content;
 
 		this.displayList.add(luuIOverlayContainer);
 		// this.updateList.add(luuIOverlayContainer);
@@ -64,13 +65,14 @@ Phaser.GameObjects.GameObjectFactory.register(
 
 Phaser.GameObjects.GameObjectFactory.register(
 	'luuIOverlayContainerMedium',
-	function(this: Phaser.GameObjects.GameObjectFactory) {
+	function(this: Phaser.GameObjects.GameObjectFactory, content?: LuuIOverlayContentComponent) {
 		const gameWidth = getGameWidth(this.scene);
 		const gameHeight = getGameHeight(this.scene);
 		let width = gameWidth * 0.6;
 		let height = gameHeight * 0.6;
 
 		const luuIOverlayContainer = helper(this.scene, gameWidth / 2, gameHeight / 2, width, height);
+		luuIOverlayContainer.content = content;
 
 		this.displayList.add(luuIOverlayContainer);
 		// this.updateList.add(luuIOverlayContainer);
@@ -81,13 +83,14 @@ Phaser.GameObjects.GameObjectFactory.register(
 
 Phaser.GameObjects.GameObjectFactory.register(
 	'luuIOverlayContainerLarge',
-	function(this: Phaser.GameObjects.GameObjectFactory) {
+	function(this: Phaser.GameObjects.GameObjectFactory, content?: LuuIOverlayContentComponent) {
 		const gameWidth = getGameWidth(this.scene);
 		const gameHeight = getGameHeight(this.scene);
 		let width = gameWidth * 0.85;
 		let height = gameHeight * 0.85;
 
 		const luuIOverlayContainer = helper(this.scene, gameWidth / 2, gameHeight / 2, width, height);
+		luuIOverlayContainer.content = content;
 
 		this.displayList.add(luuIOverlayContainer);
 		// this.updateList.add(luuIOverlayContainer);
@@ -102,9 +105,9 @@ declare global
 	{
 		interface GameObjectFactory
 		{
-			luuIOverlayContainerSmall(this: Phaser.GameObjects.GameObjectFactory): LuuIOverlayContainerComponent,
-			luuIOverlayContainerMedium(this: Phaser.GameObjects.GameObjectFactory): LuuIOverlayContainerComponent,
-			luuIOverlayContainerLarge(this: Phaser.GameObjects.GameObjectFactory): LuuIOverlayContainerComponent
+			luuIOverlayContainerSmall(this: Phaser.GameObjects.GameObjectFactory, content?: LuuIOverlayContentComponent): LuuIOverlayContainerComponent,
+			luuIOverlayContainerMedium(this: Phaser.GameObjects.GameObjectFactory, content?: LuuIOverlayContentComponent): LuuIOverlayContainerComponent,
+			luuIOverlayContainerLarge(this: Phaser.GameObjects.GameObjectFactory, content?: LuuIOverlayContentComponent): LuuIOverlayContainerComponent
 		}
 	}
 }

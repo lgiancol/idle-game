@@ -35,7 +35,8 @@ export class IdleGameScene extends Phaser.Scene {
 	public coalResource: ResourceComponent;
 
 	public marketManager: MarketManager;
-	public marketComponent: MarketComponent;
+	public openMarketBtn: LuuButton;
+	// public marketComponent: MarketComponent;
 
 	public constructor() {
 		super({key: 'IdleGame'});
@@ -56,7 +57,8 @@ export class IdleGameScene extends Phaser.Scene {
 	private resetGame() {
 		this.isLost = false;
 		
-		this.marketComponent?.destroy();
+		// this.marketComponent?.destroy();
+		this.openMarketBtn?.destroy();
 		this.homeComponent?.destroy();
 		this.logCollectorComponent?.destroy();
 		this.coalResource?.destroy();
@@ -83,18 +85,13 @@ export class IdleGameScene extends Phaser.Scene {
 
 		// Market Area
 		this.marketManager = new MarketManager();
+		this.openMarketBtn = this.add.luuButton(400, 200, 100, 30, 'Open Market')
+		.on('pointerdown', () => this.add.luuIOverlayContainerLarge(this.add.market(this.marketManager, 0, 0, 0, 0)));
 		// this.marketComponent = this.add.market(this.marketManager, (gameWidth / 2) + 10, 10, ((gameWidth / 2) - 20), gameHeight - 20);
 
 		// HOME
 		this.homeManager = new CampManager();
 		this.homeComponent = this.add.home(this.homeManager, 200, 200, 225, 150);
-
-		this.add.luuButton((gameWidth / 2) - 100, (gameHeight / 2) - 25, 200, 50, 'Overlay!')
-		// .setOrigin(0.5)
-		.on('pointerdown', () => {
-			const temp = this.add.luuIOverlayContainerLarge();
-			temp.content = this.add.market(this.marketManager, (gameWidth / 2) + 10, 10, ((gameWidth / 2) - 20), gameHeight - 20);;
-		});
 
 		// TEMP
 		this.lostText = this.add.text(gameWidth / 2, gameHeight / 2, 'YOU LOSE!!')
@@ -108,6 +105,8 @@ export class IdleGameScene extends Phaser.Scene {
 		.setOrigin(0.5)
 		.setVisible(false)
 		.on('pointerdown', this.resetGame.bind(this));
+
+		this.children.each((go) => console.log(go.type))
 	}
 	
 	public update(time: number, delta: number) {
