@@ -2,10 +2,12 @@ import LuuButton from "../../../../ui/LuuButton";
 import MarketManager from "../../market-manager/MarketManager";
 import Player from "../../Player";
 import ResourceManager from "../../resources/resource-managers/ResourceManager";
+import LuuIOverlayContentComponent from "../LuuIOverlay/LuuIOverlayContentComponent";
 import MarketGroupComponent from "./MarketGroupComponent";
 
-export default class MarketComponent extends Phaser.GameObjects.Rectangle {
+export default class MarketComponent extends LuuIOverlayContentComponent {
 	private player: Player;
+	private outline: Phaser.GameObjects.Rectangle;
 	private label: Phaser.GameObjects.Text;
 	private clearActiveResourceManager: LuuButton;
 	private moneyLabel: Phaser.GameObjects.Text;
@@ -20,7 +22,10 @@ export default class MarketComponent extends Phaser.GameObjects.Rectangle {
 	}
 
 	private init() {
-		this.setStrokeStyle(1, 0xffffff);
+		this.outline = this.scene.add.rectangle(this.x, this.y, this.width, this.height)
+		.setOrigin(0)
+		.setStrokeStyle(1, 0xffffff);
+
 		this.label = this.scene.add.text(this.x + 10, this.y + 10, `Market`)
 		.setOrigin(0)
 		.setColor('white')
@@ -60,6 +65,43 @@ export default class MarketComponent extends Phaser.GameObjects.Rectangle {
 		this.setActiveResourceManager(null);
 	}
 
+	public resize() {
+		const depth = this.parentOverlayContainer.depth + 1;
+		this.outline.setDepth(depth)
+		.setSize(this.width, this.height)
+		.setPosition(this.x, this.y);
+
+		this.label
+		.setDepth(depth)
+		.setPosition(this.x + 10, this.y + 10);
+		
+		const labelBounds = this.label.getBounds();
+		this.clearActiveResourceManager
+		.setDepth(depth)
+		.setSize(100, labelBounds.height)
+		.setPosition(labelBounds.x + labelBounds.width + 10, labelBounds.y);
+
+		this.moneyLabel
+		.setDepth(depth)
+		.setPosition(this.x + this.width - 100, this.y + 10);
+
+		let yOffset = this.label.y + this.label.getBounds().height + 10;
+		this.resourceMarket
+		.setDepth(depth)
+		.setSize(this.width, this.height)
+		.setPosition(this.x, yOffset);
+
+		this.resourceSelect.getChildren().forEach((btn: LuuButton) => {
+			btn
+			.setDepth(depth)
+			.setPosition(this.x + 10, yOffset)
+			.setSize(this.width - 20, 30)
+			.setDisplaySize(this.width - 20, 30);
+
+			yOffset += btn.getBounds().height + 10;
+		});
+	}
+
 	private setActiveResourceManager(resourceManager: ResourceManager) {
 		let hasResourceManager = resourceManager != null;
 		this.resourceMarket.activeResourceManager = resourceManager;
@@ -81,10 +123,12 @@ export default class MarketComponent extends Phaser.GameObjects.Rectangle {
 	public destroy() {
 		super.destroy();
 
+		this.outline.destroy();
 		this.label.destroy();
+		this.clearActiveResourceManager?.destroy();
 		this.moneyLabel.destroy();
 		this.resourceMarket?.destroy();
-		// this.marketGroup?.destroy();
+		this.resourceSelect?.destroy(true, true);
 	}
 }
 
@@ -92,9 +136,9 @@ Phaser.GameObjects.GameObjectFactory.register(
 	'market',
 	function (this: Phaser.GameObjects.GameObjectFactory, marketManager: MarketManager, x: number, y: number, width: number = 100, height: number = 84) {
 		const marketGameObject = new MarketComponent(this.scene, marketManager, x, y, width, height);
-		marketGameObject.setOrigin(0);
+		// marketGameObject.setOrigin(0);
 		
-		this.displayList.add(marketGameObject);
+		// this.displayList.add(marketGameObject);
 		this.updateList.add(marketGameObject);
 
 		return marketGameObject;

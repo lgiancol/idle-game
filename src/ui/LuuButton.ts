@@ -6,6 +6,7 @@ export default class LuuButton extends Phaser.GameObjects.Sprite {
 
 	public constructor(scene: Phaser.Scene, x: number, y: number, width: number, height: number, public text: string) {
 		super(scene, x, y, 'purple_btn');
+		this.type = 'LuuButton';
 	}
 
 	public init() {
@@ -68,6 +69,32 @@ export default class LuuButton extends Phaser.GameObjects.Sprite {
 		this.enabled = enabled;
 		this.setInteractive();
 		
+		return this;
+	}
+
+	public setDepth(value: number) {
+		this.label.setDepth(value + 1);
+
+		super.setDepth(value);
+
+		return this;
+	}
+
+	public setPosition(x?: number, y?: number, z?: number, w?: number) {
+		super.setPosition(x, y, z, w);
+		this.label?.setPosition(this.x + this.width / 2, this.y + this.height / 2, z, w);
+		return this;
+	}
+
+	public setSize(width: number, height?: number) {
+		super.setSize(width, height);
+		this.label?.setPosition(this.x + this.width / 2, this.y + this.height / 2);
+		return this;
+	}
+
+	public setDisplaySize(width: number, height?: number) {
+		super.setDisplaySize(width, height);
+		this.label?.setPosition(this.x + this.width / 2, this.y + this.height / 2);
 		return this;
 	}
 

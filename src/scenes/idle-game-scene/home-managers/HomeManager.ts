@@ -21,6 +21,8 @@ export default abstract class HomeManager {
 			for(let i = 0; i < this.fuelLimit; i++) {
 				this.addFuel();
 			}
+
+			console.log(this.totalRemaingFuel);
 	}
 
 	get acceptedFuelResource() {
@@ -47,12 +49,13 @@ export default abstract class HomeManager {
 		return this.player.getResourceManager(this._acceptedResourceType).quantity > 0;
 	}
 
+	public dannyDevito = 1; // Amount of energy per fuel
 	public addFuel() {
 		let fuel = {
 			// startingAmount: this._acceptedResourceType.energyUnits,
 			// remainingAmount: this._acceptedResourceType.energyUnits
-			startingAmount: 10,
-			remainingAmount: 10
+			startingAmount: this.dannyDevito,
+			remainingAmount: this.dannyDevito
 		} as {startingAmount: number, remainingAmount: number};
 
 		if(this._fuel.length == this.fuelLimit) {
@@ -63,7 +66,7 @@ export default abstract class HomeManager {
 		}
 
 		// this.totalRemaingFuel = Math.min(this.totalRemaingFuel + fuel.startingAmount, this.fuelLimit * this._acceptedResourceType.energyUnits);
-		this.totalRemaingFuel = Math.min(this.totalRemaingFuel + fuel.startingAmount, this.fuelLimit * 10);
+		this.totalRemaingFuel = Math.min(this.totalRemaingFuel + fuel.startingAmount, this.fuelLimit * this.dannyDevito);
 
 		if(this.currentFuelIndex == -1) {
             this.currentFuelIndex = this._fuel.length - 1;

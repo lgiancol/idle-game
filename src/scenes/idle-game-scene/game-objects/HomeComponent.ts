@@ -28,7 +28,7 @@ export default class HomeComponent extends Phaser.GameObjects.Rectangle {
 
 		this.fuelProgressBar = this.scene.add.luuProgressBar(this.x + 10, yOffset, this.width - 20, 20)
 		// .setPercentage(this.homeManager.totalRemaingFuel / (this.homeManager.acceptedFuelResource.energyUnits * this.homeManager.fuelLimit));
-		.setPercentage(this.homeManager.totalRemaingFuel / (10 * this.homeManager.fuelLimit));
+		.setPercentage(this.homeManager.totalRemaingFuel / (this.homeManager.dannyDevito * this.homeManager.fuelLimit));
 		// .setText(`${this.homeManager.currentFuelLevel} / ${(this.homeManager.resourceManager.resource.energyUnits * this.homeManager.fuelLimit)}`);
 
 		yOffset += this.fuelProgressBar.getBounds().height + 10;
@@ -45,7 +45,7 @@ export default class HomeComponent extends Phaser.GameObjects.Rectangle {
 	public preUpdate() {
 		// this.fuelProgressBar.setText(`${this.homeManager.currentFuelLevel} / ${(this.homeManager.resourceManager.resource.energyUnits * this.homeManager.fuelLimit)}`);
 		// this.fuelProgressBar.setPercentage(this.homeManager.totalRemaingFuel / (this.homeManager.acceptedFuelResource.energyUnits * this.homeManager.fuelLimit));
-		this.fuelProgressBar.setPercentage(this.homeManager.totalRemaingFuel / (10 * this.homeManager.fuelLimit));
+		this.fuelProgressBar.setPercentage(this.homeManager.totalRemaingFuel / (this.homeManager.dannyDevito * this.homeManager.fuelLimit));
 		this.deathProgressBar.setPercentage(this.homeManager.freezeTimeReminaing / this.homeManager.freezeToDeathTime);
 	}
 
