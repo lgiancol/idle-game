@@ -89,7 +89,7 @@ export class IdleGameScene extends Phaser.Scene {
 		this.player.addResourceManager(new PlanksManager());
 
 		this.logCollectorComponent = this.add.resource(this.player.getResourceManager(Resource.LOG), 10, 10, 200);
-		this.coalResource = this.add.resource(this.player.getResourceManager(Resource.COAL), this.logCollectorComponent.x + this.logCollectorComponent.width + 10, 10, 200);
+		this.coalResource = this.add.resource(this.player.getResourceManager(Resource.COAL), 10, this.logCollectorComponent.getBounds().bottom + 10, 200);
 
 		// Market Area
 		this.marketManager = new MarketManager();

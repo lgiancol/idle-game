@@ -7,7 +7,7 @@ export default class RefineryItem extends Phaser.Events.EventEmitter {
 
 	/**
 	 * 
-	 * @param timeToRefine The time in milliseconds it will take to refine all the resources required for 1 refined resource
+	 * @param timeToRefine The time in seconds it will take to refine all the resources required for 1 refined resource
 	 * @param resourceType The resource type that this refiner accepts
 	 * @param numRequiredResources The number of resource required before the refiner will start working
 	 * @param refinedResouceType The resource type that this refiner will produce
@@ -15,7 +15,7 @@ export default class RefineryItem extends Phaser.Events.EventEmitter {
 	 */
 	public constructor(
 		public timeToRefine: number,
-		public readonly resouceType: Resource,
+		public readonly resouce: Resource,
 		public readonly numRequiredResources: number,
 		public readonly refinedResouceType: Resource,
 		public readonly refinedResourceAmount: number = 1
@@ -32,11 +32,11 @@ export default class RefineryItem extends Phaser.Events.EventEmitter {
 	}
 
 	get percentComplete() {
-		return this.currentTime / this.timeToRefine;
+		return this.currentTime / (this.timeToRefine * 1000);
 	}
 
 	public addResource(resource: Resource, amountToAdd: number = 1) {
-		if(this.resouceType == resource) {
+		if(this.resouce == resource) {
 			this._toRefineCount += amountToAdd;
 			return true;
 		}
@@ -72,6 +72,6 @@ export default class RefineryItem extends Phaser.Events.EventEmitter {
 		this._toRefineCount -= this.numRequiredResources;
 		this.currentTime = 0;
 
-		this.emit('refined');
+		this.emit('refined', this.resouce);
 	}
 }

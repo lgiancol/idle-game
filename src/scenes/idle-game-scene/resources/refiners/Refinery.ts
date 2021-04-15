@@ -5,7 +5,7 @@ export default class Refinery {
 	private _refineryItem: RefineryItem;
 
 	public constructor(public readonly resourceAccepted: Resource, public readonly resourceRefined: Resource) {
-		this._refineryItem = new RefineryItem(1000, resourceAccepted, 5, resourceRefined);
+		this._refineryItem = new RefineryItem(10, resourceAccepted, 5, resourceRefined);
 	}
 
 	get canRefine() {
