@@ -21,11 +21,11 @@ export default class MarketManager extends Phaser.Events.EventEmitter {
 	}
 
 	public addResourceManager(resource: Resource, resourceUpgradeManager: ResourceManager) {
-		this.managers[resource.name] = resourceUpgradeManager;
+		this.managers[resource.type] = resourceUpgradeManager;
 	}
 
 	public getManager(resource: Resource) {
-		return this.managers[resource.name];
+		return this.managers[resource.type];
 	}
 
 	// Money area

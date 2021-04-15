@@ -24,7 +24,7 @@ export default class ResourceManager {
 	}
 
 	get resourceName() {
-		return this.resource.name;
+		return this.resource.type;
 	}
 
 	get autoCollectSpeed() {

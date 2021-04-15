@@ -54,6 +54,11 @@ export class IdleGameScene extends Phaser.Scene {
 		this.load.image('purple_btn', 'assets/UI/purple_btn.png');
 		this.load.image('purple_btn_active', 'assets/UI/purple_btn_active.png');
 
+		// Resources
+		this.load.image(Resource.LOG.type, 'assets/sprites/log.png');
+		this.load.image(Resource.COAL.type, 'assets/sprites/coal.png');
+		this.load.image(Resource.PLANKS.type, 'assets/sprites/planks.png');
+
 		this.load.image('overlay_bg', 'assets/UI/overlay_background.png');
 	}
 
@@ -116,6 +121,10 @@ export class IdleGameScene extends Phaser.Scene {
 
 		this.refinery = new Refinery(Resource.LOG, Resource.PLANKS);
 		this.add.refinery(this.refinery, gameWidth - 10 - 300, 10, 300, 400);
+
+		this.add.sprite(400, 100, Resource.LOG.type);
+		this.add.sprite(474, 100, Resource.COAL.type);
+		this.add.sprite(548, 100, Resource.PLANKS.type);
 	}
 	
 	public update(time: number, delta: number) {

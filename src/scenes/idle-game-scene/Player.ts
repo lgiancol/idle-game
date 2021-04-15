@@ -51,10 +51,10 @@ export default class Player {
 	}
 
 	public addResourceManager(resourceManager: ResourceManager) {
-		this._resourceManagers[resourceManager.resource.name] = resourceManager;
+		this._resourceManagers[resourceManager.resource.type] = resourceManager;
 	}
 	
 	public getResourceManager(resource: Resource) {
-		return this._resourceManagers[resource.name];
+		return this._resourceManagers[resource.type];
 	}
 }

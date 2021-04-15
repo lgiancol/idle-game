@@ -7,7 +7,9 @@ import Resource from "../../resources/Resource";
 export default class RefineryComponent extends Phaser.GameObjects.Rectangle {
 	private player = Player.getInstance();
 	private nameLabel: Phaser.GameObjects.Text;
+	private resourceIcon: Phaser.GameObjects.Sprite;
 	private progress: LuuProgressbar;
+	private refinedIcon: Phaser.GameObjects.Sprite;
 	private addResourceToRefineBtn: LuuButton;
 	private takeRefinedResourceBtn: LuuButton;
 
@@ -23,7 +25,7 @@ export default class RefineryComponent extends Phaser.GameObjects.Rectangle {
 		this.setStrokeStyle(1, 0xffffff);
 		
 		let yOffset = this.y + 10 + 1;
-		this.nameLabel = this.scene.add.text(this.x + 10, yOffset, `${this.refinery.resourceAccepted.name} Refinery [${this.refinery.refinedResourceCount}]`)
+		this.nameLabel = this.scene.add.text(this.x + 10, yOffset, `${this.refinery.resourceAccepted.type} Refinery [${this.refinery.refinedResourceCount}]`)
 		.setOrigin(0)
 		.setColor('white')
 		.setFontFamily('my-font')
@@ -31,7 +33,13 @@ export default class RefineryComponent extends Phaser.GameObjects.Rectangle {
 		.setDepth(1);
 
 		yOffset += this.nameLabel.getBounds().height + 10;
-		this.progress = this.scene.add.luuProgressBar(this.x + 10, yOffset, this.width - 20, 20);
+		this.resourceIcon = this.scene.add.sprite(this.x + 10, yOffset, this.refinery.resourceAccepted.type)
+		.setOrigin(0)
+		.setDisplaySize(20, 20);
+		this.progress = this.scene.add.luuProgressBar(this.x + 40, yOffset, this.width - 80, 20);
+		this.resourceIcon = this.scene.add.sprite(this.progress.getBounds().right + 10, yOffset, this.refinery.resourceRefined.type)
+		.setOrigin(0)
+		.setDisplaySize(20, 20);
 
 		yOffset += this.progress.getBounds().height + 10;
 		this.addResourceToRefineBtn = this.scene.add.luuButton(this.x + 10, yOffset, this.width / 2 - 10, btnHeight, `Add Resource`)
@@ -46,7 +54,7 @@ export default class RefineryComponent extends Phaser.GameObjects.Rectangle {
 	}
 
 	public preUpdate(delta: number) {
-		this.nameLabel.setText(`${this.refinery.resourceAccepted.name} Refinery [${this.refinery.refinedResourceCount}]`);
+		this.nameLabel.setText(`${this.refinery.resourceAccepted.type} Refinery [${this.refinery.refinedResourceCount}]`);
 		this.progress.setPercentage(this.refinery.refinePercentage);
 	}
 

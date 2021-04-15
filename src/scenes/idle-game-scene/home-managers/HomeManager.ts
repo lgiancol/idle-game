@@ -22,8 +22,6 @@ export default abstract class HomeManager {
 			for(let i = 0; i < this.fuelLimit; i++) {
 				this.addFuel();
 			}
-
-			console.log(this.totalRemaingFuel);
 	}
 
 	get acceptedFuelResource() {
