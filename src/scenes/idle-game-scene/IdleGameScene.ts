@@ -43,7 +43,7 @@ export class IdleGameScene extends Phaser.Scene {
 	// public marketComponent: MarketComponent;
 
 	// This will all go into the actual refiner when I make it
-	public refiner: Refinery;
+	public refinery: Refinery;
 
 	public constructor() {
 		super({key: 'IdleGame'});
@@ -93,13 +93,13 @@ export class IdleGameScene extends Phaser.Scene {
 
 		// Market Area
 		this.marketManager = new MarketManager();
-		this.openMarketBtn = this.add.luuButton(400, 200, 100, 30, 'Open Market')
+		this.openMarketBtn = this.add.luuButton((gameWidth / 2) - (100 / 2), 30, 100, 30, 'Open Market')
 		.on('pointerdown', () => this.add.luuIOverlayContainerLarge(this.add.market(this.marketManager, 0, 0, 0, 0)));
 		// this.marketComponent = this.add.market(this.marketManager, (gameWidth / 2) + 10, 10, ((gameWidth / 2) - 20), gameHeight - 20);
 
 		// HOME
 		this.homeManager = new CampManager();
-		this.homeComponent = this.add.home(this.homeManager, 200, 200, 225, 150);
+		this.homeComponent = this.add.home(this.homeManager, (gameWidth / 2) - 225 / 2, (gameHeight / 2) - 150 / 2, 225, 150);
 
 		// TEMP
 		this.lostText = this.add.text(gameWidth / 2, gameHeight / 2, 'YOU LOSE!!')
@@ -114,45 +114,8 @@ export class IdleGameScene extends Phaser.Scene {
 		.setVisible(false)
 		.on('pointerdown', this.resetGame.bind(this));
 
-		this.refiner = new Refinery();
-
-		const refineryResource = Resource.LOG;
-		this.add.luuButton(600, 50, 100, 50, 'Add Resource')
-		.on('pointerdown', () => {
-			this.addResourceToRefiner(Resource.LOG);
-		});
-
-
-		this.add.luuButton(710, 50, 150, 50, 'Take Refined Resource')
-		.on('pointerdown', () => {
-			const refinedResourceType = Resource.PLANKS;
-			const deltaRefinedResource = this.refiner.takeRefinedResource(refinedResourceType);
-
-			if(deltaRefinedResource >= 0) {
-				console.log('deltaRefinedResourceCount: ', deltaRefinedResource);
-
-				const refinedResourceManager = this.player.getResourceManager(refinedResourceType);
-				refinedResourceManager.collectResource(deltaRefinedResource);
-				console.log(refinedResourceType.name + 'Count: ', refinedResourceManager.quantity);
-			}
-		});
-	}
-
-	private addResourceToRefiner(resource: Resource) {
-		const takeAmount = 2;
-
-		const resourceManager = this.player.getResourceManager(resource)
-		if(resourceManager?.hasMinimumOf(takeAmount)) {
-			if(this.refiner.addResource(resource, takeAmount)) {
-				resourceManager?.removeResource(takeAmount);
-				console.log('Added resources');
-			} else {
-				console.log("Refiner doesn't accept this resource type");
-			}
-			
-		} else {
-			console.log('Not enough resources');
-		}
+		this.refinery = new Refinery(Resource.LOG, Resource.PLANKS);
+		this.add.refinery(this.refinery, gameWidth - 10 - 300, 10, 300, 400);
 	}
 	
 	public update(time: number, delta: number) {
@@ -162,7 +125,7 @@ export class IdleGameScene extends Phaser.Scene {
 			this.player.update(delta);
 			this.homeManager.update(delta);
 
-			this.refiner.update(delta);
+			this.refinery.update(delta);
 		}
 	}
 
