@@ -1,6 +1,6 @@
 import Player from "../Player";
-import { ResourceType } from "../resources/ResourceTypes";
 import ResourceManager from "../resources/resource-managers/ResourceManager";
+import Resource from "../resources/ResourceTypes";
 
 export default class MarketManager extends Phaser.Events.EventEmitter {
 	public money: number = 0;
@@ -16,16 +16,16 @@ export default class MarketManager extends Phaser.Events.EventEmitter {
 		const player = Player.getInstance();
 
 		Object.values(player.resourceManagers).forEach((resourceManager: ResourceManager) => {
-			this.addResourceManager(resourceManager.resourceType, resourceManager);
+			this.addResourceManager(resourceManager.resource, resourceManager);
 		});
 	}
 
-	public addResourceManager(resourceType: ResourceType, resourceUpgradeManager: ResourceManager) {
-		this.managers[resourceType] = resourceUpgradeManager;
+	public addResourceManager(resource: Resource, resourceUpgradeManager: ResourceManager) {
+		this.managers[resource.name] = resourceUpgradeManager;
 	}
 
-	public getManager(resourceType: ResourceType) {
-		return this.managers[resourceType];
+	public getManager(resource: Resource) {
+		return this.managers[resource.name];
 	}
 
 	// Money area

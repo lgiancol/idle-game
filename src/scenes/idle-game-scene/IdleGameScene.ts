@@ -10,12 +10,14 @@ import CampManager from './home-managers/CampManager';
 import HomeManager from './home-managers/HomeManager';
 import MarketManager from './market-manager/MarketManager';
 import Player from './Player';
-import Refinery from './refiners/Refinery';
-import RefineryItem from './refiners/RefineryItem';
+import Refinery from './resources/refiners/Refinery';
+import RefineryItem from './resources/refiners/RefineryItem';
 import CoalManager from './resources/resource-managers/CoalManager';
 import LogManager from './resources/resource-managers/LogManager';
+import PlanksManager from './resources/resource-managers/PlanksManager';
 import ResourceManager from './resources/resource-managers/ResourceManager';
-import Resource, { ResourceType } from './resources/ResourceTypes';
+import Resource from './resources/ResourceTypes';
+// import Resource, { ResourceType } from './resources/ResourceTypes';
 
 export class IdleGameScene extends Phaser.Scene {
 	private player: Player;
@@ -42,9 +44,6 @@ export class IdleGameScene extends Phaser.Scene {
 
 	// This will all go into the actual refiner when I make it
 	public refiner: Refinery;
-	public refinedResourceCounts = {
-		[ResourceType.PLANKS]: 0
-	};
 
 	public constructor() {
 		super({key: 'IdleGame'});
@@ -87,9 +86,10 @@ export class IdleGameScene extends Phaser.Scene {
 		// RESOURCES
 		this.player.addResourceManager(new LogManager());
 		this.player.addResourceManager(new CoalManager());
+		this.player.addResourceManager(new PlanksManager());
 
-		this.logCollectorComponent = this.add.resource(this.player.getResourceManager(ResourceType.LOG), 10, 10, 200);
-		this.coalResource = this.add.resource(this.player.getResourceManager(ResourceType.COAL), this.logCollectorComponent.x + this.logCollectorComponent.width + 10, 10, 200);
+		this.logCollectorComponent = this.add.resource(this.player.getResourceManager(Resource.LOG), 10, 10, 200);
+		this.coalResource = this.add.resource(this.player.getResourceManager(Resource.COAL), this.logCollectorComponent.x + this.logCollectorComponent.width + 10, 10, 200);
 
 		// Market Area
 		this.marketManager = new MarketManager();
@@ -116,32 +116,34 @@ export class IdleGameScene extends Phaser.Scene {
 
 		this.refiner = new Refinery();
 
-		const resourceType = ResourceType.LOG;
+		const refineryResource = Resource.LOG;
 		this.add.luuButton(600, 50, 100, 50, 'Add Resource')
 		.on('pointerdown', () => {
-			this.addResourceToRefiner(ResourceType.LOG);
+			this.addResourceToRefiner(Resource.LOG);
 		});
 
 
 		this.add.luuButton(710, 50, 150, 50, 'Take Refined Resource')
 		.on('pointerdown', () => {
-			const refinedResourceType = ResourceType.PLANKS;
-			const deltaRefinedResource = this.refiner.takeRefinedResource(refinedResourceType, 5);
+			const refinedResourceType = Resource.PLANKS;
+			const deltaRefinedResource = this.refiner.takeRefinedResource(refinedResourceType);
 
 			if(deltaRefinedResource >= 0) {
 				console.log('deltaRefinedResourceCount: ', deltaRefinedResource);
-				this.refinedResourceCounts[refinedResourceType] += deltaRefinedResource;
-				console.log(refinedResourceType + 'Count: ', this.refinedResourceCounts[refinedResourceType]);
+
+				const refinedResourceManager = this.player.getResourceManager(refinedResourceType);
+				refinedResourceManager.collectResource(deltaRefinedResource);
+				console.log(refinedResourceType.name + 'Count: ', refinedResourceManager.quantity);
 			}
 		});
 	}
 
-	private addResourceToRefiner(resourceType: ResourceType) {
+	private addResourceToRefiner(resource: Resource) {
 		const takeAmount = 2;
 
-		const resourceManager = this.player.getResourceManager(resourceType)
+		const resourceManager = this.player.getResourceManager(resource)
 		if(resourceManager?.hasMinimumOf(takeAmount)) {
-			if(this.refiner.addResource(resourceType, takeAmount)) {
+			if(this.refiner.addResource(resource, takeAmount)) {
 				resourceManager?.removeResource(takeAmount);
 				console.log('Added resources');
 			} else {

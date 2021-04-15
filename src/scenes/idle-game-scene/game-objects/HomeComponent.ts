@@ -1,7 +1,7 @@
 import LuuProgressbar from "../../../ui/LuuProgressBar";
 import HomeManager from "../home-managers/HomeManager";
 import Player from "../Player";
-import { ResourceType } from "../resources/ResourceTypes";
+import Resource from "../resources/ResourceTypes";
 
 export default class HomeComponent extends Phaser.GameObjects.Rectangle {
 	private nameLabel: Phaser.GameObjects.Text;
@@ -73,7 +73,7 @@ Phaser.GameObjects.GameObjectFactory.register(
 		function onClick() {
 			if(home.homeManager.canAddFuel) {
 				// home.homeManager.resourceManager.removeResource(1);
-				player.getResourceManager(ResourceType.LOG).removeResource(1); // TODO: Fix this for the actual resource required
+				player.getResourceManager(Resource.LOG).removeResource(1); // TODO: Fix this for the actual resource required
 				home.homeManager.addFuel()
 			}
 		}

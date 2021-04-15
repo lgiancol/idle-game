@@ -2,12 +2,12 @@ import Queue from "../../../../../utils/queue/Queue";
 import Upgrade from "../../../upgrades/Upgrade";
 import UpgradeManager, { UpgradeConfig } from "../../../upgrades/UpgradeManager";
 import { UpgradeType } from "../../../upgrades/UpgradeType";
-import { ResourceType } from "../../ResourceTypes";
+import Resource from "../../ResourceTypes";
 import ResourceUpgrade, { ResourceUpgradeValue } from "../ResourceUpgrade";
 
 export default class ResourceUpgradeManager extends UpgradeManager {
 
-	public constructor(protected _resourceType: ResourceType, upgradeConfigs: {[upgradeType: string]: UpgradeConfig}) {
+	public constructor(protected _resource: Resource, upgradeConfigs: {[upgradeType: string]: UpgradeConfig}) {
 		super();
 
 		this.upgrades = {};

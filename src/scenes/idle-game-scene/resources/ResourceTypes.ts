@@ -1,10 +1,3 @@
-
-export enum ResourceType {
-	LOG = 'LOG',
-	PLANKS = 'PLANKS',
-	COAL = 'COAL',
-}
-
 export default class Resource {
 	// Instances
 	//  LOGs and anything related to LOGs
@@ -18,6 +11,8 @@ export default class Resource {
 	static get values() {
 		return [
 			this.LOG,
+			this.PLANKS,
+			this.COAL,
 		];
 	}
 

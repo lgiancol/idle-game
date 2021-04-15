@@ -3,7 +3,6 @@ import LuuButton from '../../../../../ui/LuuButton';
 import Player from '../../../Player';
 import ResourceManager from '../../../resources/resource-managers/ResourceManager';
 import ResourceUpgrade from '../../../resources/upgrades/ResourceUpgrade';
-import { UpgradeType } from '../../../upgrades/UpgradeType';
 import MarketGroupComponent from "../MarketGroupComponent";
 
 export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
@@ -66,7 +65,7 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 			.setDepth(this.depth)
 			.setData('sellAmount', sellAmount)
 			.setActive(this.active)
-			.setEnabled(this.player.getResourceManager(this.activeResourceManager.resourceType).hasMinimumOf(sellAmount))
+			.setEnabled(this.player.getResourceManager(this.activeResourceManager.resource).hasMinimumOf(sellAmount))
 			.setVisible(this.visible);
 
 			sellBtn.on('pointerdown', this.createSellClickCallback(sellAmount));
@@ -100,7 +99,7 @@ export class ResourceUpgradeMarketGroupComponent extends MarketGroupComponent {
 	public preUpdate(delta: number, time: number) {
 		this.sellBtns?.forEach((sellBtn: LuuButton) => {
 			let sellAmount = sellBtn.getData('sellAmount') as number;
-			sellBtn.setEnabled(this.player.getResourceManager(this.activeResourceManager.resourceType).quantity >= sellAmount)
+			sellBtn.setEnabled(this.player.getResourceManager(this.activeResourceManager.resource).quantity >= sellAmount)
 		});
 
 		this.updateUpgradeButtons();

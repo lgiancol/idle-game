@@ -1,5 +1,5 @@
-import { ResourceType } from './resources/ResourceTypes';
 import ResourceManager from './resources/resource-managers/ResourceManager';
+import Resource from './resources/ResourceTypes';
 export default class Player {
 	private static _instance: Player;
 	private _money: number;
@@ -51,10 +51,10 @@ export default class Player {
 	}
 
 	public addResourceManager(resourceManager: ResourceManager) {
-		this._resourceManagers[resourceManager.resourceType] = resourceManager;
+		this._resourceManagers[resourceManager.resource.name] = resourceManager;
 	}
 	
-	public getResourceManager(resourceType: ResourceType) {
-		return this._resourceManagers[resourceType];
+	public getResourceManager(resource: Resource) {
+		return this._resourceManagers[resource.name];
 	}
 }

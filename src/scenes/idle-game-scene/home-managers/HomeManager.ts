@@ -1,5 +1,6 @@
 import Player from "../Player";
-import { ResourceType } from "../resources/ResourceTypes";
+import Resource from "../resources/ResourceTypes";
+
 export default abstract class HomeManager {
 	private player: Player;
 	private _fuel: {startingAmount: number, remainingAmount: number}[]; // TODO: Turn this into a class Fuel or something
@@ -12,7 +13,7 @@ export default abstract class HomeManager {
 
 	public constructor(
 		public homeType: string,
-		private _acceptedResourceType: ResourceType,
+		private _acceptedResource: Resource,
 		public fuelLimit: number,
 		public fuelUseSpeed: number,
 		private _freezeToDeathTime: number) {
@@ -26,7 +27,7 @@ export default abstract class HomeManager {
 	}
 
 	get acceptedFuelResource() {
-		return this._acceptedResourceType;
+		return this._acceptedResource;
 	}
 
 	get currentFuelLevel() {
@@ -46,7 +47,7 @@ export default abstract class HomeManager {
 	}
 
 	get canAddFuel() {
-		return this.player.getResourceManager(this._acceptedResourceType).quantity > 0;
+		return this.player.getResourceManager(this._acceptedResource).quantity > 0;
 	}
 
 	public dannyDevito = 1; // Amount of energy per fuel
