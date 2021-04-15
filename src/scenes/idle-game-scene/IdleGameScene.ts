@@ -4,19 +4,18 @@ import '../../ui';
 import LuuButton from '../../ui/LuuButton';
 import './game-objects';
 import HomeComponent from './game-objects/HomeComponent';
-import MarketComponent from './game-objects/market/MarketComponent';
+import RefineryComponent from './game-objects/refinery/RefineryComponent';
 import ResourceComponent from './game-objects/resource/ResourceComponent';
 import CampManager from './home-managers/CampManager';
 import HomeManager from './home-managers/HomeManager';
 import MarketManager from './market-manager/MarketManager';
 import Player from './Player';
 import Refinery from './resources/refiners/Refinery';
-import RefineryItem from './resources/refiners/RefineryItem';
+import Resource from './resources/Resource';
 import CoalManager from './resources/resource-managers/CoalManager';
 import LogManager from './resources/resource-managers/LogManager';
-import PlanksManager from './resources/resource-managers/PlanksManager';
+import PlankManager from './resources/resource-managers/PlankManager';
 import ResourceManager from './resources/resource-managers/ResourceManager';
-import Resource from './resources/Resource';
 // import Resource, { ResourceType } from './resources/ResourceTypes';
 
 export class IdleGameScene extends Phaser.Scene {
@@ -36,14 +35,17 @@ export class IdleGameScene extends Phaser.Scene {
 	public logCollectorComponent: ResourceComponent;
 
 	public coalManager: ResourceManager;
-	public coalResource: ResourceComponent;
+	public coalCollectorComponent: ResourceComponent;
+
+	public plankManager: ResourceManager;
+	public plankCollectorComponent: ResourceComponent;
 
 	public marketManager: MarketManager;
 	public openMarketBtn: LuuButton;
-	// public marketComponent: MarketComponent;
 
 	// This will all go into the actual refiner when I make it
-	public refinery: Refinery;
+	public refineries: Refinery[] = [];
+	public refineryComponents: RefineryComponent[] = [];
 
 	public constructor() {
 		super({key: 'IdleGame'});
@@ -57,7 +59,7 @@ export class IdleGameScene extends Phaser.Scene {
 		// Resources
 		this.load.image(Resource.LOG.type, 'assets/sprites/log.png');
 		this.load.image(Resource.COAL.type, 'assets/sprites/coal.png');
-		this.load.image(Resource.PLANKS.type, 'assets/sprites/planks.png');
+		this.load.image(Resource.PLANK.type, 'assets/sprites/plank.png');
 
 		this.load.image('overlay_bg', 'assets/UI/overlay_background.png');
 	}
@@ -73,7 +75,9 @@ export class IdleGameScene extends Phaser.Scene {
 		this.openMarketBtn?.destroy();
 		this.homeComponent?.destroy();
 		this.logCollectorComponent?.destroy();
-		this.coalResource?.destroy();
+		this.coalCollectorComponent?.destroy();
+		this.plankCollectorComponent?.destroy();
+		this.refineryComponents?.forEach((refineryComponent: RefineryComponent) => refineryComponent.destroy());
 
 		// TEMP
 		this.lostText?.destroy();
@@ -91,10 +95,11 @@ export class IdleGameScene extends Phaser.Scene {
 		// RESOURCES
 		this.player.addResourceManager(new LogManager());
 		this.player.addResourceManager(new CoalManager());
-		this.player.addResourceManager(new PlanksManager());
+		this.player.addResourceManager(new PlankManager());
 
 		this.logCollectorComponent = this.add.resource(this.player.getResourceManager(Resource.LOG), 10, 10, 200);
-		this.coalResource = this.add.resource(this.player.getResourceManager(Resource.COAL), 10, this.logCollectorComponent.getBounds().bottom + 10, 200);
+		this.coalCollectorComponent = this.add.resource(this.player.getResourceManager(Resource.COAL), 10, this.logCollectorComponent.getBounds().bottom + 10, 200);
+		this.plankCollectorComponent = this.add.resource(this.player.getResourceManager(Resource.PLANK), 10, this.coalCollectorComponent.getBounds().bottom + 10, 200);
 
 		// Market Area
 		this.marketManager = new MarketManager();
@@ -119,12 +124,17 @@ export class IdleGameScene extends Phaser.Scene {
 		.setVisible(false)
 		.on('pointerdown', this.resetGame.bind(this));
 
-		this.refinery = new Refinery(Resource.LOG, Resource.PLANKS);
-		this.add.refinery(this.refinery, gameWidth - 10 - 300, 10, 300, 400);
+		let refinery = new Refinery(Resource.LOG, Resource.COAL);
+		this.refineries.push(refinery);
+		this.refineryComponents.push(this.add.refinery(refinery, gameWidth - 10 - 300, 10, 300, 400));
+
+		refinery = new Refinery(Resource.COAL, Resource.PLANK);
+		this.refineries.push(refinery);
+		this.refineryComponents.push(this.add.refinery(refinery, gameWidth - 10 - 300, this.refineryComponents[this.refineryComponents.length - 1].getBounds().bottom + 10, 300, 400));
 
 		this.add.sprite(400, 100, Resource.LOG.type);
-		this.add.sprite(474, 100, Resource.COAL.type);
-		this.add.sprite(548, 100, Resource.PLANKS.type);
+		this.add.sprite(400, 174, Resource.COAL.type);
+		this.add.sprite(400, 258, Resource.PLANK.type);
 	}
 	
 	public update(time: number, delta: number) {
@@ -134,7 +144,7 @@ export class IdleGameScene extends Phaser.Scene {
 			this.player.update(delta);
 			this.homeManager.update(delta);
 
-			this.refinery.update(delta);
+			this.refineries.forEach((refinery: Refinery) => refinery.update(delta));
 		}
 	}
 

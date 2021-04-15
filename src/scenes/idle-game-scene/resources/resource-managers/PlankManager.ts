@@ -2,9 +2,9 @@ import { UpgradeType } from "../../upgrades/UpgradeType";
 import Resource from "../Resource";
 import ResourceManager from "./ResourceManager";
 
-export default class PlanksManager extends ResourceManager {
+export default class PlankManager extends ResourceManager {
 	public constructor() {
-		super(Resource.PLANKS, {
+		super(Resource.PLANK, {
 			// TODO: Make this UpgradeType.VALUE_MULTIPLIER
 			[UpgradeType.CLICK_MULTIPLIER]: { upgradeNames: ['Cheese', 'Cheddar', 'Oops', 'Glee'], baseCost: 2, baseValue: 1, upgradeValueIndex: 'manualCollectMultiplier'},
 		});

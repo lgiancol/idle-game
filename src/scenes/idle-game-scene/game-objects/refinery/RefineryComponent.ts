@@ -37,7 +37,7 @@ export default class RefineryComponent extends Phaser.GameObjects.Rectangle {
 		.setOrigin(0)
 		.setDisplaySize(20, 20);
 		this.progress = this.scene.add.luuProgressBar(this.x + 40, yOffset, this.width - 80, 20);
-		this.resourceIcon = this.scene.add.sprite(this.progress.getBounds().right + 10, yOffset, this.refinery.resourceRefined.type)
+		this.refinedIcon = this.scene.add.sprite(this.progress.getBounds().right + 10, yOffset, this.refinery.resourceRefined.type)
 		.setOrigin(0)
 		.setDisplaySize(20, 20);
 
@@ -70,22 +70,23 @@ export default class RefineryComponent extends Phaser.GameObjects.Rectangle {
 	}
 
 	private onTakeRefinedResources() {
-		const refinedResourceType = Resource.PLANKS;
-		const deltaRefinedResource = this.refinery.takeRefinedResource(refinedResourceType);
+		const deltaRefinedResource = this.refinery.takeRefinedResource(this.refinery.resourceRefined);
 
 		if(deltaRefinedResource >= 0) {
-			const refinedResourceManager = this.player.getResourceManager(refinedResourceType);
+			const refinedResourceManager = this.player.getResourceManager(this.refinery.resourceRefined);
 			refinedResourceManager.collectResource(deltaRefinedResource);
 		}
 	}
 
 	public destroy() {
-		super.destroy();
-
 		this.nameLabel.destroy();
+		this.resourceIcon.destroy();
 		this.progress.destroy();
+		this.refinedIcon.destroy();
 		this.addResourceToRefineBtn.destroy();
 		this.takeRefinedResourceBtn.destroy();
+
+		super.destroy();
 	}
 }
 

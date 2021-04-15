@@ -2,7 +2,7 @@ export default class Resource {
 	// Instances
 	//  LOGs and anything related to LOGs
 	public static LOG = new Resource('log', 1);
-	public static PLANKS = new Resource('planks', 6); // 5 LOGs required for 1 PLANKS
+	public static PLANK = new Resource('plank', 6); // 5 LOGs required for 1 PLANK
 
 	//  COAL and antything related to COAL
 	public static COAL = new Resource('coal', 1.15);
@@ -11,7 +11,7 @@ export default class Resource {
 	static get values() {
 		return [
 			this.LOG,
-			this.PLANKS,
+			this.PLANK,
 			this.COAL,
 		];
 	}
