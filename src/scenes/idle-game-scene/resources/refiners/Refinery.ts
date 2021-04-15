@@ -1,4 +1,4 @@
-import Resource from "../ResourceTypes";
+import Resource from "../Resource";
 import RefineryItem from "./RefineryItem";
 
 export default class Refinery {

@@ -1,4 +1,4 @@
-import Resource from "../ResourceTypes";
+import Resource from "../Resource";
 
 export default class RefineryItem extends Phaser.Events.EventEmitter {
 	private currentTime = 0;

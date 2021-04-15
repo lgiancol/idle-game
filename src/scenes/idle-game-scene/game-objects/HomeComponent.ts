@@ -1,7 +1,7 @@
 import LuuProgressbar from "../../../ui/LuuProgressBar";
 import HomeManager from "../home-managers/HomeManager";
 import Player from "../Player";
-import Resource from "../resources/ResourceTypes";
+import Resource from "../resources/Resource";
 
 export default class HomeComponent extends Phaser.GameObjects.Rectangle {
 	private nameLabel: Phaser.GameObjects.Text;

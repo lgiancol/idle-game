@@ -16,7 +16,7 @@ import CoalManager from './resources/resource-managers/CoalManager';
 import LogManager from './resources/resource-managers/LogManager';
 import PlanksManager from './resources/resource-managers/PlanksManager';
 import ResourceManager from './resources/resource-managers/ResourceManager';
-import Resource from './resources/ResourceTypes';
+import Resource from './resources/Resource';
 // import Resource, { ResourceType } from './resources/ResourceTypes';
 
 export class IdleGameScene extends Phaser.Scene {

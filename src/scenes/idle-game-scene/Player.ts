@@ -1,5 +1,5 @@
 import ResourceManager from './resources/resource-managers/ResourceManager';
-import Resource from './resources/ResourceTypes';
+import Resource from './resources/Resource';
 export default class Player {
 	private static _instance: Player;
 	private _money: number;

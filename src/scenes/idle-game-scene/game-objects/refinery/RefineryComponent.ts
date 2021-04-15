@@ -2,7 +2,7 @@ import LuuButton from "../../../../ui/LuuButton";
 import LuuProgressbar from "../../../../ui/LuuProgressBar";
 import Player from "../../Player";
 import Refinery from "../../resources/refiners/Refinery";
-import Resource from "../../resources/ResourceTypes";
+import Resource from "../../resources/Resource";
 
 export default class RefineryComponent extends Phaser.GameObjects.Rectangle {
 	private player = Player.getInstance();

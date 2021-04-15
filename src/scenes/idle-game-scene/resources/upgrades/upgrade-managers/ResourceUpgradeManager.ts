@@ -2,7 +2,7 @@ import Queue from "../../../../../utils/queue/Queue";
 import Upgrade from "../../../upgrades/Upgrade";
 import UpgradeManager, { UpgradeConfig } from "../../../upgrades/UpgradeManager";
 import { UpgradeType } from "../../../upgrades/UpgradeType";
-import Resource from "../../ResourceTypes";
+import Resource from "../../Resource";
 import ResourceUpgrade, { ResourceUpgradeValue } from "../ResourceUpgrade";
 
 export default class ResourceUpgradeManager extends UpgradeManager {

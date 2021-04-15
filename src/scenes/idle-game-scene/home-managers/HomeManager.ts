@@ -1,5 +1,5 @@
 import Player from "../Player";
-import Resource from "../resources/ResourceTypes";
+import Resource from "../resources/Resource";
 
 export default abstract class HomeManager {
 	private player: Player;

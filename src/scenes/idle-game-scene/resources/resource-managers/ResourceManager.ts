@@ -1,6 +1,6 @@
 import { UpgradeConfig } from "../../upgrades/UpgradeManager";
 import { UpgradeType } from "../../upgrades/UpgradeType";
-import Resource from "../ResourceTypes";
+import Resource from "../Resource";
 import ResourceUpgrade from "../upgrades/ResourceUpgrade";
 import ResourceUpgradeManager from "../upgrades/upgrade-managers/ResourceUpgradeManager";
 import ResourceCollector from "./resource-collector/ResourceCollector";

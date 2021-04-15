@@ -1,5 +1,5 @@
 import { UpgradeType } from "../../upgrades/UpgradeType";
-import Resource from "../ResourceTypes";
+import Resource from "../Resource";
 import ResourceManager from "./ResourceManager";
 
 export default class PlanksManager extends ResourceManager {
