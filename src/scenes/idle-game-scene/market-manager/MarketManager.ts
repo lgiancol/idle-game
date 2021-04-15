@@ -24,7 +24,7 @@ export default class MarketManager extends Phaser.Events.EventEmitter {
 		this.managers[resourceType] = resourceUpgradeManager;
 	}
 
-	public getUpgradeManager(resourceType: ResourceType) {
+	public getManager(resourceType: ResourceType) {
 		return this.managers[resourceType];
 	}
 

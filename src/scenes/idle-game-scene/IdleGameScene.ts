@@ -10,6 +10,8 @@ import CampManager from './home-managers/CampManager';
 import HomeManager from './home-managers/HomeManager';
 import MarketManager from './market-manager/MarketManager';
 import Player from './Player';
+import Refinery from './refiners/Refinery';
+import RefineryItem from './refiners/RefineryItem';
 import CoalManager from './resources/resource-managers/CoalManager';
 import LogManager from './resources/resource-managers/LogManager';
 import ResourceManager from './resources/resource-managers/ResourceManager';
@@ -37,6 +39,12 @@ export class IdleGameScene extends Phaser.Scene {
 	public marketManager: MarketManager;
 	public openMarketBtn: LuuButton;
 	// public marketComponent: MarketComponent;
+
+	// This will all go into the actual refiner when I make it
+	public refiner: Refinery;
+	public refinedResourceCounts = {
+		[ResourceType.PLANKS]: 0
+	};
 
 	public constructor() {
 		super({key: 'IdleGame'});
@@ -106,7 +114,43 @@ export class IdleGameScene extends Phaser.Scene {
 		.setVisible(false)
 		.on('pointerdown', this.resetGame.bind(this));
 
-		this.children.each((go) => console.log(go.type))
+		this.refiner = new Refinery();
+
+		const resourceType = ResourceType.LOG;
+		this.add.luuButton(600, 50, 100, 50, 'Add Resource')
+		.on('pointerdown', () => {
+			this.addResourceToRefiner(ResourceType.LOG);
+		});
+
+
+		this.add.luuButton(710, 50, 150, 50, 'Take Refined Resource')
+		.on('pointerdown', () => {
+			const refinedResourceType = ResourceType.PLANKS;
+			const deltaRefinedResource = this.refiner.takeRefinedResource(refinedResourceType, 5);
+
+			if(deltaRefinedResource >= 0) {
+				console.log('deltaRefinedResourceCount: ', deltaRefinedResource);
+				this.refinedResourceCounts[refinedResourceType] += deltaRefinedResource;
+				console.log(refinedResourceType + 'Count: ', this.refinedResourceCounts[refinedResourceType]);
+			}
+		});
+	}
+
+	private addResourceToRefiner(resourceType: ResourceType) {
+		const takeAmount = 2;
+
+		const resourceManager = this.player.getResourceManager(resourceType)
+		if(resourceManager?.hasMinimumOf(takeAmount)) {
+			if(this.refiner.addResource(resourceType, takeAmount)) {
+				resourceManager?.removeResource(takeAmount);
+				console.log('Added resources');
+			} else {
+				console.log("Refiner doesn't accept this resource type");
+			}
+			
+		} else {
+			console.log('Not enough resources');
+		}
 	}
 	
 	public update(time: number, delta: number) {
@@ -115,6 +159,8 @@ export class IdleGameScene extends Phaser.Scene {
 		if(!this.isLost) {
 			this.player.update(delta);
 			this.homeManager.update(delta);
+
+			this.refiner.update(delta);
 		}
 	}
 
