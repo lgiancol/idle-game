@@ -10,7 +10,7 @@ import CampManager from './home-managers/CampManager';
 import HomeManager from './home-managers/HomeManager';
 import MarketManager from './market-manager/MarketManager';
 import Player from './Player';
-import Refinery from './resources/refiners/Refinery';
+import Refinery from './refiners/Refinery';
 import Resource from './resources/Resource';
 import CoalManager from './resources/resource-managers/CoalManager';
 import LogManager from './resources/resource-managers/LogManager';
@@ -124,11 +124,13 @@ export class IdleGameScene extends Phaser.Scene {
 		.setVisible(false)
 		.on('pointerdown', this.resetGame.bind(this));
 
-		let refinery = new Refinery(Resource.LOG, Resource.COAL);
+		let refinery = new Refinery(Resource.LOG, Resource.PLANK);
+		console.log('Log --> Plank: ', refinery.timeToRefine);
 		this.refineries.push(refinery);
 		this.refineryComponents.push(this.add.refinery(refinery, gameWidth - 10 - 300, 10, 300, 400));
 
-		refinery = new Refinery(Resource.COAL, Resource.PLANK);
+		refinery = new Refinery(Resource.PLANK, Resource.LOG);
+		console.log('Plank --> Log: ', refinery.timeToRefine);
 		this.refineries.push(refinery);
 		this.refineryComponents.push(this.add.refinery(refinery, gameWidth - 10 - 300, this.refineryComponents[this.refineryComponents.length - 1].getBounds().bottom + 10, 300, 400));
 

@@ -1,26 +1,29 @@
-import Resource from "../Resource";
+import Resource from "../resources/Resource";
 
 export default class RefineryItem extends Phaser.Events.EventEmitter {
 	private currentTime = 0;
 	private _toRefineCount = 0;
 	private _refinedCount = 0;
+	private _timeToRefine = -1;
 
+	//  * @param timeToRefine The time in seconds it will take to refine all the resources required for 1 refined resource
 	/**
 	 * 
-	 * @param timeToRefine The time in seconds it will take to refine all the resources required for 1 refined resource
 	 * @param resourceType The resource type that this refiner accepts
 	 * @param numRequiredResources The number of resource required before the refiner will start working
-	 * @param refinedResouceType The resource type that this refiner will produce
+	 * @param outputResource The resource type that this refiner will produce
 	 * @param refinedResourceAmount The number of refined resources this refiner will produce
 	 */
 	public constructor(
-		public timeToRefine: number,
-		public readonly resouce: Resource,
+		// public timeToRefine: number,
+		public readonly inputResoruce: Resource,
 		public readonly numRequiredResources: number,
-		public readonly refinedResouceType: Resource,
+		public readonly outputResource: Resource,
 		public readonly refinedResourceAmount: number = 1
 	) {
 		super();
+
+		this._timeToRefine = (this.inputResoruce.timeToBreakDown * this.numRequiredResources) + this.outputResource.timeToBuild; // TODO: Make this based off the resources input/output
 	}
 
 	get canRefine() {
@@ -32,11 +35,15 @@ export default class RefineryItem extends Phaser.Events.EventEmitter {
 	}
 
 	get percentComplete() {
-		return this.currentTime / (this.timeToRefine * 1000);
+		return this.currentTime / (this._timeToRefine * 1000);
+	}
+
+	get timeToRefine() {
+		return this._timeToRefine;
 	}
 
 	public addResource(resource: Resource, amountToAdd: number = 1) {
-		if(this.resouce == resource) {
+		if(this.inputResoruce == resource) {
 			this._toRefineCount += amountToAdd;
 			return true;
 		}
@@ -45,7 +52,7 @@ export default class RefineryItem extends Phaser.Events.EventEmitter {
 	}
 
 	public takeRefinedResource(refinedResource: Resource, amountToTake: number = 1) {
-		if(this.refinedResouceType == refinedResource) {
+		if(this.outputResource == refinedResource) {
 			if(amountToTake == -1) amountToTake = this._refinedCount;
 
 			if(amountToTake <= this.refinedCount) {
@@ -72,6 +79,6 @@ export default class RefineryItem extends Phaser.Events.EventEmitter {
 		this._toRefineCount -= this.numRequiredResources;
 		this.currentTime = 0;
 
-		this.emit('refined', this.resouce);
+		this.emit('refined', this.inputResoruce);
 	}
 }

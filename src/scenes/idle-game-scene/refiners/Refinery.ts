@@ -1,11 +1,11 @@
-import Resource from "../Resource";
+import Resource from "../resources/Resource";
 import RefineryItem from "./RefineryItem";
 
 export default class Refinery {
 	private _refineryItem: RefineryItem;
 
-	public constructor(public readonly resourceAccepted: Resource, public readonly resourceRefined: Resource) {
-		this._refineryItem = new RefineryItem(10, resourceAccepted, 5, resourceRefined);
+	public constructor(public readonly inputResource: Resource, public readonly outputResource: Resource) {
+		this._refineryItem = new RefineryItem(inputResource, 5, outputResource);
 	}
 
 	get canRefine() {
@@ -18,6 +18,10 @@ export default class Refinery {
 
 	get refinedResourceCount() {
 		return this._refineryItem.refinedCount;
+	}
+
+	get timeToRefine() {
+		return this._refineryItem.timeToRefine;
 	}
 
 	public update(delta: number) {

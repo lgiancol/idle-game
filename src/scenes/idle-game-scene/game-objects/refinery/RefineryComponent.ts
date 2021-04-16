@@ -1,7 +1,7 @@
 import LuuButton from "../../../../ui/LuuButton";
 import LuuProgressbar from "../../../../ui/LuuProgressBar";
 import Player from "../../Player";
-import Refinery from "../../resources/refiners/Refinery";
+import Refinery from "../../refiners/Refinery";
 import Resource from "../../resources/Resource";
 
 export default class RefineryComponent extends Phaser.GameObjects.Rectangle {
@@ -25,7 +25,7 @@ export default class RefineryComponent extends Phaser.GameObjects.Rectangle {
 		this.setStrokeStyle(1, 0xffffff);
 		
 		let yOffset = this.y + 10 + 1;
-		this.nameLabel = this.scene.add.text(this.x + 10, yOffset, `${this.refinery.resourceAccepted.type} Refinery [${this.refinery.refinedResourceCount}]`)
+		this.nameLabel = this.scene.add.text(this.x + 10, yOffset, `${this.refinery.inputResource.type} Refinery [${this.refinery.refinedResourceCount}]`)
 		.setOrigin(0)
 		.setColor('white')
 		.setFontFamily('my-font')
@@ -33,11 +33,11 @@ export default class RefineryComponent extends Phaser.GameObjects.Rectangle {
 		.setDepth(1);
 
 		yOffset += this.nameLabel.getBounds().height + 10;
-		this.resourceIcon = this.scene.add.sprite(this.x + 10, yOffset, this.refinery.resourceAccepted.type)
+		this.resourceIcon = this.scene.add.sprite(this.x + 10, yOffset, this.refinery.inputResource.type)
 		.setOrigin(0)
 		.setDisplaySize(20, 20);
 		this.progress = this.scene.add.luuProgressBar(this.x + 40, yOffset, this.width - 80, 20);
-		this.refinedIcon = this.scene.add.sprite(this.progress.getBounds().right + 10, yOffset, this.refinery.resourceRefined.type)
+		this.refinedIcon = this.scene.add.sprite(this.progress.getBounds().right + 10, yOffset, this.refinery.outputResource.type)
 		.setOrigin(0)
 		.setDisplaySize(20, 20);
 
@@ -54,26 +54,26 @@ export default class RefineryComponent extends Phaser.GameObjects.Rectangle {
 	}
 
 	public preUpdate(delta: number) {
-		this.nameLabel.setText(`${this.refinery.resourceAccepted.type} Refinery [${this.refinery.refinedResourceCount}]`);
+		this.nameLabel.setText(`${this.refinery.inputResource.type} Refinery [${this.refinery.refinedResourceCount}]`);
 		this.progress.setPercentage(this.refinery.refinePercentage);
 	}
 
 	private onAddResourceToRefine() {
 		const takeAmount = 1;
 
-		const resourceManager = this.player.getResourceManager(this.refinery.resourceAccepted)
+		const resourceManager = this.player.getResourceManager(this.refinery.inputResource)
 		if(resourceManager?.hasMinimumOf(takeAmount)) {
-			if(this.refinery.addResource(this.refinery.resourceAccepted, takeAmount)) {
+			if(this.refinery.addResource(this.refinery.inputResource, takeAmount)) {
 				resourceManager?.removeResource(takeAmount);
 			}
 		}
 	}
 
 	private onTakeRefinedResources() {
-		const deltaRefinedResource = this.refinery.takeRefinedResource(this.refinery.resourceRefined);
+		const deltaRefinedResource = this.refinery.takeRefinedResource(this.refinery.outputResource);
 
 		if(deltaRefinedResource >= 0) {
-			const refinedResourceManager = this.player.getResourceManager(this.refinery.resourceRefined);
+			const refinedResourceManager = this.player.getResourceManager(this.refinery.outputResource);
 			refinedResourceManager.collectResource(deltaRefinedResource);
 		}
 	}
