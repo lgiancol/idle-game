@@ -5,7 +5,8 @@ import LuuButton from '../../ui/LuuButton';
 import './game-objects';
 import HomeComponent from './game-objects/HomeComponent';
 import RefineryComponent from './game-objects/refinery/RefineryComponent';
-import ResourceComponent from './game-objects/resource/ResourceComponent';
+import ResourceCollectorComponent from './game-objects/resources/ResourceCollectorComponent';
+import ResourceCountComponent from './game-objects/resources/ResourceCountComponent';
 import CampManager from './home-managers/CampManager';
 import HomeManager from './home-managers/HomeManager';
 import MarketManager from './market-manager/MarketManager';
@@ -32,13 +33,13 @@ export class IdleGameScene extends Phaser.Scene {
 	
 	// All the resources available to the user
 	public logManager: ResourceManager;
-	public logCollectorComponent: ResourceComponent;
+	public logCollectorComponent: ResourceCollectorComponent;
 
 	public coalManager: ResourceManager;
-	public coalCollectorComponent: ResourceComponent;
+	public coalCollectorComponent: ResourceCollectorComponent;
 
 	public plankManager: ResourceManager;
-	public plankCollectorComponent: ResourceComponent;
+	public plankCollectorComponent: ResourceCollectorComponent;
 
 	public marketManager: MarketManager;
 	public openMarketBtn: LuuButton;
@@ -46,6 +47,8 @@ export class IdleGameScene extends Phaser.Scene {
 	// This will all go into the actual refiner when I make it
 	public refineries: Refinery[] = [];
 	public refineryComponents: RefineryComponent[] = [];
+
+	public resourceCounts = [] as ResourceCountComponent[];
 
 	public constructor() {
 		super({key: 'IdleGame'});
@@ -97,9 +100,9 @@ export class IdleGameScene extends Phaser.Scene {
 		this.player.addResourceManager(new CoalManager());
 		this.player.addResourceManager(new PlankManager());
 
-		this.logCollectorComponent = this.add.resource(this.player.getResourceManager(Resource.LOG), 10, 10, 200);
-		this.coalCollectorComponent = this.add.resource(this.player.getResourceManager(Resource.COAL), 10, this.logCollectorComponent.getBounds().bottom + 10, 200);
-		this.plankCollectorComponent = this.add.resource(this.player.getResourceManager(Resource.PLANK), 10, this.coalCollectorComponent.getBounds().bottom + 10, 200);
+		this.logCollectorComponent = this.add.resourceCollector(this.player.getResourceManager(Resource.LOG), 10, 10, 200);
+		this.coalCollectorComponent = this.add.resourceCollector(this.player.getResourceManager(Resource.COAL), 10, this.logCollectorComponent.getBounds().bottom + 10, 200);
+		this.plankCollectorComponent = this.add.resourceCollector(this.player.getResourceManager(Resource.PLANK), 10, this.coalCollectorComponent.getBounds().bottom + 10, 200);
 
 		// Market Area
 		this.marketManager = new MarketManager();
@@ -125,18 +128,20 @@ export class IdleGameScene extends Phaser.Scene {
 		.on('pointerdown', this.resetGame.bind(this));
 
 		let refinery = new Refinery(Resource.LOG, Resource.PLANK);
-		console.log('Log --> Plank: ', refinery.timeToRefine);
 		this.refineries.push(refinery);
 		this.refineryComponents.push(this.add.refinery(refinery, gameWidth - 10 - 300, 10, 300, 400));
 
 		refinery = new Refinery(Resource.PLANK, Resource.LOG);
-		console.log('Plank --> Log: ', refinery.timeToRefine);
 		this.refineries.push(refinery);
 		this.refineryComponents.push(this.add.refinery(refinery, gameWidth - 10 - 300, this.refineryComponents[this.refineryComponents.length - 1].getBounds().bottom + 10, 300, 400));
-
-		this.add.sprite(400, 100, Resource.LOG.type);
-		this.add.sprite(400, 174, Resource.COAL.type);
-		this.add.sprite(400, 258, Resource.PLANK.type);
+	
+		Resource.values.forEach((resource: Resource, i: number) => {
+			let ii = i - 1;
+			const resourceCount = this.add.resourceCount(resource, gameWidth / 2, gameHeight)
+			// .setOrigin(0.5, 0);
+			resourceCount.setPosition(resourceCount.x + (ii * (resourceCount.getBounds().width + 100)), gameHeight - resourceCount.getBounds().height - 10);
+			this.resourceCounts.push(resourceCount);
+		});
 	}
 	
 	public update(time: number, delta: number) {

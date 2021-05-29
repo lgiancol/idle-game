@@ -6,14 +6,16 @@ export default class LuuIOverlayContainerComponent extends Phaser.GameObjects.Re
 	private _content: LuuIOverlayContentComponent;
 	public constructor(scene: Phaser.Scene, x: number, y: number, width: number, height: number) {
 		// super(scene, x, y, 'overlay_bg');
-		super(scene, x, y, width, height);
+		super(scene, x, y);
 		this.setDisplaySize(width, height)
 		.setDepth(10)
 		.setFillStyle(0xa2a2a2);
 	}
 
 	set content(content: LuuIOverlayContentComponent) {
+		// content.width = this.width;
 		content.setParentOverlayContainer(this);
+		// this.add(content);
 		this._content = content;
 	}
 

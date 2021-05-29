@@ -1,7 +1,9 @@
 import LuuButton from "../../../../ui/LuuButton";
 import ResourceManager from "../../resources/resource-managers/ResourceManager";
+import ResourceCountComponent from "./ResourceCountComponent";
 
-export default class ResourceComponent extends Phaser.GameObjects.Rectangle {
+export default class ResourceCollectorComponent extends Phaser.GameObjects.Rectangle {
+	private resourceCount: ResourceCountComponent;
 	private nameLabel: Phaser.GameObjects.Text;
 	private collectResourceBtn: LuuButton;
 
@@ -17,8 +19,9 @@ export default class ResourceComponent extends Phaser.GameObjects.Rectangle {
 		this.setStrokeStyle(1, 0xffffff);
 		
 		let yOffset = this.y + 10 + 1;
-		this.nameLabel = this.scene.add.text(this.x + 10, yOffset, `${this.resourceManager.resourceName} ${this.resourceManager.quantity} [${this.resourceManager.autoCollectSpeed}/s]`)
-		.setOrigin(0)
+		this.resourceCount = this.scene.add.resourceCount(this.resourceManager.resource, this.x + 10, yOffset);
+		this.nameLabel = this.scene.add.text(this.resourceCount.getBounds().right + 10, this.resourceCount.getBounds().centerY, `[${this.resourceManager.autoCollectSpeed}/s]`)
+		.setOrigin(0, 0.5)
 		.setColor('white')
 		.setFontFamily('my-font')
 		.setFontSize(20)
@@ -32,7 +35,7 @@ export default class ResourceComponent extends Phaser.GameObjects.Rectangle {
 	}
 
 	public preUpdate(delta: number) {
-		this.nameLabel.setText(`${this.resourceManager.resourceName}: ${this.resourceManager.quantity}  [${this.resourceManager.autoCollectSpeed}/s]`);
+		this.nameLabel.setText(`[${this.resourceManager.autoCollectSpeed}/s]`);
 		this.collectResourceBtn.setText(`Collect (x${this.resourceManager.clickCollectSpeed})`);
 	}
 
@@ -50,9 +53,9 @@ export default class ResourceComponent extends Phaser.GameObjects.Rectangle {
 }
 
 Phaser.GameObjects.GameObjectFactory.register(
-	'resource',
+	'resourceCollector',
 	function(this: Phaser.GameObjects.GameObjectFactory, resourceManager: ResourceManager, x: number, y: number, width: number = 100, height: number = 84) {
-		const resourceComponent = new ResourceComponent(this.scene, resourceManager, x, y, width, height)
+		const resourceComponent = new ResourceCollectorComponent(this.scene, resourceManager, x, y, width, height)
 		.setOrigin(0);
 		
 		this.displayList.add(resourceComponent);
@@ -67,7 +70,7 @@ declare global
 	{
 		interface GameObjectFactory
 		{
-			resource(resourceManager: ResourceManager, x: number, y: number, width?: number, height?: number): ResourceComponent
+			resourceCollector(resourceManager: ResourceManager, x: number, y: number, width?: number, height?: number): ResourceCollectorComponent
 		}
 	}
 }

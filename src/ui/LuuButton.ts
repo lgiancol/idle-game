@@ -10,6 +10,7 @@ export default class LuuButton extends Phaser.GameObjects.Sprite {
 	}
 
 	public init() {
+		// this.setFillStyle(0xff00ff);
 		this.on('pointerover', this.renderHover.bind(this))
 		.on('pointerout', this.renderRest.bind(this))
 		.on('pointerdown', this.renderRest.bind(this))
@@ -43,10 +44,12 @@ export default class LuuButton extends Phaser.GameObjects.Sprite {
 	private renderRest() {
 		this.isHover = false;
 		this.setTexture('purple_btn');
+		// this.setFillStyle(0xff00ff);
 		this.label.setColor('black')
 	}
 
 	private renderDisabled() {
+		// this.setFillStyle(0xcc00cc);
 		this.label.setColor('#391339')
 	}
 
@@ -56,6 +59,7 @@ export default class LuuButton extends Phaser.GameObjects.Sprite {
 		if(!this.enabled) return;
 
 		this.setTexture('purple_btn_active');
+		// this.setFillStyle(0xaa00aa);
 	}
 
 	public setText(text: string) {

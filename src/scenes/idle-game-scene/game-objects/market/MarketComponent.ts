@@ -3,6 +3,7 @@ import MarketManager from "../../market-manager/MarketManager";
 import Player from "../../Player";
 import ResourceManager from "../../resources/resource-managers/ResourceManager";
 import LuuIOverlayContentComponent from "../LuuIOverlay/LuuIOverlayContentComponent";
+import ResourceCountComponent from "../resources/ResourceCountComponent";
 import MarketGroupComponent from "./MarketGroupComponent";
 
 export default class MarketComponent extends LuuIOverlayContentComponent {
@@ -50,6 +51,13 @@ export default class MarketComponent extends LuuIOverlayContentComponent {
 		this.resourceSelect = this.scene.add.group();
 		this.player.resourcemanagersArr.forEach((resourceManager: ResourceManager) => {
 			let resourceItemBtn = this.scene.add.luuButton(this.x + 10, yOffset, this.width - 20, 30, resourceManager.resourceName);
+			// let resourceItemBtn = this.scene.add.luuButton(this.x + 10, yOffset, this.width - 20, 50, '');
+
+			// const btnBounds = resourceItemBtn.getBounds();
+			// let resourceCount = this.scene.add.resourceCount(resourceManager.resource, btnBounds.centerX, btnBounds.centerY)
+			// .setOrigin(0.5);
+
+			// resourceItemBtn.setData('count', resourceCount);
 			resourceItemBtn.on('pointerdown', () => {
 				let activeResourceManager = resourceManager;
 				if(activeResourceManager == this.resourceMarket.activeResourceManager) activeResourceManager = null;
@@ -58,6 +66,7 @@ export default class MarketComponent extends LuuIOverlayContentComponent {
 			});
 
 			this.resourceSelect.add(resourceItemBtn);
+			// this.resourceSelect.add(resourceCount);
 
 			yOffset += resourceItemBtn.getBounds().height + 10;
 		});
@@ -92,6 +101,7 @@ export default class MarketComponent extends LuuIOverlayContentComponent {
 		.setPosition(this.x, yOffset);
 
 		this.resourceSelect.getChildren().forEach((btn: LuuButton) => {
+		// this.resourceSelect.getChildren().filter((value: Phaser.GameObjects.GameObject) => value instanceof LuuButton).forEach((btn: LuuButton) => {
 			btn
 			.setDepth(depth)
 			.setPosition(this.x + 10, yOffset)
@@ -99,6 +109,13 @@ export default class MarketComponent extends LuuIOverlayContentComponent {
 			.setDisplaySize(this.width - 20, 30);
 
 			yOffset += btn.getBounds().height + 10;
+			// let btnBounds = btn.getBounds();
+			// yOffset += btnBounds.height + 10;
+
+			// const resourceCount = (btn.getData('count') as ResourceCountComponent);
+			// resourceCount
+			// .setPosition(btnBounds.centerX, btnBounds.centerY)
+			// .setDepth(depth);
 		});
 	}
 
@@ -107,6 +124,7 @@ export default class MarketComponent extends LuuIOverlayContentComponent {
 		this.resourceMarket.activeResourceManager = resourceManager;
 		
 		this.resourceSelect.getChildren().forEach((btn: LuuButton) => btn.setVisible(!hasResourceManager));
+		// this.resourceSelect.getChildren().forEach((btn: LuuButton | ResourceCountComponent) => btn.setVisible(!hasResourceManager));
 		
 		this.resourceMarket.setActive(hasResourceManager);
 		this.resourceMarket.setVisible(hasResourceManager);
